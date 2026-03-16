@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C Language Cheat Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #100e0b;
+    --surface: #1a1712;
+    --surface2: #221f18;
+    --border: #3a3528;
+    --accent: #e8a44a;
+    --accent2: #e85c4a;
+    --accent3: #70c8a0;
+    --accent4: #c8a0e8;
+    --accent5: #4ab4e8;
+    --text: #f0e8d8;
+    --muted: #6e6050;
+    --kw: #e8a44a;
+    --type: #70c8a0;
+    --string: #c8e870;
+    --num: #e87070;
+    --comment: #504838;
+    --fn: #4ab4e8;
+    --op: #e8c870;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'JetBrains Mono', monospace; background: var(--bg); color: var(--text); line-height: 1.6; font-size: 13px; }
+  header { background: var(--surface); border-bottom: 2px solid var(--accent); padding: 24px 40px; display: flex; align-items: center; gap: 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 40px rgba(232,164,74,0.1); }
+  .logo { width: 50px; height: 50px; background: linear-gradient(135deg, var(--accent), var(--accent2)); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 24px; color: #fff; flex-shrink: 0; }
+  header h1 { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; color: #fff; }
+  header p { color: var(--muted); font-size: 11px; margin-top: 2px; }
+  .tag-row { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 3px 10px; font-size: 11px; color: var(--muted); }
+  .page { padding: 28px 40px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .col-2 { grid-column: span 2; }
+  .col-3 { grid-column: span 3; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: border-color 0.2s; }
+  .card:hover { border-color: var(--accent); }
+  .card-header { padding: 9px 14px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); background: var(--surface2); }
+  .card-icon { width: 20px; height: 20px; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+  .card-title { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+  .card-body { padding: 12px 14px; }
+  pre { background: #0c0a07; border-radius: 7px; padding: 10px 12px; overflow-x: auto; font-size: 11.5px; line-height: 1.7; margin-bottom: 8px; border: 1px solid #201c14; }
+  pre:last-child { margin-bottom: 0; }
+  .kw { color: var(--kw); } .ty { color: var(--type); } .st { color: var(--string); } .nm { color: var(--num); } .cm { color: var(--comment); } .fn { color: var(--fn); } .op { color: var(--op); }
+  .kv-table { width: 100%; border-collapse: collapse; font-size: 11.5px; margin-bottom: 6px; }
+  .kv-table td { padding: 4px 7px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .kv-table tr:last-child td { border-bottom: none; }
+  .kv-table td:first-child { color: var(--type); white-space: nowrap; font-weight: 500; width: 40%; }
+  .kv-table td:last-child { color: var(--muted); }
+  .section-label { font-family: 'Syne', sans-serif; font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); margin: 10px 0 5px; }
+  .section-label:first-child { margin-top: 0; }
+  .c-amber  .card-icon { background: rgba(232,164,74,0.2); color: var(--accent); }
+  .c-red    .card-icon { background: rgba(232,92,74,0.2);  color: var(--accent2); }
+  .c-green  .card-icon { background: rgba(112,200,160,0.2); color: var(--accent3); }
+  .c-purple .card-icon { background: rgba(200,160,232,0.2); color: var(--accent4); }
+  .c-blue   .card-icon { background: rgba(74,180,232,0.2);  color: var(--accent5); }
+  .c-amber  .card-title { color: var(--accent); }
+  .c-red    .card-title { color: var(--accent2); }
+  .c-green  .card-title { color: var(--accent3); }
+  .c-purple .card-title { color: var(--accent4); }
+  .c-blue   .card-title { color: var(--accent5); }
+  footer { text-align: center; padding: 20px; color: var(--muted); font-size: 11px; border-top: 1px solid var(--border); margin-top: 20px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">C</div>
+  <div><h1>C Language Cheat Sheet</h1><p>C11/C17 — Vollständige Referenz: Typen, Pointer, Speicher, Structs, I/O & mehr</p></div>
+  <div class="tag-row"><span class="tag">C11</span><span class="tag">C17</span><span class="tag">Pointer</span><span class="tag">Memory</span><span class="tag">Structs</span><span class="tag">stdlib</span></div>
+</header>
+<div class="page"><div class="grid">
+
+<!-- DATENTYPEN -->
+<div class="card c-amber">
+  <div class="card-header"><div class="card-icon">T</div><span class="card-title">Data Types &amp; Sizes</span></div>
+  <div class="card-body">
+    <table class="kv-table">
+      <tr><td>char</td><td>1 Byte, -128…127 / 0…255</td></tr>
+      <tr><td>unsigned char</td><td>0…255</td></tr>
+      <tr><td>short</td><td>2 Bytes, ±32 767</td></tr>
+      <tr><td>int</td><td>4 Bytes, ±2 147 Mio.</td></tr>
+      <tr><td>unsigned int</td><td>4 Bytes, 0…4 294 Mio.</td></tr>
+      <tr><td>long</td><td>4 od. 8 Bytes</td></tr>
+      <tr><td>long long</td><td>8 Bytes, ±9.2×10¹⁸</td></tr>
+      <tr><td>float</td><td>4 Bytes, ~7 Stellen</td></tr>
+      <tr><td>double</td><td>8 Bytes, ~15 Stellen</td></tr>
+      <tr><td>long double</td><td>10/16 Bytes</td></tr>
+      <tr><td>_Bool</td><td>0 oder 1</td></tr>
+      <tr><td>void</td><td>Kein Typ / generischer Ptr</td></tr>
+    </table>
+<pre><span class="cm">// Exact widths (stdint.h)</span>
+<span class="ty">int8_t</span>   <span class="ty">int16_t</span>  <span class="ty">int32_t</span>  <span class="ty">int64_t</span>
+<span class="ty">uint8_t</span>  <span class="ty">uint16_t</span> <span class="ty">uint32_t</span> <span class="ty">uint64_t</span>
+<span class="ty">size_t</span>   <span class="ty">ptrdiff_t</span>  <span class="ty">intptr_t</span>
+
+<span class="kw">sizeof</span>(<span class="ty">int</span>)       <span class="cm">// Size in bytes</span>
+<span class="op">INT_MAX</span>  <span class="op">INT_MIN</span>  <span class="cm">// limits.h</span>
+<span class="op">FLT_MAX</span>  <span class="op">DBL_MAX</span>  <span class="cm">// float.h</span></pre>
+  </div>
+</div>
+
+<!-- VARIABLEN & DEKLARATION -->
+<div class="card c-green">
+  <div class="card-header"><div class="card-icon">V</div><span class="card-title">Variables &amp; Qualifiers</span></div>
+  <div class="card-body">
+<pre><span class="cm">// Declaration &amp; initialization</span>
+<span class="ty">int</span> x;          <span class="cm">// undefined!</span>
+<span class="ty">int</span> y = <span class="nm">42</span>;
+<span class="ty">int</span> a, b, c;    <span class="cm">// multiple</span>
+<span class="ty">int</span> arr[<span class="nm">5</span>] = {<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>,<span class="nm">4</span>,<span class="nm">5</span>};
+<span class="ty">char</span> s[] = <span class="st">"Hallo"</span>;
+<span class="ty">double</span> pi = <span class="nm">3.14159</span>;
+
+<span class="cm">// Qualifiers</span>
+<span class="kw">const</span> <span class="ty">int</span> MAX = <span class="nm">100</span>;
+<span class="kw">volatile</span> <span class="ty">int</span> flag;    <span class="cm">// do not optimize</span>
+<span class="kw">register</span> <span class="ty">int</span> cnt;     <span class="cm">// register hint</span>
+<span class="kw">static</span> <span class="ty">int</span> persistent; <span class="cm">// persistent lifetime</span>
+<span class="kw">extern</span> <span class="ty">int</span> global;    <span class="cm">// external file</span>
+
+<span class="cm">// Storage classes</span>
+<span class="kw">auto</span>     <span class="cm">// local (default)</span>
+<span class="kw">static</span>   <span class="cm">// persistent local var</span>
+<span class="kw">extern</span>   <span class="cm">// external linkage</span>
+<span class="kw">register</span> <span class="cm">// CPU register hint</span>
+<span class="kw">_Thread_local</span> <span class="cm">// Thread-local (C11)</span>
+
+<span class="cm">// Type conversion</span>
+<span class="ty">int</span> n = (<span class="ty">int</span>)<span class="nm">3.7</span>;   <span class="cm">// 3 (truncated)</span>
+<span class="ty">double</span> d = (<span class="ty">double</span>)<span class="nm">5</span> / <span class="nm">2</span>; <span class="cm">// 2.5</span></pre>
+  </div>
+</div>
+
+<!-- OPERATOREN -->
+<div class="card c-red">
+  <div class="card-header"><div class="card-icon">±</div><span class="card-title">Operators &amp; Precedence</span></div>
+  <div class="card-body">
+<pre><span class="cm">// Arithmetic</span>
++  -  *  /  %
+++x  x++  --x  x--
+
+<span class="cm">// Comparison</span>
+==  !=  &lt;  &gt;  &lt;=  &gt;=
+
+<span class="cm">// Logical</span>
+&amp;&amp;  ||  !
+
+<span class="cm">// Bitwise</span>
+&amp;   <span class="cm">// AND</span>
+|   <span class="cm">// OR</span>
+^   <span class="cm">// XOR</span>
+~   <span class="cm">// NOT</span>
+&lt;&lt;  <span class="cm">// Left shift</span>
+&gt;&gt;  <span class="cm">// Right shift</span>
+
+<span class="cm">// Assignment</span>
+= += -= *= /= %= &amp;= |= ^= &lt;&lt;= &gt;&gt;=
+
+<span class="cm">// Other</span>
+? :        <span class="cm">// Ternary</span>
+,          <span class="cm">// Komma-Operator</span>
+<span class="kw">sizeof</span>(x)  <span class="cm">// Size</span>
+&amp;x         <span class="cm">// address of x</span>
+*ptr       <span class="cm">// Dereferenzierung</span>
+arr[i]     <span class="cm">// Index</span>
+s.m        <span class="cm">// Struct-Member</span>
+p->m       <span class="cm">// Ptr->Member</span>
+(<span class="ty">Typ</span>)x    <span class="cm">// Cast</span>
+
+<span class="cm">// Präzedenz: () [] -> . höchste</span>
+<span class="cm">// dann: unär ++ -- ! ~ cast *  &amp;</span>
+<span class="cm">// dann: * / %  dann: + -  dann: &lt;&lt; &gt;&gt;</span>
+<span class="cm">// dann: &lt; &gt; &lt;= &gt;=  dann: == !=</span>
+<span class="cm">// dann: &amp;  ^  |  &amp;&amp;  ||  ?:  =  ,</span></pre>
+  </div>
+</div>
+
+<!-- POINTER -->
+<div class="card c-amber col-2">
+  <div class="card-header"><div class="card-icon">*</div><span class="card-title">Pointer &amp; Adressen</span></div>
+  <div class="card-body">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div>
+<pre><span class="cm">// Pointer declaration</span>
+<span class="ty">int</span> *ptr;           <span class="cm">// Pointer auf int</span>
+<span class="ty">int</span> *p = <span class="kw">NULL</span>;     <span class="cm">// Null pointer</span>
+<span class="ty">char</span> *s = <span class="st">"Hi"</span>;    <span class="cm">// String pointer</span>
+<span class="kw">void</span> *vp;           <span class="cm">// generic pointer</span>
+
+<span class="cm">// Address &amp; dereference</span>
+<span class="ty">int</span> x = <span class="nm">42</span>;
+<span class="ty">int</span> *p = &amp;x;       <span class="cm">// address of x</span>
+*p = <span class="nm">100</span>;          <span class="cm">// x = 100</span>
+<span class="fn">printf</span>(<span class="st">"%d\n"</span>, *p); <span class="cm">// 100</span>
+
+<span class="cm">// Pointer arithmetic</span>
+p++;                <span class="cm">// next int address</span>
+p += <span class="nm">3</span>;
+*(p + <span class="nm">1</span>)           <span class="cm">// next element</span>
+
+<span class="cm">// Pointer to array</span>
+<span class="ty">int</span> arr[<span class="nm">5</span>] = {<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>,<span class="nm">4</span>,<span class="nm">5</span>};
+<span class="ty">int</span> *ap = arr;     <span class="cm">// arr = &arr[0]</span>
+ap[<span class="nm">2</span>] == *(ap+<span class="nm">2</span>); <span class="cm">// equivalent</span></pre>
+      </div>
+      <div>
+<pre><span class="cm">// Const pointer variants</span>
+<span class="kw">const</span> <span class="ty">int</span> *p;      <span class="cm">// Ptr to const int</span>
+<span class="ty">int</span> * <span class="kw">const</span> p;     <span class="cm">// const ptr to int</span>
+<span class="kw">const</span> <span class="ty">int</span> * <span class="kw">const</span> p; <span class="cm">// both const</span>
+
+<span class="cm">// Double pointer</span>
+<span class="ty">int</span> **pp = &amp;p;
+**pp = <span class="nm">42</span>;
+
+<span class="cm">// Function pointer</span>
+<span class="ty">int</span> (*<span class="fn">func_ptr</span>)(<span class="ty">int</span>, <span class="ty">int</span>);
+func_ptr = &amp;<span class="fn">add</span>;
+<span class="ty">int</span> result = <span class="fn">func_ptr</span>(<span class="nm">3</span>, <span class="nm">4</span>);
+
+<span class="cm">// Typedef for function pointer</span>
+<span class="kw">typedef</span> <span class="ty">int</span> (*<span class="ty">MathFunc</span>)(<span class="ty">int</span>, <span class="ty">int</span>);
+<span class="ty">MathFunc</span> fn = <span class="fn">add</span>;
+
+<span class="cm">// Pointer comparison</span>
+<span class="kw">if</span> (ptr == <span class="kw">NULL</span>) { }
+<span class="kw">if</span> (ptr != <span class="kw">NULL</span>) { }
+p1 - p2; <span class="cm">// ptrdiff_t</span></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SPEICHERVERWALTUNG -->
+<div class="card c-red">
+  <div class="card-header"><div class="card-icon">⊕</div><span class="card-title">Memory (stdlib.h)</span></div>
+  <div class="card-body">
+<pre><span class="cm">// Heap allocation</span>
+<span class="kw">void</span> *<span class="fn">malloc</span>(<span class="ty">size_t</span> size);
+<span class="kw">void</span> *<span class="fn">calloc</span>(<span class="ty">size_t</span> n, <span class="ty">size_t</span> size);
+<span class="kw">void</span> *<span class="fn">realloc</span>(<span class="kw">void</span> *ptr, <span class="ty">size_t</span> size);
+<span class="kw">void</span>  <span class="fn">free</span>(<span class="kw">void</span> *ptr);
+
+<span class="cm">// Example</span>
+<span class="ty">int</span> *arr = (<span class="ty">int</span>*)<span class="fn">malloc</span>(<span class="nm">10</span> * <span class="kw">sizeof</span>(<span class="ty">int</span>));
+<span class="kw">if</span> (arr == <span class="kw">NULL</span>) { <span class="cm">/* Error Handling */</span> }
+arr[<span class="nm">0</span>] = <span class="nm">42</span>;
+<span class="fn">free</span>(arr);
+arr = <span class="kw">NULL</span>; <span class="cm">// Avoid dangling pointer</span>
+
+<span class="cm">// calloc: zero-initialized</span>
+<span class="ty">int</span> *z = (<span class="ty">int</span>*)<span class="fn">calloc</span>(<span class="nm">10</span>, <span class="kw">sizeof</span>(<span class="ty">int</span>));
+
+<span class="cm">// realloc: resize</span>
+arr = (<span class="ty">int</span>*)<span class="fn">realloc</span>(arr, <span class="nm">20</span>*<span class="kw">sizeof</span>(<span class="ty">int</span>));
+
+<span class="cm">// Stack vs Heap</span>
+<span class="ty">int</span> stack_var = <span class="nm">5</span>;   <span class="cm">// Stack</span>
+<span class="ty">int</span> *heap = <span class="fn">malloc</span>(<span class="kw">sizeof</span>(<span class="ty">int</span>)); <span class="cm">// Heap</span></pre>
+  </div>
+</div>
+
+<!-- STRINGS -->
+<div class="card c-blue">
+  <div class="card-header"><div class="card-icon">"</div><span class="card-title">Strings (string.h)</span></div>
+  <div class="card-body">
+<pre><span class="cm">// String is null-terminated char array</span>
+<span class="ty">char</span> s[] = <span class="st">"Hallo"</span>;   <span class="cm">// {'H','a','l','l','o','\0'}</span>
+<span class="ty">char</span> s[<span class="nm">10</span>];
+s[<span class="nm">0</span>] = <span class="st">'H'</span>; s[<span class="nm">1</span>] = <span class="st">'\0'</span>;
+
+<span class="cm">// String functions</span>
+<span class="fn">strlen</span>(s)               <span class="cm">// Length without \0</span>
+<span class="fn">strcpy</span>(dst, src)        <span class="cm">// Copy</span>
+<span class="fn">strncpy</span>(dst, src, n)    <span class="cm">// safer</span>
+<span class="fn">strcat</span>(dst, src)        <span class="cm">// Append</span>
+<span class="fn">strncat</span>(dst, src, n)
+<span class="fn">strcmp</span>(s1, s2)          <span class="cm">// 0 if equal</span>
+<span class="fn">strncmp</span>(s1, s2, n)
+<span class="fn">strchr</span>(s, <span class="st">'c'</span>)         <span class="cm">// first 'c'</span>
+<span class="fn">strrchr</span>(s, <span class="st">'c'</span>)        <span class="cm">// last 'c'</span>
+<span class="fn">strstr</span>(haystack, needle) <span class="cm">// Substring</span>
+<span class="fn">strtok</span>(s, delim)        <span class="cm">// Tokenize</span>
+<span class="fn">toupper</span>(<span class="st">'a'</span>) / <span class="fn">tolower</span>(<span class="st">'A'</span>)  <span class="cm">// ctype.h</span>
+
+<span class="cm">// Safe C11 variants</span>
+<span class="fn">strcpy_s</span>(dst, dstsz, src)
+<span class="fn">strcat_s</span>(dst, dstsz, src)</pre>
+  </div>
+</div>
+
+<!-- KONTROLLFLUSS -->
+<div class="card c-green">
+  <div class="card-header"><div class="card-icon">⇀</div><span class="card-title">Control Flow &amp; Loops</span></div>
+  <div class="card-body">
+<pre><span class="cm">// if / else if / else</span>
+<span class="kw">if</span> (x &gt; <span class="nm">0</span>) { }
+<span class="kw">else if</span> (x == <span class="nm">0</span>) { }
+<span class="kw">else</span> { }
+
+<span class="cm">// Ternary</span>
+<span class="ty">int</span> y = x &gt; <span class="nm">0</span> ? <span class="nm">1</span> : -<span class="nm">1</span>;
+
+<span class="cm">// switch</span>
+<span class="kw">switch</span>(c) {
+  <span class="kw">case</span> <span class="st">'a'</span>: ...; <span class="kw">break</span>;
+  <span class="kw">case</span> <span class="st">'b'</span>:  <span class="cm">// fall-through</span>
+  <span class="kw">case</span> <span class="st">'c'</span>: ...; <span class="kw">break</span>;
+  <span class="kw">default</span>: ...; <span class="kw">break</span>;
+}
+
+<span class="cm">// for</span>
+<span class="kw">for</span> (<span class="ty">int</span> i=<span class="nm">0</span>; i&lt;<span class="nm">10</span>; i++) { }
+
+<span class="cm">// while</span>
+<span class="kw">while</span> (condition) { }
+
+<span class="cm">// do-while</span>
+<span class="kw">do</span> { } <span class="kw">while</span> (condition);
+
+<span class="cm">// Jump statements</span>
+<span class="kw">break</span>;     <span class="kw">continue</span>;     <span class="kw">return</span> x;
+<span class="kw">goto</span> label; label:
+
+<span class="cm">// goto-Beispiel (Error Handling)</span>
+<span class="kw">if</span> (!p) <span class="kw">goto</span> cleanup;
+cleanup:
+  <span class="fn">free</span>(p);</pre>
+  </div>
+</div>
+
+<!-- FUNKTIONEN -->
+<div class="card c-purple">
+  <div class="card-header"><div class="card-icon">ƒ</div><span class="card-title">Funktionen</span></div>
+  <div class="card-body">
+<pre><span class="cm">// Declaration (prototype)</span>
+<span class="ty">int</span> <span class="fn">add</span>(<span class="ty">int</span> a, <span class="ty">int</span> b);
+
+<span class="cm">// Definition</span>
+<span class="ty">int</span> <span class="fn">add</span>(<span class="ty">int</span> a, <span class="ty">int</span> b) {
+  <span class="kw">return</span> a + b;
+}
+
+<span class="cm">// void function</span>
+<span class="kw">void</span> <span class="fn">greet</span>(<span class="kw">const</span> <span class="ty">char</span> *name) {
+  <span class="fn">printf</span>(<span class="st">"Hallo %s!\n"</span>, name);
+}
+
+<span class="cm">// Call by value</span>
+<span class="kw">void</span> <span class="fn">inc</span>(<span class="ty">int</span> x) { x++; } <span class="cm">// no effect</span>
+
+<span class="cm">// Call by pointer (reference semantics)</span>
+<span class="kw">void</span> <span class="fn">inc</span>(<span class="ty">int</span> *x) { (*x)++; }
+<span class="fn">inc</span>(&amp;myVar);
+
+<span class="cm">// Array parameter (pointer)</span>
+<span class="ty">int</span> <span class="fn">sum</span>(<span class="ty">int</span> *arr, <span class="ty">int</span> n);
+<span class="ty">int</span> <span class="fn">sum</span>(<span class="ty">int</span> arr[], <span class="ty">int</span> n); <span class="cm">// equivalent</span>
+
+<span class="cm">// Variadic function</span>
+<span class="kw">#include</span> &lt;<span class="ty">stdarg.h</span>&gt;
+<span class="ty">int</span> <span class="fn">sum</span>(<span class="ty">int</span> n, ...) {
+  <span class="ty">va_list</span> ap;
+  <span class="fn">va_start</span>(ap, n);
+  <span class="kw">for</span>(<span class="ty">int</span> i=<span class="nm">0</span>;i&lt;n;i++) <span class="fn">va_arg</span>(ap,<span class="ty">int</span>);
+  <span class="fn">va_end</span>(ap);
+}
+
+<span class="cm">// Inline function (C99)</span>
+<span class="kw">inline</span> <span class="ty">int</span> <span class="fn">square</span>(<span class="ty">int</span> x) { <span class="kw">return</span> x*x; }</pre>
+  </div>
+</div>
+
+<!-- STRUCT, UNION, ENUM -->
+<div class="card c-amber col-2">
+  <div class="card-header"><div class="card-icon">▣</div><span class="card-title">struct, union, enum &amp; typedef</span></div>
+  <div class="card-body">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div>
+<pre><span class="cm">// struct</span>
+<span class="kw">struct</span> <span class="ty">Point</span> {
+  <span class="ty">int</span> x;
+  <span class="ty">int</span> y;
+};
+<span class="kw">struct</span> <span class="ty">Point</span> p = { <span class="nm">3</span>, <span class="nm">4</span> };
+<span class="kw">struct</span> <span class="ty">Point</span> p = { .x=<span class="nm">3</span>, .y=<span class="nm">4</span> }; <span class="cm">// designated init</span>
+p.x = <span class="nm">10</span>;
+
+<span class="cm">// Pointer to struct</span>
+<span class="kw">struct</span> <span class="ty">Point</span> *pp = &amp;p;
+pp->x = <span class="nm">99</span>;    <span class="cm">// (*pp).x = 99</span>
+
+<span class="cm">// typedef for struct</span>
+<span class="kw">typedef struct</span> {
+  <span class="ty">char</span> name[<span class="nm">50</span>];
+  <span class="ty">int</span>  age;
+} <span class="ty">Person</span>;
+<span class="ty">Person</span> anna = { <span class="st">"Anna"</span>, <span class="nm">30</span> };
+
+<span class="cm">// Struct array</span>
+<span class="ty">Person</span> people[<span class="nm">100</span>];
+people[<span class="nm">0</span>].age = <span class="nm">25</span>;</pre>
+      </div>
+      <div>
+<pre><span class="cm">// union (shared memory)</span>
+<span class="kw">union</span> <span class="ty">Data</span> {
+  <span class="ty">int</span>    i;
+  <span class="ty">float</span>  f;
+  <span class="ty">char</span>   str[<span class="nm">20</span>];
+};
+<span class="kw">union</span> <span class="ty">Data</span> d;
+d.i = <span class="nm">10</span>;
+d.f = <span class="nm">3.14</span>; <span class="cm">// overwrites i!</span>
+
+<span class="cm">// enum</span>
+<span class="kw">enum</span> <span class="ty">Color</span> { RED=<span class="nm">0</span>, GREEN, BLUE };
+<span class="kw">enum</span> <span class="ty">Color</span> c = GREEN;
+
+<span class="cm">// Bit fields in struct</span>
+<span class="kw">struct</span> <span class="ty">Flags</span> {
+  <span class="ty">unsigned</span> read    : <span class="nm">1</span>;
+  <span class="ty">unsigned</span> write   : <span class="nm">1</span>;
+  <span class="ty">unsigned</span> execute : <span class="nm">1</span>;
+  <span class="ty">unsigned</span> padding : <span class="nm">5</span>;
+};
+
+<span class="cm">// Nested structs</span>
+<span class="kw">struct</span> <span class="ty">Rect</span> {
+  <span class="kw">struct</span> <span class="ty">Point</span> top_left;
+  <span class="kw">struct</span> <span class="ty">Point</span> bottom_right;
+};</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- I/O -->
+<div class="card c-blue">
+  <div class="card-header"><div class="card-icon">I/O</div><span class="card-title">I/O (stdio.h)</span></div>
+  <div class="card-body">
+<pre><span class="cm">// Output</span>
+<span class="fn">printf</span>(<span class="st">"%d %s %f\n"</span>, n, s, d);
+<span class="fn">fprintf</span>(stderr, <span class="st">"Fehler: %s\n"</span>, msg);
+<span class="fn">sprintf</span>(buf, <span class="st">"%d"</span>, n);
+<span class="fn">snprintf</span>(buf, <span class="kw">sizeof</span>(buf), <span class="st">"%d"</span>, n); <span class="cm">// sicher!</span>
+<span class="fn">puts</span>(<span class="st">"text\n"</span>);
+<span class="fn">putchar</span>(<span class="st">'A'</span>);
+
+<span class="cm">// Format specifiers</span>
+%d / %i   <span class="cm">// int</span>
+%u        <span class="cm">// unsigned int</span>
+%ld / %lld <span class="cm">// long / long long</span>
+%f / %lf  <span class="cm">// float / double</span>
+%e        <span class="cm">// scientific notation</span>
+%s        <span class="cm">// string</span>
+%c        <span class="cm">// char</span>
+%p        <span class="cm">// Pointer</span>
+%x / %X   <span class="cm">// hex (klein/groß)</span>
+%o        <span class="cm">// oktal</span>
+%zu       <span class="cm">// size_t</span>
+%%        <span class="cm">// Prozentzeichen</span>
+
+<span class="cm">// Input</span>
+<span class="fn">scanf</span>(<span class="st">"%d"</span>, &amp;n);
+<span class="fn">fgets</span>(buf, <span class="kw">sizeof</span>(buf), stdin); <span class="cm">// sicher!</span>
+<span class="fn">getchar</span>();</pre>
+  </div>
+</div>
+
+<!-- FILE I/O -->
+<div class="card c-green">
+  <div class="card-header"><div class="card-icon">📁</div><span class="card-title">File I/O (stdio.h)</span></div>
+  <div class="card-body">
+<pre><span class="cm">// Open / Close</span>
+<span class="ty">FILE</span> *f = <span class="fn">fopen</span>(<span class="st">"test.txt"</span>, <span class="st">"r"</span>);
+<span class="kw">if</span> (!f) { <span class="fn">perror</span>(<span class="st">"fopen"</span>); <span class="kw">return</span> <span class="nm">1</span>; }
+<span class="fn">fclose</span>(f);
+
+<span class="cm">// Modes</span>
+<span class="st">"r"</span>   <span class="cm">// Read</span>
+<span class="st">"w"</span>   <span class="cm">// Write (überschreiben)</span>
+<span class="st">"a"</span>   <span class="cm">// Append</span>
+<span class="st">"r+"</span>  <span class="cm">// Read und Schreiben</span>
+<span class="st">"rb"</span>  <span class="cm">// Binär lesen</span>
+<span class="st">"wb"</span>  <span class="cm">// Binär schreiben</span>
+
+<span class="cm">// Read</span>
+<span class="ty">char</span> buf[<span class="nm">256</span>];
+<span class="kw">while</span> (<span class="fn">fgets</span>(buf, <span class="kw">sizeof</span>(buf), f)) { }
+<span class="ty">int</span> c = <span class="fn">fgetc</span>(f);   <span class="cm">// read character</span>
+<span class="fn">fscanf</span>(f, <span class="st">"%d"</span>, &amp;n); <span class="cm">// formatted</span>
+<span class="fn">fread</span>(buf, sz, n, f); <span class="cm">// binär</span>
+
+<span class="cm">// Write</span>
+<span class="fn">fprintf</span>(f, <span class="st">"%d\n"</span>, n);
+<span class="fn">fputs</span>(<span class="st">"text"</span>, f);
+<span class="fn">fputc</span>(<span class="st">'A'</span>, f);
+<span class="fn">fwrite</span>(buf, sz, n, f); <span class="cm">// binär</span>
+
+<span class="cm">// Position</span>
+<span class="fn">fseek</span>(f, <span class="nm">0</span>, SEEK_SET); <span class="cm">// Anfang</span>
+<span class="fn">fseek</span>(f, <span class="nm">0</span>, SEEK_END); <span class="cm">// Ende</span>
+<span class="fn">ftell</span>(f);               <span class="cm">// current position</span>
+<span class="fn">rewind</span>(f);
+<span class="fn">feof</span>(f);  <span class="fn">ferror</span>(f);</pre>
+  </div>
+</div>
+
+<!-- PRÄPROZESSOR -->
+<div class="card c-purple">
+  <div class="card-header"><div class="card-icon">#</div><span class="card-title">Präprozessor</span></div>
+  <div class="card-body">
+<pre><span class="cm">// Include</span>
+<span class="kw">#include</span> &lt;<span class="ty">stdio.h</span>&gt;    <span class="cm">// Systembibliothek</span>
+<span class="kw">#include</span> <span class="st">"myfile.h"</span>   <span class="cm">// lokale Datei</span>
+
+<span class="cm">// Macro definition</span>
+<span class="kw">#define</span> PI      <span class="nm">3.14159</span>
+<span class="kw">#define</span> MAX(a,b) ((a)>(b)?(a):(b))
+<span class="kw">#define</span> SQUARE(x) ((x)*(x))
+<span class="kw">#undef</span>  PI
+
+<span class="cm">// Conditional compilation</span>
+<span class="kw">#ifdef</span>  DEBUG
+  <span class="fn">printf</span>(<span class="st">"Debug\n"</span>);
+<span class="kw">#endif</span>
+
+<span class="kw">#ifndef</span> MY_HEADER_H
+<span class="kw">#define</span> MY_HEADER_H
+  <span class="cm">// Header content</span>
+<span class="kw">#endif</span>
+
+<span class="kw">#if</span>   VERSION &gt;= <span class="nm">2</span>
+<span class="kw">#elif</span> VERSION == <span class="nm">1</span>
+<span class="kw">#else</span>
+<span class="kw">#endif</span>
+
+<span class="cm">// Predefined macros</span>
+__FILE__   <span class="cm">// Dateiname</span>
+__LINE__   <span class="cm">// Zeilennummer</span>
+__DATE__   <span class="cm">// Compile date</span>
+__TIME__   <span class="cm">// Compile time</span>
+__func__   <span class="cm">// Function name (C99)</span>
+__STDC__   <span class="cm">// Standard C</span>
+
+<span class="kw">#pragma once</span>  <span class="cm">// header guard</span>
+<span class="kw">#error</span> <span class="st">"Fehlermeldung"</span>
+<span class="kw">#warning</span> <span class="st">"Warnung"</span></pre>
+  </div>
+</div>
+
+<!-- ARRAYS & MULTIDIMENSIONAL -->
+<div class="card c-amber">
+  <div class="card-header"><div class="card-icon">[]</div><span class="card-title">Arrays</span></div>
+  <div class="card-body">
+<pre><span class="cm">// 1D array</span>
+<span class="ty">int</span> arr[<span class="nm">5</span>] = {<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>,<span class="nm">4</span>,<span class="nm">5</span>};
+<span class="ty">int</span> arr[<span class="nm">5</span>] = {<span class="nm">0</span>};   <span class="cm">// all zeros</span>
+<span class="ty">int</span> arr[]  = {<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>}; <span class="cm">// Size auto</span>
+arr[<span class="nm">0</span>] = <span class="nm">10</span>;
+<span class="fn">printf</span>(<span class="st">"%d\n"</span>, arr[<span class="nm">2</span>]);
+
+<span class="cm">// Size ermitteln</span>
+<span class="ty">int</span> n = <span class="kw">sizeof</span>(arr) / <span class="kw">sizeof</span>(arr[<span class="nm">0</span>]);
+
+<span class="cm">// 2D array</span>
+<span class="ty">int</span> mat[<span class="nm">3</span>][<span class="nm">4</span>];
+mat[<span class="nm">1</span>][<span class="nm">2</span>] = <span class="nm">42</span>;
+<span class="ty">int</span> m[<span class="nm">2</span>][<span class="nm">3</span>] = {{<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>},{<span class="nm">4</span>,<span class="nm">5</span>,<span class="nm">6</span>}};
+
+<span class="cm">// VLA (Variable Length Array, C99)</span>
+<span class="ty">int</span> n = <span class="nm">10</span>;
+<span class="ty">int</span> vla[n];   <span class="cm">// Size zur Laufzeit</span>
+
+<span class="cm">// Pass array to function</span>
+<span class="kw">void</span> <span class="fn">process</span>(<span class="ty">int</span> arr[], <span class="ty">int</span> n);
+<span class="kw">void</span> <span class="fn">process2d</span>(<span class="ty">int</span> m[][<span class="nm">4</span>], <span class="ty">int</span> rows);</pre>
+  </div>
+</div>
+
+<!-- WICHTIGE STDLIB -->
+<div class="card c-green col-2">
+  <div class="card-header"><div class="card-icon">📚</div><span class="card-title">Key Standard Libraries</span></div>
+  <div class="card-body">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div>
+<pre><span class="cm">// stdlib.h</span>
+<span class="fn">malloc</span> / <span class="fn">calloc</span> / <span class="fn">realloc</span> / <span class="fn">free</span>
+<span class="fn">exit</span>(<span class="nm">0</span>)  <span class="fn">abort</span>()
+<span class="fn">atoi</span>(<span class="st">"42"</span>)    <span class="cm">// String zu int</span>
+<span class="fn">atof</span>(<span class="st">"3.14"</span>) <span class="cm">// String zu double</span>
+<span class="fn">strtol</span> / <span class="fn">strtod</span> <span class="cm">// safere Varianten</span>
+<span class="fn">rand</span>() / <span class="fn">srand</span>(<span class="fn">time</span>(<span class="kw">NULL</span>))
+<span class="fn">abs</span>(n) / <span class="fn">labs</span>(n) / <span class="fn">llabs</span>(n)
+<span class="fn">qsort</span>(arr, n, <span class="kw">sizeof</span>(<span class="ty">int</span>), <span class="fn">cmp</span>)
+<span class="fn">bsearch</span>(key, arr, n, sz, <span class="fn">cmp</span>)
+
+<span class="cm">// math.h (linken mit -lm)</span>
+<span class="fn">sqrt</span>(x)  <span class="fn">pow</span>(x,y)  <span class="fn">log</span>(x)
+<span class="fn">sin</span>(x)  <span class="fn">cos</span>(x)  <span class="fn">tan</span>(x)
+<span class="fn">floor</span>(x)  <span class="fn">ceil</span>(x)  <span class="fn">round</span>(x)
+<span class="fn">fabs</span>(x)  M_PI  M_E</pre>
+      </div>
+      <div>
+<pre><span class="cm">// string.h</span>
+<span class="fn">memcpy</span>(dst, src, n)
+<span class="fn">memmove</span>(dst, src, n)  <span class="cm">// überlappend sicher</span>
+<span class="fn">memset</span>(ptr, 0, n)
+<span class="fn">memcmp</span>(p1, p2, n)
+
+<span class="cm">// time.h</span>
+<span class="ty">time_t</span> t = <span class="fn">time</span>(<span class="kw">NULL</span>);
+<span class="kw">struct</span> <span class="ty">tm</span> *tm = <span class="fn">localtime</span>(&amp;t);
+<span class="fn">strftime</span>(buf, sz, <span class="st">"%Y-%m-%d"</span>, tm);
+<span class="ty">clock_t</span> c = <span class="fn">clock</span>();
+(<span class="ty">double</span>)(c2-c1)/CLOCKS_PER_SEC;
+
+<span class="cm">// assert.h</span>
+<span class="fn">assert</span>(ptr != <span class="kw">NULL</span>);
+
+<span class="cm">// setjmp.h (non-local goto)</span>
+<span class="ty">jmp_buf</span> env;
+<span class="kw">if</span> (<span class="fn">setjmp</span>(env) == <span class="nm">0</span>) { ... }
+<span class="fn">longjmp</span>(env, <span class="nm">1</span>);</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADVANCED -->
+<div class="card c-blue col-3">
+  <div class="card-header"><div class="card-icon">✦</div><span class="card-title">C11 Features, Multithreading &amp; Linked List Patterns</span></div>
+  <div class="card-body">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+      <div>
+        <div class="section-label">C11 Neue Features</div>
+<pre><span class="cm">// _Generic (Typ-Selektion)</span>
+<span class="kw">#define</span> <span class="fn">print</span>(x) <span class="kw">_Generic</span>((x), \
+  <span class="ty">int</span>:    <span class="fn">printf</span>(<span class="st">"%d\n"</span>, x), \
+  <span class="ty">double</span>: <span class="fn">printf</span>(<span class="st">"%f\n"</span>, x), \
+  <span class="kw">default</span>: <span class="fn">printf</span>(<span class="st">"%p\n"</span>, x))
+
+<span class="cm">// static_assert (C11)</span>
+<span class="kw">_Static_assert</span>(<span class="kw">sizeof</span>(<span class="ty">int</span>)==<span class="nm">4</span>, <span class="st">"int must be 4B"</span>);
+
+<span class="cm">// Atomics (stdatomic.h)</span>
+<span class="kw">#include</span> &lt;<span class="ty">stdatomic.h</span>&gt;
+<span class="ty">atomic_int</span> counter = <span class="nm">0</span>;
+<span class="fn">atomic_fetch_add</span>(&amp;counter, <span class="nm">1</span>);
+<span class="fn">atomic_load</span>(&amp;counter);
+
+<span class="cm">// Aligned allocation</span>
+<span class="fn">aligned_alloc</span>(<span class="nm">16</span>, <span class="nm">64</span>);</pre>
+      </div>
+      <div>
+        <div class="section-label">Threads (threads.h C11)</div>
+<pre><span class="kw">#include</span> &lt;<span class="ty">threads.h</span>&gt;
+
+<span class="ty">thrd_t</span> t;
+<span class="ty">int</span> <span class="fn">worker</span>(<span class="kw">void</span> *arg) {
+  <span class="fn">printf</span>(<span class="st">"thread\n"</span>);
+  <span class="kw">return</span> <span class="nm">0</span>;
+}
+
+<span class="fn">thrd_create</span>(&amp;t, <span class="fn">worker</span>, <span class="kw">NULL</span>);
+<span class="fn">thrd_join</span>(t, <span class="kw">NULL</span>);
+
+<span class="cm">// Mutex</span>
+<span class="ty">mtx_t</span> m;
+<span class="fn">mtx_init</span>(&amp;m, mtx_plain);
+<span class="fn">mtx_lock</span>(&amp;m);
+<span class="cm">/* kritischer Bereich */</span>
+<span class="fn">mtx_unlock</span>(&amp;m);
+<span class="fn">mtx_destroy</span>(&amp;m);</pre>
+      </div>
+      <div>
+        <div class="section-label">Linked List Pattern</div>
+<pre><span class="kw">typedef struct</span> <span class="ty">Node</span> {
+  <span class="ty">int</span> data;
+  <span class="kw">struct</span> <span class="ty">Node</span> *next;
+} <span class="ty">Node</span>;
+
+<span class="ty">Node</span>* <span class="fn">create</span>(<span class="ty">int</span> val) {
+  <span class="ty">Node</span> *n = <span class="fn">malloc</span>(<span class="kw">sizeof</span>(<span class="ty">Node</span>));
+  n->data = val;
+  n->next = <span class="kw">NULL</span>;
+  <span class="kw">return</span> n;
+}
+
+<span class="cm">// Traversieren</span>
+<span class="ty">Node</span> *cur = head;
+<span class="kw">while</span> (cur) {
+  <span class="fn">printf</span>(<span class="st">"%d "</span>, cur->data);
+  cur = cur->next;
+}
+
+<span class="cm">// Free everything</span>
+<span class="kw">while</span> (head) {
+  <span class="ty">Node</span> *tmp = head;
+  head = head->next;
+  <span class="fn">free</span>(tmp);
+}</pre>
+      </div>
+      <div>
+        <div class="section-label">Error Handling</div>
+<pre><span class="cm">// errno (errno.h)</span>
+<span class="kw">#include</span> &lt;<span class="ty">errno.h</span>&gt;
+<span class="kw">#include</span> &lt;<span class="ty">string.h</span>&gt;
+
+errno = <span class="nm">0</span>;
+<span class="ty">FILE</span> *f = <span class="fn">fopen</span>(<span class="st">"x"</span>, <span class="st">"r"</span>);
+<span class="kw">if</span> (!f) {
+  <span class="fn">fprintf</span>(stderr, <span class="st">"Fehler: %s\n"</span>,
+    <span class="fn">strerror</span>(errno));
+}
+
+<span class="cm">// perror – uses errno automatically</span>
+<span class="fn">perror</span>(<span class="st">"fopen"</span>);
+
+<span class="cm">// Common errno values</span>
+ENOENT  <span class="cm">// No such file</span>
+EACCES  <span class="cm">// Permission denied</span>
+ENOMEM  <span class="cm">// Out of memory</span>
+EINVAL  <span class="cm">// Invalid argument</span>
+EEXIST  <span class="cm">// File exists</span>
+EAGAIN  <span class="cm">// Try again</span>
+
+<span class="cm">// EXIT_SUCCESS / EXIT_FAILURE</span>
+<span class="kw">return</span> EXIT_SUCCESS;
+<span class="kw">return</span> EXIT_FAILURE;</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div></div>
+<footer>C Language (C11/C17) Cheat Sheet</footer>
+</body></html>

@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fabian's Cheat Sheets</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@300;400;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080810;
+    --surface: #0f0f1a;
+    --border: #1e1e32;
+    --text: #e8e6ff;
+    --muted: #4a4870;
+    --glow: rgba(120,100,255,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── ANIMATED BACKGROUND ── */
+  .bg-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .grid-lines {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(120,100,255,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(120,100,255,0.06) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: gridDrift 20s linear infinite;
+  }
+
+  @keyframes gridDrift {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(60px); }
+  }
+
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.25;
+    animation: orbFloat 8s ease-in-out infinite;
+  }
+  .orb1 { width: 500px; height: 500px; background: #5b21b6; top: -100px; left: -100px; animation-delay: 0s; }
+  .orb2 { width: 400px; height: 400px; background: #1d4ed8; bottom: -100px; right: -50px; animation-delay: 3s; }
+  .orb3 { width: 300px; height: 300px; background: #065f46; top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: 6s; }
+
+  @keyframes orbFloat {
+    0%,100% { transform: scale(1) translate(0,0); }
+    50% { transform: scale(1.1) translate(20px, -20px); }
+  }
+
+  /* ── LAYOUT ── */
+  .page { position: relative; z-index: 1; }
+
+  /* ── HEADER ── */
+  header {
+    padding: 28px 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(20px);
+    background: rgba(8,8,16,0.6);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .logo-mark {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .logo-icon {
+    width: 42px; height: 42px;
+    background: linear-gradient(135deg, #7c3aed, #3b82f6);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 16px;
+    color: #fff;
+    box-shadow: 0 0 20px rgba(124,58,237,0.4);
+  }
+
+  .logo-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: 2px;
+    color: #fff;
+  }
+
+  .logo-text span { color: #7c6af7; }
+
+  .header-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 5px 14px;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 100px 60px 80px;
+    text-align: center;
+    position: relative;
+  }
+
+  .hero-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: #7c6af7;
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.2s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(60px, 10vw, 120px);
+    line-height: 1;
+    letter-spacing: 2px;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.4s forwards;
+  }
+
+  .hero-title .line1 { display: block; color: #fff; }
+  .hero-title .line2 {
+    display: block;
+    background: linear-gradient(90deg, #7c3aed, #3b82f6, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 500px;
+    margin: 0 auto 60px;
+    line-height: 1.6;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.6s forwards;
+  }
+
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.8s forwards;
+  }
+
+  .stat-item { text-align: center; }
+
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    color: #7c6af7;
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── LANGUAGE CARDS GRID ── */
+  .cards-section {
+    padding: 40px 60px 100px;
+  }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* ── LANGUAGE CARD ── */
+  .lang-card {
+    position: relative;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px 20px;
+    background: var(--surface);
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1),
+                border-color 0.3s, box-shadow 0.3s;
+    text-align: center;
+    opacity: 0;
+    animation: cardReveal 0.5s forwards;
+  }
+
+  .lang-card:nth-child(1) { animation-delay: 0.1s; }
+  .lang-card:nth-child(2) { animation-delay: 0.2s; }
+  .lang-card:nth-child(3) { animation-delay: 0.3s; }
+  .lang-card:nth-child(4) { animation-delay: 0.4s; }
+  .lang-card:nth-child(5) { animation-delay: 0.5s; }
+
+  @keyframes cardReveal {
+    from { opacity: 0; transform: translateY(40px) scale(0.95); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .lang-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--card-glow);
+    opacity: 0;
+    transition: opacity 0.3s;
+    border-radius: inherit;
+  }
+
+  .lang-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    border-color: var(--card-color);
+    box-shadow: 0 20px 60px var(--card-shadow), 0 0 0 1px var(--card-color);
+  }
+
+  .lang-card:hover::before { opacity: 1; }
+
+  .lang-card:active {
+    transform: translateY(-4px) scale(1.01);
+  }
+
+  /* Card glow bg */
+  .card-cs    { --card-color: #9d63f7; --card-glow: radial-gradient(ellipse at top, rgba(157,99,247,0.08), transparent 70%); --card-shadow: rgba(157,99,247,0.2); }
+  .card-js    { --card-color: #f7d363; --card-glow: radial-gradient(ellipse at top, rgba(247,211,99,0.08), transparent 70%); --card-shadow: rgba(247,211,99,0.2); }
+  .card-py    { --card-color: #63b3f7; --card-glow: radial-gradient(ellipse at top, rgba(99,179,247,0.08), transparent 70%); --card-shadow: rgba(99,179,247,0.2); }
+  .card-ts    { --card-color: #3b82f6; --card-glow: radial-gradient(ellipse at top, rgba(59,130,246,0.08), transparent 70%); --card-shadow: rgba(59,130,246,0.2); }
+  .card-c     { --card-color: #f7a063; --card-glow: radial-gradient(ellipse at top, rgba(247,160,99,0.08), transparent 70%); --card-shadow: rgba(247,160,99,0.2); }
+
+  /* SVG Icon container */
+  .lang-icon {
+    width: 80px; height: 80px;
+    margin: 0 auto 20px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .lang-icon svg {
+    width: 80px;
+    height: 80px;
+    filter: drop-shadow(0 4px 16px var(--card-shadow));
+    transition: transform 0.3s ease;
+  }
+
+  .lang-card:hover .lang-icon svg {
+    transform: scale(1.1) rotate(-3deg);
+  }
+
+  .lang-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 1px;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+
+  .lang-version {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .lang-topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: center;
+  }
+
+  .topic-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 7px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  .open-hint {
+    position: absolute;
+    bottom: 0;
+    left: 0; right: 0;
+    padding: 12px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.6));
+    font-size: 11px;
+    color: var(--card-color);
+    font-family: 'JetBrains Mono', monospace;
+    opacity: 0;
+    transform: translateY(5px);
+    transition: opacity 0.2s, transform 0.2s;
+  }
+
+  .lang-card:hover .open-hint {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0);
+    backdrop-filter: blur(0px);
+    transition: background 0.4s, backdrop-filter 0.4s;
+    pointer-events: none;
+  }
+
+  .modal-overlay.active {
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(12px);
+    pointer-events: all;
+  }
+
+  .modal-box {
+    width: 94vw;
+    height: 92vh;
+    background: #0a0a14;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transform: scale(0.85) translateY(40px);
+    opacity: 0;
+    transition: transform 0.5s cubic-bezier(0.34,1.4,0.64,1), opacity 0.4s ease;
+    box-shadow: 0 40px 120px rgba(0,0,0,0.6);
+  }
+
+  .modal-overlay.active .modal-box {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+
+  .modal-bar {
+    display: flex;
+    align-items: center;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(15,15,26,0.95);
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
+  .modal-dots {
+    display: flex;
+    gap: 7px;
+  }
+
+  .modal-dot {
+    width: 13px; height: 13px;
+    border-radius: 50%;
+  }
+
+  .dot-red    { background: #ff5f57; cursor: pointer; }
+  .dot-yellow { background: #ffbd2e; }
+  .dot-green  { background: #28ca41; }
+
+  .modal-title {
+    flex: 1;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .modal-title span {
+    color: var(--text);
+  }
+
+  .modal-close-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .modal-close-btn:hover {
+    border-color: #ff5f57;
+    color: #ff5f57;
+  }
+
+  .modal-iframe {
+    flex: 1;
+    width: 100%;
+    border: none;
+    opacity: 0;
+    transition: opacity 0.3s 0.3s;
+  }
+
+  .modal-iframe.loaded { opacity: 1; }
+
+  .modal-loader {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  .modal-loader.hidden { opacity: 0; }
+
+  .loader-ring {
+    width: 40px; height: 40px;
+    border: 2px solid var(--border);
+    border-top-color: #7c6af7;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loader-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 40px 60px;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  footer span { color: #7c6af7; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .cards-grid { grid-template-columns: repeat(3, 1fr); }
+    header { padding: 20px 24px; }
+    .hero { padding: 60px 24px 40px; }
+    .cards-section { padding: 20px 24px 60px; }
+  }
+
+  @media (max-width: 600px) {
+    .cards-grid { grid-template-columns: repeat(2, 1fr); }
+    .hero-stats { gap: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Background -->
+<div class="bg-canvas">
+  <div class="grid-lines"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+</div>
+
+<!-- Header -->
+<header>
+  <div class="logo-mark">
+    <div class="logo-icon">&lt;/&gt;</div>
+    <span class="logo-text">Fabian's <span>Cheat</span>Sheets</span>
+  </div>
+  <div class="header-badge">5 languages · v1.0</div>
+</header>
+
+<!-- Page -->
+<div class="page">
+
+  <!-- Hero -->
+  <section class="hero">
+    <p class="hero-eyebrow">// Developer Reference Library</p>
+    <h1 class="hero-title">
+      <span class="line1">Master Every</span>
+      <span class="line2">Language</span>
+    </h1>
+    <p class="hero-sub">Your ultimate quick-reference collection. Click any language card to open its complete cheat sheet — syntax, patterns, and best practices at a glance.</p>
+    <div class="hero-stats">
+      <div class="stat-item"><span class="stat-num">5</span><span class="stat-label">Languages</span></div>
+      <div class="stat-item"><span class="stat-num">200+</span><span class="stat-label">Code Examples</span></div>
+      <div class="stat-item"><span class="stat-num">50+</span><span class="stat-label">Topics Covered</span></div>
+    </div>
+  </section>
+
+  <!-- Cards -->
+  <section class="cards-section">
+    <p class="section-label">// click to open cheat sheet</p>
+    <div class="cards-grid">
+
+      <!-- C# -->
+      <div class="lang-card card-cs" onclick="openSheet('csharp-cheatsheet.html','C# Cheat Sheet')">
+        <div class="lang-icon">
+          <svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+            <path fill="#9B4F96" d="M115.4 30.7L67.1 2.9c-.8-.5-1.9-.7-3.1-.7-1.2 0-2.3.3-3.1.7l-48 27.9c-1.7 1-2.9 3.5-2.9 5.4v55.7c0 1.1.2 2.4 1 3.5l106.8-62c-.6-1.2-1.5-2.1-2.4-2.7z"/>
+            <path fill="#68217A" d="M10.7 95.3c.5.8 1.2 1.5 1.9 1.9l48.2 27.9c.8.5 1.9.7 3.1.7 1.2 0 2.3-.3 3.1-.7l48-27.9c1.7-1 2.9-3.5 2.9-5.4V36.1c0-.9-.1-1.9-.6-2.8l-106.6 62z"/>
+            <path fill="#fff" d="M85.3 76.1C81.1 83.5 73.1 88.5 64 88.5c-13.5 0-24.5-11-24.5-24.5s11-24.5 24.5-24.5c9.1 0 17.1 5 21.3 12.5l13-7.5c-6.8-11.9-19.6-20-34.3-20-21.8 0-39.5 17.7-39.5 39.5s17.7 39.5 39.5 39.5c14.6 0 27.4-8 34.2-19.8l-13-7.6zM97 66.2l.9-4.3h-4.2v-4.7h5.1L100 52h4.9l-1.2 5.2h3.8l1.2-5.2h4.8l-1.2 5.2h2.4v4.7h-3.3l-.9 4.3h3.3V71h-4.2l-1.2 5.2h-4.9l1.2-5.2h-3.8L99.7 71h-4.8l1.2-5.2h-2.5v-4.6H97zm4.8 0h3.8l.9-4.3h-3.8l-.9 4.3z"/>
+          </svg>
+        </div>
+        <div class="lang-name">C Sharp</div>
+        <div class="lang-version">.NET 8 · C# 12</div>
+        <div class="lang-topics">
+          <span class="topic-tag">OOP</span>
+          <span class="topic-tag">LINQ</span>
+          <span class="topic-tag">async</span>
+          <span class="topic-tag">generics</span>
+        </div>
+        <div class="open-hint">→ Open Cheat Sheet</div>
+      </div>
+
+      <!-- JavaScript -->
+      <div class="lang-card card-js" onclick="openSheet('javascript-cheatsheet.html','JavaScript Cheat Sheet')">
+        <div class="lang-icon">
+          <svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+            <path fill="#F0DB4F" d="M1.408 1.408h125.184v125.185H1.408z"/>
+            <path fill="#323330" d="M116.347 96.736c-.917-5.711-4.641-10.508-15.672-14.981-3.832-1.761-8.104-3.022-9.377-5.926-.452-1.69-.512-2.642-.226-3.665.821-3.32 4.784-4.355 7.925-3.403 2.023.678 3.938 2.237 5.093 4.724 5.402-3.498 5.391-3.475 9.163-5.879-1.381-2.141-2.098-3.089-3.027-3.996-3.ics23-3.226-7.618-4.955-13.032-4.938l-3.127.338c-3.897.44-7.549 2.493-9.876 5.494-6.119 7.788-4.302 21.588 1.186 27.308 5.711 5.861 14.283 7.567 15.602 11.34.688 3.344-1.136 6.809-5.14 6.809-6.017.012-8.57-2.498-11.254-8.509l-9.914 5.71c1.353 3.468 2.758 5.062 5.54 7.878 5.89 5.967 17.037 6.993 23.874 3.918 7.768-3.678 9.879-11.01 9.168-17.065zM69.259 87.488H57.375c0-4.804.012-9.552 0-14.356 0-10.427.842-15.437-3.222-15.437-4.121-.021-4.3 5.312-4.3 15.437v14.354H37.96c0-5.195.011-10.218 0-15.437 0-14.154.63-22.047 3.666-24.741 1.925-1.671 4.919-2.429 7.949-2.429 3.777.012 7.558 1.367 9.597 4.116v-3.524h9.587l.5 39.017z"/>
+          </svg>
+        </div>
+        <div class="lang-name">JavaScript</div>
+        <div class="lang-version">ES2024 · Node.js</div>
+        <div class="lang-topics">
+          <span class="topic-tag">DOM</span>
+          <span class="topic-tag">async</span>
+          <span class="topic-tag">modules</span>
+          <span class="topic-tag">classes</span>
+        </div>
+        <div class="open-hint">→ Open Cheat Sheet</div>
+      </div>
+
+      <!-- Python -->
+      <div class="lang-card card-py" onclick="openSheet('python-cheatsheet.html','Python Cheat Sheet')">
+        <div class="lang-icon">
+          <svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+            <linearGradient id="pyGrad1" x1="70.252" y1="1237.476" x2="170.659" y2="1151.089" gradientTransform="matrix(.563 0 0 -.568 -29.215 707.817)" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#5A9FD4"/>
+              <stop offset="1" stop-color="#306998"/>
+            </linearGradient>
+            <linearGradient id="pyGrad2" x1="209.474" y1="1098.811" x2="173.62" y2="1149.537" gradientTransform="matrix(.563 0 0 -.568 -29.215 707.817)" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#FFD43B"/>
+              <stop offset="1" stop-color="#FFE873"/>
+            </linearGradient>
+            <path fill="url(#pyGrad1)" d="M63.391 1.988c-4.222.02-8.252.379-11.8 1.007-10.45 1.846-12.346 5.71-12.346 12.837v9.411h24.693v3.137H29.977c-7.176 0-13.46 4.313-15.426 12.521-2.268 9.405-2.368 15.275 0 25.096 1.755 7.311 5.947 12.519 13.124 12.519h8.491V67.234c0-8.151 7.051-15.34 15.426-15.34h24.665c6.866 0 12.346-5.654 12.346-12.548V15.833c0-6.693-5.646-11.72-12.346-12.837-4.244-.706-8.645-1.027-12.866-1.008zM50.037 9.557c2.55 0 4.634 2.117 4.634 4.721 0 2.593-2.083 4.69-4.634 4.69-2.56 0-4.633-2.097-4.633-4.69-.001-2.604 2.073-4.721 4.633-4.721z"/>
+            <path fill="url(#pyGrad2)" d="M91.682 28.38v10.966c0 8.5-7.208 15.655-15.426 15.655H51.591c-6.756 0-12.346 5.783-12.346 12.549v23.515c0 6.691 5.818 10.628 12.346 12.547 7.816 2.297 15.312 2.713 24.665 0 6.216-1.801 12.346-5.423 12.346-12.547v-9.412H63.938v-3.138h37.012c7.176 0 9.852-5.005 12.348-12.519 2.578-7.735 2.467-15.174 0-25.096-1.774-7.145-5.161-12.521-12.348-12.521h-9.268zM77.809 87.927c2.561 0 4.634 2.097 4.634 4.692 0 2.602-2.074 4.719-4.634 4.719-2.55 0-4.633-2.117-4.633-4.719 0-2.595 2.083-4.692 4.633-4.692z"/>
+          </svg>
+        </div>
+        <div class="lang-name">Python</div>
+        <div class="lang-version">Python 3.12</div>
+        <div class="lang-topics">
+          <span class="topic-tag">OOP</span>
+          <span class="topic-tag">async</span>
+          <span class="topic-tag">typing</span>
+          <span class="topic-tag">stdlib</span>
+        </div>
+        <div class="open-hint">→ Open Cheat Sheet</div>
+      </div>
+
+      <!-- TypeScript -->
+      <div class="lang-card card-ts" onclick="openSheet('typescript-cheatsheet.html','TypeScript Cheat Sheet')">
+        <div class="lang-icon">
+          <svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+            <path fill="#007ACC" d="M2 63.91v62.5h125v-125H2zm100.73-5a15.56 15.56 0 017.82 4.5 20.58 20.58 0 013 4c0 .16-5.4 3.81-8.69 5.85-.12.08-.6-.44-1.13-1.23a7.09 7.09 0 00-5.87-3.53c-3.79-.26-6.23 1.73-6.21 5a4.58 4.58 0 00.54 2.34c.83 1.73 2.38 2.76 7.24 4.86 8.95 3.85 12.78 6.39 15.16 10 2.66 4 3.25 10.46 1.45 15.24-2 5.2-6.9 8.73-13.83 9.9a38.32 38.32 0 01-9.52-.1A23 23 0 0180 109.19c-1.15-1.27-3.39-4.58-3.25-4.82a9.34 9.34 0 011.15-.73l4.6-2.64 3.59-2.08.75 1.11a16.78 16.78 0 004.74 4.54c4 2.1 9.46 1.81 12.16-.62a5.43 5.43 0 00.69-6.92c-1-1.39-3-2.56-8.59-5-6.45-2.78-9.23-4.5-11.77-7.24a16.48 16.48 0 01-3.43-6.25 25 25 0 01-.22-8c1.33-6.23 6-10.58 12.82-11.87a31.66 31.66 0 019.49.26zm-29.34 5.24v5.12H57.16v46.23H45.65V69.26H29.38v-5a49.19 49.19 0 01.14-5.16c.06-.08 10-.12 22-.1l21.81.06z"/>
+          </svg>
+        </div>
+        <div class="lang-name">TypeScript</div>
+        <div class="lang-version">TS 5.x · Strict</div>
+        <div class="lang-topics">
+          <span class="topic-tag">types</span>
+          <span class="topic-tag">generics</span>
+          <span class="topic-tag">utility</span>
+          <span class="topic-tag">decorators</span>
+        </div>
+        <div class="open-hint">→ Open Cheat Sheet</div>
+      </div>
+
+      <!-- C -->
+      <div class="lang-card card-c" onclick="openSheet('c-cheatsheet.html','C Language Cheat Sheet')">
+        <div class="lang-icon">
+          <svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+            <path fill="#659AD3" d="M115.4 30.7L67.1 2.9c-.8-.5-1.9-.7-3.1-.7-1.2 0-2.3.3-3.1.7l-48 27.9c-1.7 1-2.9 3.5-2.9 5.4v55.7c0 1.9 1.2 4.4 2.9 5.4l48 27.9c.8.5 1.9.7 3.1.7 1.2 0 2.3-.3 3.1-.7l48-27.9c1.7-1 2.9-3.5 2.9-5.4V36.1c0-1.9-1.2-4.4-2.9-5.4z"/>
+            <path fill="#fff" d="M85.3 76.1C81.1 83.5 73.1 88.5 64 88.5c-13.5 0-24.5-11-24.5-24.5s11-24.5 24.5-24.5c9.1 0 17.1 5 21.3 12.5l13-7.5c-6.8-11.9-19.6-20-34.3-20-21.8 0-39.5 17.7-39.5 39.5s17.7 39.5 39.5 39.5c14.6 0 27.4-8 34.2-19.8l-13-7.6z"/>
+          </svg>
+        </div>
+        <div class="lang-name">C Language</div>
+        <div class="lang-version">C11 · C17</div>
+        <div class="lang-topics">
+          <span class="topic-tag">pointers</span>
+          <span class="topic-tag">memory</span>
+          <span class="topic-tag">structs</span>
+          <span class="topic-tag">stdlib</span>
+        </div>
+        <div class="open-hint">→ Open Cheat Sheet</div>
+      </div>
+
+    </div><!-- end grid -->
+  </section>
+
+</div><!-- end page -->
+
+<!-- Footer -->
+<footer>
+  <p>Made with <span>♥</span> by Fabian &nbsp;·&nbsp; <span>FabiansCheatSheets.dev</span></p>
+</footer>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal" onclick="handleOverlayClick(event)">
+  <div class="modal-box" id="modalBox">
+    <div class="modal-bar">
+      <div class="modal-dots">
+        <div class="modal-dot dot-red" onclick="closeSheet()"></div>
+        <div class="modal-dot dot-yellow"></div>
+        <div class="modal-dot dot-green"></div>
+      </div>
+      <div class="modal-title">fabian's cheatsheets / <span id="modalTitle">—</span></div>
+      <button class="modal-close-btn" onclick="closeSheet()">✕ Close</button>
+    </div>
+    <div style="position:relative;flex:1;display:flex;flex-direction:column;">
+      <div class="modal-loader" id="loader">
+        <div class="loader-ring"></div>
+        <span class="loader-text">Loading cheat sheet…</span>
+      </div>
+      <iframe class="modal-iframe" id="modalIframe" src="about:blank" onload="iframeLoaded()"></iframe>
+    </div>
+  </div>
+</div>
+
+<script>
+  const modal    = document.getElementById('modal');
+  const iframe   = document.getElementById('modalIframe');
+  const title    = document.getElementById('modalTitle');
+  const loader   = document.getElementById('loader');
+  let   isOpen   = false;
+
+  function openSheet(file, sheetTitle) {
+    title.textContent = sheetTitle;
+    iframe.classList.remove('loaded');
+    loader.classList.remove('hidden');
+    iframe.src = file;
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    isOpen = true;
+  }
+
+  function closeSheet() {
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+    isOpen = false;
+    setTimeout(() => {
+      iframe.src = 'about:blank';
+      title.textContent = '—';
+    }, 500);
+  }
+
+  function iframeLoaded() {
+    loader.classList.add('hidden');
+    iframe.classList.add('loaded');
+  }
+
+  function handleOverlayClick(e) {
+    if (e.target === modal) closeSheet();
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && isOpen) closeSheet();
+  });
+</script>
+</body>
+</html>

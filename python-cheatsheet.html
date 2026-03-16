@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Cheat Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2128;
+    --border: #2d3440;
+    --accent: #4ec9b0;
+    --accent2: #ffd700;
+    --accent3: #f97316;
+    --accent4: #a78bfa;
+    --accent5: #fb7185;
+    --text: #e2e8f0;
+    --muted: #5a6478;
+    --kw: #ff79c6;
+    --type: #8be9fd;
+    --string: #f1fa8c;
+    --num: #bd93f9;
+    --comment: #44475a;
+    --fn: #50fa7b;
+    --op: #ff79c6;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'JetBrains Mono', monospace; background: var(--bg); color: var(--text); line-height: 1.6; font-size: 13px; }
+  header { background: var(--surface); border-bottom: 2px solid var(--accent); padding: 24px 40px; display: flex; align-items: center; gap: 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 40px rgba(78,201,176,0.1); }
+  .logo { width: 50px; height: 50px; background: linear-gradient(135deg, var(--accent2), var(--accent3)); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; color: #111; flex-shrink: 0; }
+  header h1 { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; color: #fff; }
+  header p { color: var(--muted); font-size: 11px; margin-top: 2px; }
+  .tag-row { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 3px 10px; font-size: 11px; color: var(--muted); }
+  .page { padding: 28px 40px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .col-2 { grid-column: span 2; }
+  .col-3 { grid-column: span 3; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: border-color 0.2s; }
+  .card:hover { border-color: var(--accent); }
+  .card-header { padding: 9px 14px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); background: var(--surface2); }
+  .card-icon { width: 20px; height: 20px; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+  .card-title { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+  .card-body { padding: 12px 14px; }
+  pre { background: #090d12; border-radius: 7px; padding: 10px 12px; overflow-x: auto; font-size: 11.5px; line-height: 1.7; margin-bottom: 8px; border: 1px solid #1a2030; }
+  pre:last-child { margin-bottom: 0; }
+  .kw { color: var(--kw); } .ty { color: var(--type); } .st { color: var(--string); } .nm { color: var(--num); } .cm { color: var(--comment); } .fn { color: var(--fn); } .op { color: var(--op); }
+  .kv-table { width: 100%; border-collapse: collapse; font-size: 11.5px; margin-bottom: 6px; }
+  .kv-table td { padding: 4px 7px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .kv-table tr:last-child td { border-bottom: none; }
+  .kv-table td:first-child { color: var(--type); white-space: nowrap; font-weight: 500; width: 40%; }
+  .kv-table td:last-child { color: var(--muted); }
+  .section-label { font-family: 'Syne', sans-serif; font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); margin: 10px 0 5px; }
+  .section-label:first-child { margin-top: 0; }
+  .c-teal   .card-icon { background: rgba(78,201,176,0.2); color: var(--accent); }
+  .c-yellow .card-icon { background: rgba(255,215,0,0.2); color: var(--accent2); }
+  .c-orange .card-icon { background: rgba(249,115,22,0.2); color: var(--accent3); }
+  .c-purple .card-icon { background: rgba(167,139,250,0.2); color: var(--accent4); }
+  .c-pink   .card-icon { background: rgba(251,113,133,0.2); color: var(--accent5); }
+  .c-teal   .card-title { color: var(--accent); }
+  .c-yellow .card-title { color: var(--accent2); }
+  .c-orange .card-title { color: var(--accent3); }
+  .c-purple .card-title { color: var(--accent4); }
+  .c-pink   .card-title { color: var(--accent5); }
+  footer { text-align: center; padding: 20px; color: var(--muted); font-size: 11px; border-top: 1px solid var(--border); margin-top: 20px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Py</div>
+  <div><h1>Python Cheat Sheet</h1><p>Python 3.12 — Vollständige Referenz: Syntax, Typen, OOP, Functional, async & mehr</p></div>
+  <div class="tag-row"><span class="tag">Python 3.12</span><span class="tag">OOP</span><span class="tag">Functional</span><span class="tag">async/await</span><span class="tag">Type Hints</span></div>
+</header>
+<div class="page"><div class="grid">
+
+<!-- VARIABLEN & TYPEN -->
+<div class="card c-teal">
+  <div class="card-header"><div class="card-icon">T</div><span class="card-title">Variables &amp; Types</span></div>
+  <div class="card-body">
+<pre><span class="cm"># Assignment</span>
+x = <span class="nm">42</span>
+name = <span class="st">"Python"</span>
+pi = <span class="nm">3.14</span>
+flag = <span class="kw">True</span>
+nothing = <span class="kw">None</span>
+
+<span class="cm"># Multiple assignment</span>
+a = b = c = <span class="nm">0</span>
+x, y, z = <span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>
+a, *b, c = [<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>,<span class="nm">4</span>]  <span class="cm"># b=[2,3]</span>
+
+<span class="cm"># Types</span>
+<span class="fn">type</span>(x)         <span class="cm"># &lt;class 'int'&gt;</span>
+<span class="fn">isinstance</span>(x, <span class="ty">int</span>)  <span class="cm"># True</span>
+
+<span class="cm"># Type Hints (PEP 484)</span>
+age: <span class="ty">int</span> = <span class="nm">25</span>
+name: <span class="ty">str</span> = <span class="st">"Anna"</span>
+items: <span class="ty">list</span>[<span class="ty">int</span>] = []
+mapping: <span class="ty">dict</span>[<span class="ty">str</span>, <span class="ty">int</span>] = {}
+optional: <span class="ty">int</span> | <span class="kw">None</span> = <span class="kw">None</span>
+
+<span class="cm"># Built-in types</span>
+<span class="ty">int</span>   <span class="ty">float</span>   <span class="ty">complex</span>  <span class="ty">bool</span>
+<span class="ty">str</span>   <span class="ty">bytes</span>   <span class="ty">bytearray</span>
+<span class="ty">list</span>  <span class="ty">tuple</span>  <span class="ty">set</span>  <span class="ty">frozenset</span>  <span class="ty">dict</span>
+<span class="ty">range</span>  <span class="ty">memoryview</span>  <span class="ty">NoneType</span></pre>
+  </div>
+</div>
+
+<!-- ZAHLEN & OPERATOREN -->
+<div class="card c-yellow">
+  <div class="card-header"><div class="card-icon">±</div><span class="card-title">Numbers &amp; Operators</span></div>
+  <div class="card-body">
+<pre><span class="cm"># Arithmetic</span>
++  -  *  /       <span class="cm"># / = float-Division</span>
+//               <span class="cm"># Floor division</span>
+%                <span class="cm"># Modulo</span>
+**               <span class="cm"># Power: 2**8 = 256</span>
+
+<span class="nm">0b1010</span>  <span class="cm"># binary: 10</span>
+<span class="nm">0o17</span>    <span class="cm"># octal: 15</span>
+<span class="nm">0xFF</span>    <span class="cm"># hex: 255</span>
+<span class="nm">1_000_000</span> <span class="cm"># Separator allowed</span>
+
+<span class="cm"># Comparison</span>
+==  !=  &lt;  &gt;  &lt;=  &gt;=
+<span class="kw">is</span>  <span class="kw">is not</span>    <span class="cm"># Identity</span>
+<span class="kw">in</span>  <span class="kw">not in</span>    <span class="cm"># Membership</span>
+<span class="cm"># Chaining: 1 &lt; x &lt; 10</span>
+
+<span class="cm"># Logical</span>
+<span class="kw">and</span>  <span class="kw">or</span>  <span class="kw">not</span>
+
+<span class="cm"># Bitwise</span>
+&amp;  |  ^  ~  &lt;&lt;  &gt;&gt;
+
+<span class="cm"># Assignment</span>
++=  -=  *=  /=  //=  %=  **=
+&amp;=  |=  ^=  &lt;&lt;=  &gt;&gt;=
+:=  <span class="cm"># Walrus operator (PEP 572)</span>
+<span class="kw">if</span> n := <span class="fn">len</span>(data): <span class="fn">print</span>(n)
+
+<span class="cm"># Math module</span>
+<span class="kw">import</span> math
+math.<span class="fn">sqrt</span>(<span class="nm">16</span>)    math.<span class="fn">floor</span>(<span class="nm">3.7</span>)
+math.<span class="fn">ceil</span>(<span class="nm">3.2</span>)   math.<span class="fn">log</span>(<span class="nm">100</span>, <span class="nm">10</span>)
+math.pi  math.e  math.<span class="fn">inf</span></pre>
+  </div>
+</div>
+
+<!-- STRINGS -->
+<div class="card c-orange">
+  <div class="card-header"><div class="card-icon">"</div><span class="card-title">Strings</span></div>
+  <div class="card-body">
+<pre><span class="st">'single'</span>  <span class="st">"double"</span>
+<span class="st">"""Multi
+line"""</span>
+<span class="kw">f</span><span class="st">"Wert: {x:.2f}"</span>   <span class="cm"># f-string</span>
+<span class="kw">r</span><span class="st">"\n ist ein Backslash"</span>  <span class="cm"># raw</span>
+<span class="kw">b</span><span class="st">"bytes"</span>              <span class="cm"># bytes</span>
+
+<span class="cm"># Operations</span>
+<span class="st">"Hi"</span> + <span class="st">" "</span> + <span class="st">"Du"</span>  <span class="cm"># Konkatenation</span>
+<span class="st">"Ha"</span> * <span class="nm">3</span>            <span class="cm"># "HaHaHa"</span>
+s[<span class="nm">0</span>]  s[-<span class="nm">1</span>]  s[<span class="nm">1</span>:<span class="nm">4</span>]  s[::-<span class="nm">1</span>]
+
+<span class="cm"># Methods</span>
+s.<span class="fn">upper</span>() / <span class="fn">lower</span>() / <span class="fn">title</span>()
+s.<span class="fn">strip</span>() / <span class="fn">lstrip</span>() / <span class="fn">rstrip</span>()
+s.<span class="fn">replace</span>(<span class="st">"a"</span>, <span class="st">"b"</span>)
+s.<span class="fn">split</span>(<span class="st">","</span>) / s.<span class="fn">splitlines</span>()
+s.<span class="fn">join</span>([<span class="st">"a"</span>,<span class="st">"b"</span>])   <span class="cm"># "a,b"</span>
+s.<span class="fn">startswith</span>(<span class="st">"H"</span>) / <span class="fn">endswith</span>(<span class="st">"o"</span>)
+s.<span class="fn">find</span>(<span class="st">"l"</span>) / <span class="fn">index</span>(<span class="st">"l"</span>)
+s.<span class="fn">count</span>(<span class="st">"l"</span>)
+s.<span class="fn">zfill</span>(<span class="nm">5</span>)  <span class="cm"># "00042"</span>
+s.<span class="fn">center</span>(<span class="nm">20</span>, <span class="st">"*"</span>)
+s.<span class="fn">isdigit</span>() / <span class="fn">isalpha</span>() / <span class="fn">isalnum</span>()
+<span class="fn">len</span>(s)
+<span class="st">", "</span>.<span class="fn">join</span>([<span class="st">"a"</span>,<span class="st">"b"</span>,<span class="st">"c"</span>])</pre>
+  </div>
+</div>
+
+<!-- LISTEN -->
+<div class="card c-teal">
+  <div class="card-header"><div class="card-icon">[]</div><span class="card-title">Lists (list)</span></div>
+  <div class="card-body">
+<pre>lst = [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>]
+lst = <span class="fn">list</span>(<span class="fn">range</span>(<span class="nm">10</span>))
+
+<span class="cm"># Access &amp; slicing</span>
+lst[<span class="nm">0</span>]  lst[-<span class="nm">1</span>]  lst[<span class="nm">1</span>:<span class="nm">4</span>]
+lst[:<span class="nm">3</span>]  lst[<span class="nm">2</span>:]  lst[::-<span class="nm">1</span>]
+lst[<span class="nm">0</span>:<span class="nm">6</span>:<span class="nm">2</span>]  <span class="cm"># every 2nd</span>
+
+<span class="cm"># Modify</span>
+lst.<span class="fn">append</span>(<span class="nm">4</span>)
+lst.<span class="fn">extend</span>([<span class="nm">5</span>, <span class="nm">6</span>])
+lst.<span class="fn">insert</span>(<span class="nm">0</span>, <span class="nm">99</span>)
+lst.<span class="fn">remove</span>(<span class="nm">2</span>)     <span class="cm"># first occurrence</span>
+lst.<span class="fn">pop</span>()         <span class="cm"># remove last</span>
+lst.<span class="fn">pop</span>(<span class="nm">0</span>)        <span class="cm"># Index 0</span>
+lst.<span class="fn">clear</span>()
+<span class="kw">del</span> lst[<span class="nm">1</span>:<span class="nm">3</span>]
+
+<span class="cm"># Sort &amp; Search</span>
+lst.<span class="fn">sort</span>()
+lst.<span class="fn">sort</span>(key=<span class="kw">lambda</span> x: x.<span class="fn">lower</span>(), reverse=<span class="kw">True</span>)
+<span class="fn">sorted</span>(lst)         <span class="cm"># new list</span>
+lst.<span class="fn">reverse</span>()
+lst.<span class="fn">index</span>(<span class="nm">3</span>)
+lst.<span class="fn">count</span>(<span class="nm">2</span>)
+<span class="nm">3</span> <span class="kw">in</span> lst           <span class="cm"># True/False</span>
+<span class="fn">len</span>(lst)
+
+<span class="cm"># List comprehension</span>
+sq = [x**<span class="nm">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">10</span>)]
+even = [x <span class="kw">for</span> x <span class="kw">in</span> lst <span class="kw">if</span> x%<span class="nm">2</span>==<span class="nm">0</span>]
+flat = [i <span class="kw">for</span> sub <span class="kw">in</span> matrix <span class="kw">for</span> i <span class="kw">in</span> sub]</pre>
+  </div>
+</div>
+
+<!-- TUPLES, SETS, DICTS -->
+<div class="card c-purple col-2">
+  <div class="card-header"><div class="card-icon">⊞</div><span class="card-title">Tuple, Set, Dict &amp; frozenset</span></div>
+  <div class="card-body">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+      <div>
+        <div class="section-label">Tuple — immutable</div>
+<pre>t = (<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>)
+t = (<span class="nm">42</span>,)   <span class="cm"># 1-element!</span>
+t = <span class="fn">tuple</span>([<span class="nm">1</span>,<span class="nm">2</span>])
+a, b = t         <span class="cm"># unpack</span>
+a, *r = t        <span class="cm"># rest</span>
+t[<span class="nm">0</span>]  t[-<span class="nm">1</span>]
+t.<span class="fn">count</span>(<span class="nm">1</span>)
+t.<span class="fn">index</span>(<span class="nm">2</span>)
+<span class="cm"># Named tuple</span>
+<span class="kw">from</span> collections <span class="kw">import</span> namedtuple
+<span class="ty">Point</span> = <span class="fn">namedtuple</span>(<span class="st">'Point'</span>,['x','y'])
+p = <span class="ty">Point</span>(<span class="nm">1</span>, <span class="nm">2</span>)
+p.x  p.y</pre>
+      </div>
+      <div>
+        <div class="section-label">Set — unique, unordered</div>
+<pre>s = {<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>}
+s = <span class="fn">set</span>([<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">2</span>,<span class="nm">3</span>])  <span class="cm"># {1,2,3}</span>
+s.<span class="fn">add</span>(<span class="nm">4</span>)
+s.<span class="fn">remove</span>(<span class="nm">2</span>)    <span class="cm"># KeyError wenn fehlt</span>
+s.<span class="fn">discard</span>(<span class="nm">2</span>)   <span class="cm"># kein Error</span>
+s.<span class="fn">pop</span>()
+<span class="nm">2</span> <span class="kw">in</span> s
+<span class="cm"># Set operations</span>
+a | b    <span class="cm"># Union</span>
+a &amp; b    <span class="cm"># Intersection</span>
+a - b    <span class="cm"># Difference</span>
+a ^ b    <span class="cm"># symmetric difference</span>
+a &lt;= b   <span class="cm"># Subset</span>
+fs = <span class="fn">frozenset</span>({<span class="nm">1</span>,<span class="nm">2</span>})  <span class="cm"># immutable</span></pre>
+      </div>
+      <div>
+        <div class="section-label">Dict — Key-Value</div>
+<pre>d = {<span class="st">"a"</span>: <span class="nm">1</span>, <span class="st">"b"</span>: <span class="nm">2</span>}
+d = <span class="fn">dict</span>(a=<span class="nm">1</span>, b=<span class="nm">2</span>)
+d[<span class="st">"a"</span>]             <span class="cm"># 1</span>
+d.<span class="fn">get</span>(<span class="st">"x"</span>, <span class="nm">0</span>)      <span class="cm"># default</span>
+d[<span class="st">"c"</span>] = <span class="nm">3</span>
+d.<span class="fn">update</span>({<span class="st">"d"</span>: <span class="nm">4</span>})
+<span class="kw">del</span> d[<span class="st">"a"</span>]
+d.<span class="fn">pop</span>(<span class="st">"b"</span>, <span class="kw">None</span>)
+d.<span class="fn">keys</span>()  d.<span class="fn">values</span>()  d.<span class="fn">items</span>()
+<span class="kw">for</span> k, v <span class="kw">in</span> d.<span class="fn">items</span>(): ...
+<span class="cm"># Dict comprehension</span>
+sq = {x: x**<span class="nm">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">5</span>)}
+<span class="cm"># Merge (Python 3.9+)</span>
+c = a | b
+a |= b</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTROL FLOW -->
+<div class="card c-pink">
+  <div class="card-header"><div class="card-icon">⇀</div><span class="card-title">Control Flow</span></div>
+  <div class="card-body">
+<pre><span class="cm"># if / elif / else</span>
+<span class="kw">if</span> x &gt; <span class="nm">0</span>:
+    <span class="fn">print</span>(<span class="st">"positiv"</span>)
+<span class="kw">elif</span> x == <span class="nm">0</span>:
+    <span class="fn">print</span>(<span class="st">"null"</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="st">"negativ"</span>)
+
+<span class="cm"># Ternary</span>
+y = <span class="st">"pos"</span> <span class="kw">if</span> x &gt; <span class="nm">0</span> <span class="kw">else</span> <span class="st">"neg"</span>
+
+<span class="cm"># match statement (Python 3.10)</span>
+<span class="kw">match</span> command:
+    <span class="kw">case</span> <span class="st">"quit"</span>: ...
+    <span class="kw">case</span> <span class="st">"go"</span>, direction: ...
+    <span class="kw">case</span> <span class="ty">Point</span>(x=<span class="nm">0</span>, y=<span class="nm">0</span>): ...
+    <span class="kw">case</span> [x, y]: ...
+    <span class="kw">case</span> _ : ...  <span class="cm"># default</span></pre>
+  </div>
+</div>
+
+<!-- SCHLEIFEN -->
+<div class="card c-teal">
+  <div class="card-header"><div class="card-icon">↻</div><span class="card-title">Loops</span></div>
+  <div class="card-body">
+<pre><span class="cm"># for</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">10</span>): ...
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">2</span>, <span class="nm">10</span>, <span class="nm">2</span>): ...
+<span class="kw">for</span> item <span class="kw">in</span> lst: ...
+<span class="kw">for</span> k, v <span class="kw">in</span> d.<span class="fn">items</span>(): ...
+<span class="kw">for</span> i, v <span class="kw">in</span> <span class="fn">enumerate</span>(lst): ...
+<span class="kw">for</span> a, b <span class="kw">in</span> <span class="fn">zip</span>(l1, l2): ...
+
+<span class="cm"># while</span>
+<span class="kw">while</span> condition: ...
+<span class="kw">while True</span>:
+    <span class="kw">if</span> done: <span class="kw">break</span>
+
+<span class="cm"># for/while + else</span>
+<span class="kw">for</span> x <span class="kw">in</span> lst:
+    <span class="kw">if</span> found: <span class="kw">break</span>
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="st">"nicht gefunden"</span>)
+
+<span class="cm"># Control</span>
+<span class="kw">break</span>     <span class="cm"># exit loop</span>
+<span class="kw">continue</span>  <span class="cm"># next iteration</span>
+<span class="kw">pass</span>      <span class="cm"># no-op</span></pre>
+  </div>
+</div>
+
+<!-- FUNKTIONEN -->
+<div class="card c-yellow col-2">
+  <div class="card-header"><div class="card-icon">ƒ</div><span class="card-title">Functions</span></div>
+  <div class="card-body">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div>
+<pre><span class="cm"># Basic function</span>
+<span class="kw">def</span> <span class="fn">greet</span>(name: <span class="ty">str</span>) -> <span class="ty">str</span>:
+    <span class="st">"""Docstring."""</span>
+    <span class="kw">return</span> <span class="kw">f</span><span class="st">"Hallo {name}"</span>
+
+<span class="cm"># Default parameter</span>
+<span class="kw">def</span> <span class="fn">say</span>(msg=<span class="st">"Hi"</span>, n=<span class="nm">1</span>):
+    <span class="fn">print</span>(msg * n)
+
+<span class="cm"># *args und **kwargs</span>
+<span class="kw">def</span> <span class="fn">func</span>(*args, **kwargs):
+    <span class="fn">print</span>(args)    <span class="cm"># tuple</span>
+    <span class="fn">print</span>(kwargs)  <span class="cm"># dict</span>
+
+<span class="cm"># Keyword-only (nach *)</span>
+<span class="kw">def</span> <span class="fn">kw</span>(*, name, age=<span class="nm">18</span>): ...
+
+<span class="cm"># Positional-only (vor /)</span>
+<span class="kw">def</span> <span class="fn">pos</span>(x, y, /): ...</pre>
+      </div>
+      <div>
+<pre><span class="cm"># Lambda</span>
+sq = <span class="kw">lambda</span> x: x**<span class="nm">2</span>
+add = <span class="kw">lambda</span> a, b: a + b
+
+<span class="cm"># Mehrfach-Return</span>
+<span class="kw">def</span> <span class="fn">minmax</span>(lst):
+    <span class="kw">return</span> <span class="fn">min</span>(lst), <span class="fn">max</span>(lst)
+lo, hi = <span class="fn">minmax</span>([<span class="nm">3</span>,<span class="nm">1</span>,<span class="nm">4</span>])
+
+<span class="cm"># Dekoratoren</span>
+<span class="kw">import</span> functools
+<span class="op">@functools.wraps</span>(func)
+<span class="kw">def</span> <span class="fn">wrapper</span>(*a, **kw):
+    <span class="fn">print</span>(<span class="st">"before"</span>)
+    result = <span class="fn">func</span>(*a, **kw)
+    <span class="fn">print</span>(<span class="st">"after"</span>)
+    <span class="kw">return</span> result
+
+<span class="cm"># Key builtins</span>
+<span class="fn">map</span>(fn, lst) / <span class="fn">filter</span>(fn, lst)
+<span class="fn">zip</span>(l1, l2) / <span class="fn">enumerate</span>(lst)
+<span class="fn">sorted</span>(lst, key=fn, reverse=<span class="kw">True</span>)
+<span class="fn">any</span>(lst) / <span class="fn">all</span>(lst)
+<span class="fn">sum</span>(lst) / <span class="fn">min</span>(lst) / <span class="fn">max</span>(lst)</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- KLASSEN -->
+<div class="card c-purple col-2">
+  <div class="card-header"><div class="card-icon">◇</div><span class="card-title">Classes &amp; OOP</span></div>
+  <div class="card-body">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div>
+<pre><span class="kw">class</span> <span class="ty">Animal</span>:
+    <span class="cm"># Class attribute</span>
+    count: <span class="ty">int</span> = <span class="nm">0</span>
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, name: <span class="ty">str</span>):
+        <span class="kw">self</span>._name = name
+        <span class="ty">Animal</span>.count += <span class="nm">1</span>
+
+    <span class="op">@property</span>
+    <span class="kw">def</span> <span class="fn">name</span>(<span class="kw">self</span>) -> <span class="ty">str</span>:
+        <span class="kw">return</span> <span class="kw">self</span>._name
+
+    <span class="op">@name.setter</span>
+    <span class="kw">def</span> <span class="fn">name</span>(<span class="kw">self</span>, v: <span class="ty">str</span>):
+        <span class="kw">self</span>._name = v
+
+    <span class="op">@classmethod</span>
+    <span class="kw">def</span> <span class="fn">create</span>(<span class="kw">cls</span>, n): <span class="kw">return</span> <span class="kw">cls</span>(n)
+
+    <span class="op">@staticmethod</span>
+    <span class="kw">def</span> <span class="fn">describe</span>(): <span class="fn">print</span>(<span class="st">"Animal"</span>)
+
+    <span class="kw">def</span> <span class="fn">__repr__</span>(<span class="kw">self</span>):
+        <span class="kw">return</span> <span class="kw">f</span><span class="st">"Animal({self._name!r})"</span>
+
+    <span class="kw">def</span> <span class="fn">__str__</span>(<span class="kw">self</span>):
+        <span class="kw">return</span> <span class="kw">self</span>._name</pre>
+      </div>
+      <div>
+<pre><span class="cm"># Inheritance</span>
+<span class="kw">class</span> <span class="ty">Dog</span>(<span class="ty">Animal</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, name, breed):
+        <span class="fn">super</span>().<span class="fn">__init__</span>(name)
+        <span class="kw">self</span>.breed = breed
+
+    <span class="kw">def</span> <span class="fn">speak</span>(<span class="kw">self</span>) -> <span class="ty">str</span>:
+        <span class="kw">return</span> <span class="st">"Wau!"</span>
+
+<span class="cm"># Dataclass (Python 3.7+)</span>
+<span class="kw">from</span> dataclasses <span class="kw">import</span> dataclass, field
+
+<span class="op">@dataclass</span>
+<span class="kw">class</span> <span class="ty">Point</span>:
+    x: <span class="ty">float</span>
+    y: <span class="ty">float</span> = <span class="nm">0.0</span>
+    tags: <span class="ty">list</span> = field(<span class="fn">default_factory</span>=<span class="fn">list</span>)
+
+<span class="op">@dataclass</span>(frozen=<span class="kw">True</span>)  <span class="cm"># immutable</span>
+<span class="kw">class</span> <span class="ty">ImmutablePoint</span>:
+    x: <span class="ty">float</span>; y: <span class="ty">float</span>
+
+<span class="cm"># Dunder methods</span>
+__len__  __getitem__  __setitem__
+__iter__  __next__  __contains__
+__add__  __mul__  __eq__  __lt__
+__enter__  __exit__  <span class="cm"># context manager</span>
+__call__  __hash__</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EXCEPTIONS -->
+<div class="card c-orange">
+  <div class="card-header"><div class="card-icon">!</div><span class="card-title">Exceptions</span></div>
+  <div class="card-body">
+<pre><span class="cm"># try / except / else / finally</span>
+<span class="kw">try</span>:
+    x = <span class="nm">1</span> / <span class="nm">0</span>
+<span class="kw">except</span> <span class="ty">ZeroDivisionError</span> <span class="kw">as</span> e:
+    <span class="fn">print</span>(e)
+<span class="kw">except</span> (<span class="ty">TypeError</span>, <span class="ty">ValueError</span>):
+    <span class="fn">print</span>(<span class="st">"Typfehler"</span>)
+<span class="kw">except</span> <span class="ty">Exception</span>:
+    <span class="kw">raise</span>  <span class="cm"># re-raise</span>
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="st">"kein Fehler"</span>)
+<span class="kw">finally</span>:
+    <span class="fn">print</span>(<span class="st">"immer"</span>)
+
+<span class="cm"># raise</span>
+<span class="kw">raise</span> <span class="ty">ValueError</span>(<span class="st">"msg"</span>)
+<span class="kw">raise</span>  <span class="cm"># re-raise</span>
+
+<span class="cm"># Custom exception</span>
+<span class="kw">class</span> <span class="ty">AppError</span>(<span class="ty">Exception</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, msg, code=<span class="nm">0</span>):
+        <span class="fn">super</span>().<span class="fn">__init__</span>(msg)
+        <span class="kw">self</span>.code = code
+
+<span class="cm"># Exception groups (Python 3.11)</span>
+<span class="kw">except*</span> <span class="ty">ValueError</span> <span class="kw">as</span> eg: ...</pre>
+  </div>
+</div>
+
+<!-- ASYNC / GENERATORS -->
+<div class="card c-pink">
+  <div class="card-header"><div class="card-icon">⟳</div><span class="card-title">async/await &amp; Generators</span></div>
+  <div class="card-body">
+<pre><span class="cm"># Generator</span>
+<span class="kw">def</span> <span class="fn">fib</span>():
+    a, b = <span class="nm">0</span>, <span class="nm">1</span>
+    <span class="kw">while True</span>: <span class="kw">yield</span> a; a,b=b,a+b
+
+gen = <span class="fn">fib</span>()
+<span class="fn">next</span>(gen)   <span class="cm"># 0, 1, 1, 2 ...</span>
+
+<span class="cm"># Generator expression</span>
+sq = (x**<span class="nm">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">10</span>))
+
+<span class="cm"># async/await</span>
+<span class="kw">import</span> asyncio
+
+<span class="kw">async def</span> <span class="fn">fetch</span>(url: <span class="ty">str</span>) -> <span class="ty">str</span>:
+    <span class="kw">await</span> asyncio.<span class="fn">sleep</span>(<span class="nm">1</span>)
+    <span class="kw">return</span> <span class="st">"data"</span>
+
+<span class="kw">async def</span> <span class="fn">main</span>():
+    res = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="st">"url"</span>)
+    tasks = <span class="kw">await</span> asyncio.<span class="fn">gather</span>(
+        <span class="fn">fetch</span>(<span class="st">"a"</span>), <span class="fn">fetch</span>(<span class="st">"b"</span>)
+    )
+
+asyncio.<span class="fn">run</span>(<span class="fn">main</span>())
+
+<span class="cm"># Async Generator</span>
+<span class="kw">async def</span> <span class="fn">agen</span>():
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">5</span>): <span class="kw">yield</span> i
+<span class="kw">async for</span> v <span class="kw">in</span> <span class="fn">agen</span>(): ...</pre>
+  </div>
+</div>
+
+<!-- MODULES & STDLIB -->
+<div class="card c-teal col-2">
+  <div class="card-header"><div class="card-icon">📦</div><span class="card-title">Module, Imports &amp; Key stdlib</span></div>
+  <div class="card-body">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div>
+<pre><span class="cm"># Imports</span>
+<span class="kw">import</span> os
+<span class="kw">import</span> os.path <span class="kw">as</span> osp
+<span class="kw">from</span> pathlib <span class="kw">import</span> Path
+<span class="kw">from</span> typing <span class="kw">import</span> Optional, Union, Any
+<span class="kw">from</span> __future__ <span class="kw">import</span> annotations
+
+<span class="cm"># stdlib highlights</span>
+os.<span class="fn">getcwd</span>()  os.<span class="fn">listdir</span>(<span class="st">"."</span>)
+os.<span class="fn">path.join</span>(<span class="st">"a"</span>,<span class="st">"b"</span>)
+os.<span class="fn">environ</span>[<span class="st">"PATH"</span>]
+
+<span class="kw">from</span> pathlib <span class="kw">import</span> Path
+p = <span class="ty">Path</span>(<span class="st">"file.txt"</span>)
+p.<span class="fn">read_text</span>()
+p.<span class="fn">write_text</span>(<span class="st">"hi"</span>)
+p.<span class="fn">exists</span>()  p.<span class="fn">suffix</span>  p.<span class="fn">stem</span>
+p.parent  p / <span class="st">"sub"</span> / <span class="st">"f.txt"</span></pre>
+      </div>
+      <div>
+<pre><span class="kw">import</span> json, csv, re, sys
+<span class="kw">import</span> datetime, time, random
+<span class="kw">from</span> collections <span class="kw">import</span> (
+    Counter, defaultdict, deque, OrderedDict)
+<span class="kw">from</span> itertools <span class="kw">import</span> (
+    chain, product, combinations, permutations,
+    islice, cycle, groupby, starmap)
+<span class="kw">from</span> functools <span class="kw">import</span> (
+    reduce, partial, lru_cache, wraps, cache)
+
+<span class="cm"># json</span>
+json.<span class="fn">dumps</span>(obj, indent=<span class="nm">2</span>)
+json.<span class="fn">loads</span>(<span class="st">'{"a":1}'</span>)
+
+<span class="cm"># Counter</span>
+c = <span class="ty">Counter</span>([<span class="st">"a"</span>,<span class="st">"b"</span>,<span class="st">"a"</span>])
+c.<span class="fn">most_common</span>(<span class="nm">3</span>)  <span class="cm"># [('a',2)...]</span>
+
+<span class="cm"># lru_cache</span>
+<span class="op">@lru_cache</span>(maxsize=<span class="kw">None</span>)
+<span class="kw">def</span> <span class="fn">fib</span>(n): <span class="kw">return</span> n <span class="kw">if</span> n&lt;<span class="nm">2</span> <span class="kw">else</span> <span class="fn">fib</span>(n-<span class="nm">1</span>)+<span class="fn">fib</span>(n-<span class="nm">2</span>)</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COMPREHENSIONS & FUNCTIONAL -->
+<div class="card c-orange col-3">
+  <div class="card-header"><div class="card-icon">✦</div><span class="card-title">Comprehensions, Context Manager, Type Hints &amp; Walrus</span></div>
+  <div class="card-body">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+      <div>
+        <div class="section-label">All Comprehensions</div>
+<pre><span class="cm"># List</span>
+[x**<span class="nm">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">10</span>)]
+[x <span class="kw">for</span> x <span class="kw">in</span> lst <span class="kw">if</span> x&gt;<span class="nm">0</span>]
+
+<span class="cm"># Dict</span>
+{k: v <span class="kw">for</span> k,v <span class="kw">in</span> items}
+
+<span class="cm"># Set</span>
+{x*<span class="nm">2</span> <span class="kw">for</span> x <span class="kw">in</span> lst}
+
+<span class="cm"># Generator Expr</span>
+(x**<span class="nm">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">10</span>))
+
+<span class="cm"># Nested</span>
+[i <span class="kw">for</span> row <span class="kw">in</span> matrix
+   <span class="kw">for</span> i <span class="kw">in</span> row <span class="kw">if</span> i&gt;<span class="nm">0</span>]</pre>
+      </div>
+      <div>
+        <div class="section-label">Context Manager</div>
+<pre><span class="cm"># with statement</span>
+<span class="kw">with</span> <span class="fn">open</span>(<span class="st">"f"</span>, <span class="st">"r"</span>) <span class="kw">as</span> f:
+    txt = f.<span class="fn">read</span>()
+
+<span class="cm"># Multiple</span>
+<span class="kw">with</span> <span class="fn">open</span>(<span class="st">"a"</span>) <span class="kw">as</span> a, \
+     <span class="fn">open</span>(<span class="st">"b"</span>) <span class="kw">as</span> b: ...
+
+<span class="cm"># Custom</span>
+<span class="kw">from</span> contextlib <span class="kw">import</span> contextmanager
+<span class="op">@contextmanager</span>
+<span class="kw">def</span> <span class="fn">timer</span>():
+    start = time.<span class="fn">time</span>()
+    <span class="kw">yield</span>
+    <span class="fn">print</span>(time.<span class="fn">time</span>()-start)
+
+<span class="kw">with</span> <span class="fn">timer</span>(): ...
+
+<span class="cm"># __enter__ / __exit__</span>
+<span class="kw">class</span> <span class="ty">CM</span>:
+    <span class="kw">def</span> <span class="fn">__enter__</span>(<span class="kw">self</span>): <span class="kw">return self</span>
+    <span class="kw">def</span> <span class="fn">__exit__</span>(<span class="kw">self</span>,*a): ...</pre>
+      </div>
+      <div>
+        <div class="section-label">Type Hints (3.9–3.12)</div>
+<pre><span class="kw">from</span> typing <span class="kw">import</span> (
+  <span class="ty">Optional</span>, <span class="ty">Union</span>, <span class="ty">Any</span>,
+  <span class="ty">Callable</span>, <span class="ty">TypeVar</span>, <span class="ty">Generic</span>,
+  <span class="ty">Protocol</span>, <span class="ty">Literal</span>, <span class="ty">Final</span>,
+  <span class="ty">TypedDict</span>, <span class="ty">NamedTuple</span>)
+
+<span class="kw">def</span> <span class="fn">f</span>(x: <span class="ty">int | None</span>) -> <span class="ty">list</span>[<span class="ty">str</span>]: ...
+
+<span class="ty">T</span> = <span class="ty">TypeVar</span>(<span class="st">'T'</span>)
+<span class="kw">def</span> <span class="fn">first</span>(lst: <span class="ty">list</span>[<span class="ty">T</span>]) -> <span class="ty">T</span>:
+    <span class="kw">return</span> lst[<span class="nm">0</span>]
+
+<span class="kw">type</span> <span class="ty">Vector</span> = <span class="ty">list</span>[<span class="ty">float</span>]  <span class="cm"># 3.12</span>
+
+<span class="kw">class</span> <span class="ty">TD</span>(<span class="ty">TypedDict</span>):
+    name: <span class="ty">str</span>
+    age: <span class="ty">int</span></pre>
+      </div>
+      <div>
+        <div class="section-label">F-Strings &amp; Format</div>
+<pre>x = <span class="nm">3.14159</span>
+<span class="kw">f</span><span class="st">"{x:.2f}"</span>      <span class="cm"># "3.14"</span>
+<span class="kw">f</span><span class="st">"{x:10.2f}"</span>    <span class="cm"># " 3.14"</span>
+<span class="kw">f</span><span class="st">"{1000:,}"</span>     <span class="cm"># "1,000"</span>
+<span class="kw">f</span><span class="st">"{n:08b}"</span>      <span class="cm"># binär 8-Stellen</span>
+<span class="kw">f</span><span class="st">"{n:#x}"</span>       <span class="cm"># hex mit 0x</span>
+<span class="kw">f</span><span class="st">"{x!r}"</span>        <span class="cm"># repr()</span>
+<span class="kw">f</span><span class="st">"{x=}"</span>         <span class="cm"># "x=3.14159"</span>
+
+<span class="cm"># format()</span>
+<span class="st">"{:>10}"</span>.<span class="fn">format</span>(<span class="st">"hi"</span>)
+<span class="st">"{0} {1}"</span>.<span class="fn">format</span>(<span class="st">"a"</span>,<span class="st">"b"</span>)
+
+<span class="cm"># Walrus :=</span>
+<span class="kw">while</span> chunk := f.<span class="fn">read</span>(<span class="nm">1024</span>):
+    <span class="fn">process</span>(chunk)</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div></div>
+<footer>Python 3.12 Cheat Sheet</footer>
+</body></html>

@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JavaScript Cheat Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0e17;
+    --surface: #16141f;
+    --surface2: #1e1b2e;
+    --border: #2b2840;
+    --accent: #f7c948;
+    --accent2: #ff6b6b;
+    --accent3: #6bcfff;
+    --accent4: #a8ff78;
+    --accent5: #c084fc;
+    --text: #e8e6f0;
+    --muted: #6b6884;
+    --kw: #c792ea;
+    --type: #82aaff;
+    --string: #c3e88d;
+    --num: #f78c6c;
+    --comment: #4a5568;
+    --fn: #82aaff;
+    --op: #89ddff;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'JetBrains Mono', monospace; background: var(--bg); color: var(--text); line-height: 1.6; font-size: 13px; }
+  header { background: var(--surface); border-bottom: 2px solid var(--accent); padding: 24px 40px; display: flex; align-items: center; gap: 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 40px rgba(247,201,72,0.1); }
+  .logo { width: 50px; height: 50px; background: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; color: #111; flex-shrink: 0; }
+  header h1 { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; color: #fff; }
+  header p { color: var(--muted); font-size: 11px; margin-top: 2px; }
+  .tag-row { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 3px 10px; font-size: 11px; color: var(--muted); }
+  .page { padding: 28px 40px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .col-2 { grid-column: span 2; }
+  .col-3 { grid-column: span 3; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: border-color 0.2s; }
+  .card:hover { border-color: var(--accent); }
+  .card-header { padding: 9px 14px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); background: var(--surface2); }
+  .card-icon { width: 20px; height: 20px; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+  .card-title { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+  .card-body { padding: 12px 14px; }
+  pre { background: #0a0910; border-radius: 7px; padding: 10px 12px; overflow-x: auto; font-size: 11.5px; line-height: 1.7; margin-bottom: 8px; border: 1px solid #1c1928; }
+  pre:last-child { margin-bottom: 0; }
+  .kw { color: var(--kw); } .ty { color: var(--type); } .st { color: var(--string); } .nm { color: var(--num); } .cm { color: var(--comment); } .fn { color: var(--fn); } .op { color: var(--op); }
+  .kv-table { width: 100%; border-collapse: collapse; font-size: 11.5px; margin-bottom: 6px; }
+  .kv-table td { padding: 4px 7px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .kv-table tr:last-child td { border-bottom: none; }
+  .kv-table td:first-child { color: var(--type); white-space: nowrap; font-weight: 500; width: 40%; }
+  .kv-table td:last-child { color: var(--muted); }
+  .sep { border: none; border-top: 1px solid var(--border); margin: 8px 0; }
+  .section-label { font-family: 'Syne', sans-serif; font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); margin: 10px 0 5px; }
+  .section-label:first-child { margin-top: 0; }
+  .c-yellow .card-icon { background: rgba(247,201,72,0.2); color: var(--accent); }
+  .c-red    .card-icon { background: rgba(255,107,107,0.2); color: var(--accent2); }
+  .c-blue   .card-icon { background: rgba(107,207,255,0.2); color: var(--accent3); }
+  .c-green  .card-icon { background: rgba(168,255,120,0.2); color: var(--accent4); }
+  .c-purple .card-icon { background: rgba(192,132,252,0.2); color: var(--accent5); }
+  .c-yellow .card-title { color: var(--accent); }
+  .c-red    .card-title { color: var(--accent2); }
+  .c-blue   .card-title { color: var(--accent3); }
+  .c-green  .card-title { color: var(--accent4); }
+  .c-purple .card-title { color: var(--accent5); }
+  footer { text-align: center; padding: 20px; color: var(--muted); font-size: 11px; border-top: 1px solid var(--border); margin-top: 20px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">JS</div>
+  <div><h1>JavaScript Cheat Sheet</h1><p>ES2024 — Complete Reference: Syntax, DOM, Promises, Modules & more</p></div>
+  <div class="tag-row"><span class="tag">ES2024</span><span class="tag">DOM</span><span class="tag">async/await</span><span class="tag">Modules</span><span class="tag">Node.js</span></div>
+</header>
+<div class="page"><div class="grid">
+
+<!-- VARIABLEN -->
+<div class="card c-yellow">
+  <div class="card-header"><div class="card-icon">V</div><span class="card-title">Variables &amp; Types</span></div>
+  <div class="card-body">
+<pre><span class="kw">var</span>   x = <span class="nm">1</span>;  <span class="cm">// function-scoped, hoisted</span>
+<span class="kw">let</span>   y = <span class="nm">2</span>;  <span class="cm">// block-scoped</span>
+<span class="kw">const</span> z = <span class="nm">3</span>;  <span class="cm">// block-scoped, immutable binding</span>
+
+<span class="cm">// 8 Primitive Typen</span>
+<span class="kw">typeof</span> <span class="nm">42</span>          <span class="cm">// "number"</span>
+<span class="kw">typeof</span> <span class="nm">42n</span>         <span class="cm">// "bigint"</span>
+<span class="kw">typeof</span> <span class="st">"hi"</span>        <span class="cm">// "string"</span>
+<span class="kw">typeof</span> <span class="kw">true</span>        <span class="cm">// "boolean"</span>
+<span class="kw">typeof</span> <span class="kw">undefined</span>   <span class="cm">// "undefined"</span>
+<span class="kw">typeof null</span>        <span class="cm">// "object" (bug!)</span>
+<span class="kw">typeof</span> Symbol()    <span class="cm">// "symbol"</span>
+<span class="kw">typeof</span> {}          <span class="cm">// "object"</span>
+<span class="kw">typeof</span> []          <span class="cm">// "object"</span>
+<span class="kw">typeof</span> <span class="fn">function</span>(){} <span class="cm">// "function"</span>
+
+<span class="cm">// Typ-Prüfung</span>
+<span class="ty">Array</span>.<span class="fn">isArray</span>([])  <span class="cm">// true</span>
+x <span class="kw">instanceof</span> <span class="ty">Date</span> <span class="cm">// true/false</span></pre>
+  </div>
+</div>
+
+<!-- OPERATOREN -->
+<div class="card c-red">
+  <div class="card-header"><div class="card-icon">±</div><span class="card-title">Operatoren</span></div>
+  <div class="card-body">
+<pre><span class="cm">// Arithmetisch</span>
++  -  *  /  %  **   <span class="cm">// ** = Potenz</span>
+++x  x++  --x  x--
+
+<span class="cm">// Vergleich</span>
+==   !=   <span class="cm">// lose (type coercion)</span>
+===  !==  <span class="cm">// streng (empfohlen!)</span>
+&lt;   &gt;   &lt;=   &gt;=
+
+<span class="cm">// Logisch</span>
+&amp;&amp;   ||   !
+??   <span class="cm">// Nullish Coalescing: a ?? b</span>
+?.   <span class="cm">// Optional Chaining: obj?.prop</span>
+??=  &amp;&amp;=  ||=  <span class="cm">// Logical Assignment</span>
+
+<span class="cm">// Bitweise</span>
+&amp;  |  ^  ~  &lt;&lt;  &gt;&gt;  &gt;&gt;&gt;
+
+<span class="cm">// Ternär &amp; Sonstige</span>
+cond ? a : b
+<span class="kw">delete</span> obj.key
+<span class="kw">in</span>         <span class="cm">// "key" in obj</span>
+<span class="kw">instanceof</span>
+<span class="kw">void</span> <span class="nm">0</span>     <span class="cm">// gibt undefined zurück</span>
+<span class="kw">typeof</span> x   <span class="cm">// Typ als String</span>
+
+<span class="cm">// Spread / Rest</span>
+[...arr1, ...arr2]
+{...obj1, ...obj2}
+<span class="kw">function</span> <span class="fn">f</span>(...args) { }</span></pre>
+  </div>
+</div>
+
+<!-- STRINGS -->
+<div class="card c-blue">
+  <div class="card-header"><div class="card-icon">"</div><span class="card-title">Strings</span></div>
+  <div class="card-body">
+<pre><span class="kw">const</span> s = <span class="st">'Hallo'</span>;         <span class="cm">// single quotes</span>
+<span class="kw">const</span> s = <span class="st">"Welt"</span>;          <span class="cm">// double quotes</span>
+<span class="kw">const</span> s = <span class="op">`Hi ${name}!`</span>;  <span class="cm">// template literal</span>
+<span class="kw">const</span> s = <span class="op">`Zeile 1
+Zeile 2`</span>;                   <span class="cm">// multiline</span>
+
+s.<span class="fn">length</span>
+s.<span class="fn">toUpperCase</span>() / <span class="fn">toLowerCase</span>()
+s.<span class="fn">trim</span>() / <span class="fn">trimStart</span>() / <span class="fn">trimEnd</span>()
+s.<span class="fn">split</span>(<span class="st">','</span>)
+s.<span class="fn">replace</span>(<span class="st">'a'</span>, <span class="st">'b'</span>)
+s.<span class="fn">replaceAll</span>(<span class="st">'x'</span>, <span class="st">'y'</span>)
+s.<span class="fn">includes</span>(<span class="st">'llo'</span>)
+s.<span class="fn">startsWith</span>(<span class="st">'H'</span>) / <span class="fn">endsWith</span>(<span class="st">'o'</span>)
+s.<span class="fn">indexOf</span>(<span class="st">'l'</span>) / <span class="fn">lastIndexOf</span>(<span class="st">'l'</span>)
+s.<span class="fn">slice</span>(<span class="nm">1</span>, <span class="nm">4</span>)
+s.<span class="fn">substring</span>(<span class="nm">1</span>, <span class="nm">4</span>)
+s.<span class="fn">padStart</span>(<span class="nm">10</span>) / <span class="fn">padEnd</span>(<span class="nm">10</span>)
+s.<span class="fn">repeat</span>(<span class="nm">3</span>)
+s.<span class="fn">charAt</span>(<span class="nm">0</span>)  /  s[<span class="nm">0</span>]
+s.<span class="fn">charCodeAt</span>(<span class="nm">0</span>)
+s.<span class="fn">match</span>(<span class="op">/pattern/</span>)
+s.<span class="fn">matchAll</span>(<span class="op">/pattern/g</span>)
+s.<span class="fn">search</span>(<span class="op">/re/</span>)
+s.<span class="fn">at</span>(-<span class="nm">1</span>)   <span class="cm">// last character</span></pre>
+  </div>
+</div>
+
+<!-- ARRAYS -->
+<div class="card c-green col-2">
+  <div class="card-header"><div class="card-icon">[]</div><span class="card-title">Arrays</span></div>
+  <div class="card-body">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div>
+<pre><span class="cm">// Create</span>
+<span class="kw">const</span> a = [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>];
+<span class="kw">const</span> a = <span class="kw">new</span> <span class="ty">Array</span>(<span class="nm">3</span>);
+<span class="kw">const</span> a = <span class="ty">Array</span>.<span class="fn">from</span>(<span class="st">"abc"</span>);
+<span class="kw">const</span> a = <span class="ty">Array</span>.<span class="fn">of</span>(<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>);
+[...<span class="st">"abc"</span>]   <span class="cm">// ['a','b','c']</span>
+
+<span class="cm">// Add / Remove</span>
+a.<span class="fn">push</span>(<span class="nm">4</span>)       <span class="cm">// end</span>
+a.<span class="fn">pop</span>()         <span class="cm">// end entfernen</span>
+a.<span class="fn">unshift</span>(<span class="nm">0</span>)   <span class="cm">// start</span>
+a.<span class="fn">shift</span>()       <span class="cm">// start entfernen</span>
+a.<span class="fn">splice</span>(<span class="nm">1</span>,<span class="nm">2</span>)  <span class="cm">// idx, count</span>
+a.<span class="fn">splice</span>(<span class="nm">1</span>,<span class="nm">0</span>,<span class="st">'x'</span>) <span class="cm">// insert</span>
+
+<span class="cm">// Search</span>
+a.<span class="fn">indexOf</span>(<span class="nm">2</span>)
+a.<span class="fn">findIndex</span>(x => x><span class="nm">1</span>)
+a.<span class="fn">find</span>(x => x><span class="nm">1</span>)
+a.<span class="fn">includes</span>(<span class="nm">2</span>)
+a.<span class="fn">at</span>(-<span class="nm">1</span>)  <span class="cm">// last element</span></pre>
+      </div>
+      <div>
+<pre><span class="cm">// Transformation (non-mutating)</span>
+a.<span class="fn">map</span>(x => x*<span class="nm">2</span>)
+a.<span class="fn">filter</span>(x => x><span class="nm">1</span>)
+a.<span class="fn">reduce</span>((acc,x) => acc+x, <span class="nm">0</span>)
+a.<span class="fn">reduceRight</span>(...)
+a.<span class="fn">flat</span>(<span class="nm">2</span>)   <span class="cm">// Tiefe 2</span>
+a.<span class="fn">flatMap</span>(x => [x, x*<span class="nm">2</span>])
+a.<span class="fn">slice</span>(<span class="nm">1</span>, <span class="nm">3</span>)
+a.<span class="fn">concat</span>(b, c)
+[...a, ...b]
+
+<span class="cm">// Sort &amp; Check</span>
+a.<span class="fn">sort</span>((a,b) => a-b)
+a.<span class="fn">toSorted</span>(...)   <span class="cm">// non-mutating</span>
+a.<span class="fn">reverse</span>()
+a.<span class="fn">toReversed</span>()   <span class="cm">// non-mutating</span>
+a.<span class="fn">every</span>(x => x><span class="nm">0</span>)
+a.<span class="fn">some</span>(x => x><span class="nm">0</span>)
+a.<span class="fn">forEach</span>(x => <span class="fn">log</span>(x))
+a.<span class="fn">join</span>(<span class="st">', '</span>)
+a.<span class="fn">fill</span>(<span class="nm">0</span>, <span class="nm">1</span>, <span class="nm">3</span>)
+a.<span class="fn">with</span>(<span class="nm">2</span>, <span class="st">'x'</span>)   <span class="cm">// non-mutating set</span></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- OBJECTS -->
+<div class="card c-purple col-2">
+  <div class="card-header"><div class="card-icon">{}</div><span class="card-title">Objects</span></div>
+  <div class="card-body">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div>
+<pre><span class="cm">// Create</span>
+<span class="kw">const</span> obj = { name: <span class="st">"Anna"</span>, age: <span class="nm">30</span> };
+<span class="kw">const</span> obj = <span class="kw">new</span> <span class="ty">Object</span>();
+<span class="kw">const</span> obj = <span class="ty">Object</span>.<span class="fn">create</span>(proto);
+
+<span class="cm">// Access</span>
+obj.name          <span class="cm">// dot notation</span>
+obj[<span class="st">"name"</span>]       <span class="cm">// bracket notation</span>
+<span class="kw">const</span> key = <span class="st">"name"</span>; obj[key]
+
+<span class="cm">// Shorthand properties (ES6)</span>
+<span class="kw">const</span> x=<span class="nm">1</span>, y=<span class="nm">2</span>; <span class="kw">const</span> p = {x, y};
+
+<span class="cm">// Computed Keys</span>
+<span class="kw">const</span> k = <span class="st">"foo"</span>;
+<span class="kw">const</span> o = { [k]: <span class="nm">42</span> };
+
+<span class="cm">// Spread &amp; Merge</span>
+<span class="kw">const</span> c = { ...a, ...b };
+<span class="kw">const</span> clone = { ...obj };</pre>
+      </div>
+      <div>
+<pre><span class="cm">// Object-Methods</span>
+<span class="ty">Object</span>.<span class="fn">keys</span>(obj)
+<span class="ty">Object</span>.<span class="fn">values</span>(obj)
+<span class="ty">Object</span>.<span class="fn">entries</span>(obj)
+<span class="ty">Object</span>.<span class="fn">fromEntries</span>(pairs)
+<span class="ty">Object</span>.<span class="fn">assign</span>(target, src)
+<span class="ty">Object</span>.<span class="fn">freeze</span>(obj)   <span class="cm">// immutable</span>
+<span class="ty">Object</span>.<span class="fn">seal</span>(obj)
+<span class="ty">Object</span>.<span class="fn">hasOwn</span>(obj, <span class="st">"k"</span>)
+
+<span class="cm">// Destructuring</span>
+<span class="kw">const</span> { name, age } = obj;
+<span class="kw">const</span> { name: n } = obj;   <span class="cm">// rename</span>
+<span class="kw">const</span> { x = <span class="nm">0</span> } = obj;    <span class="cm">// default</span>
+<span class="kw">const</span> { a, ...rest } = obj;<span class="cm">// rest</span>
+
+<span class="cm">// Getter / Setter</span>
+<span class="kw">const</span> o = {
+  _x: <span class="nm">0</span>,
+  <span class="kw">get</span> <span class="fn">x</span>() { <span class="kw">return</span> <span class="kw">this</span>._x; },
+  <span class="kw">set</span> <span class="fn">x</span>(v) { <span class="kw">this</span>._x = v; }
+};</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FUNCTIONS -->
+<div class="card c-yellow">
+  <div class="card-header"><div class="card-icon">ƒ</div><span class="card-title">Funktionen</span></div>
+  <div class="card-body">
+<pre><span class="cm">// Declaration (hoisted)</span>
+<span class="kw">function</span> <span class="fn">add</span>(a, b) { <span class="kw">return</span> a + b; }
+
+<span class="cm">// Expression</span>
+<span class="kw">const</span> add = <span class="kw">function</span>(a, b) { <span class="kw">return</span> a+b; };
+
+<span class="cm">// Arrow Function</span>
+<span class="kw">const</span> add = (a, b) => a + b;
+<span class="kw">const</span> sq  = x => x * x;
+<span class="kw">const</span> log = () => <span class="ty">console</span>.<span class="fn">log</span>(<span class="st">"hi"</span>);
+
+<span class="cm">// Default Parameter</span>
+<span class="kw">function</span> <span class="fn">greet</span>(name = <span class="st">"Welt"</span>) { }
+
+<span class="cm">// Rest Parameter</span>
+<span class="kw">function</span> <span class="fn">sum</span>(...nums) { <span class="kw">return</span> nums.<span class="fn">reduce</span>((a,b)=>a+b); }
+
+<span class="cm">// Destructuring in Parametern</span>
+<span class="kw">function</span> <span class="fn">show</span>({ name, age = <span class="nm">18</span> }) { }
+<span class="kw">function</span> <span class="fn">first</span>([a, b]) { }
+
+<span class="cm">// IIFE</span>
+(<span class="kw">function</span>() { <span class="cm">/* ... */</span> })();
+(() => { <span class="cm">/* ... */</span> })();</pre>
+  </div>
+</div>
+
+<!-- CLASSES -->
+<div class="card c-blue">
+  <div class="card-header"><div class="card-icon">◇</div><span class="card-title">Classes (ES6+)</span></div>
+  <div class="card-body">
+<pre><span class="kw">class</span> <span class="ty">Animal</span> {
+  <span class="cm">// Private Field (ES2022)</span>
+  #name;
+  <span class="kw">static</span> count = <span class="nm">0</span>;
+
+  <span class="kw">constructor</span>(name) {
+    <span class="kw">this</span>.#name = name;
+    <span class="ty">Animal</span>.count++;
+  }
+
+  <span class="kw">get</span> <span class="fn">name</span>() { <span class="kw">return</span> <span class="kw">this</span>.#name; }
+  <span class="kw">set</span> <span class="fn">name</span>(v) { <span class="kw">this</span>.#name = v; }
+
+  <span class="fn">speak</span>() { <span class="kw">return</span> <span class="op">`${<span class="kw">this</span>.#name} spricht`</span>; }
+  <span class="kw">static</span> <span class="fn">create</span>(n) { <span class="kw">return new</span> <span class="ty">Animal</span>(n); }
+}
+
+<span class="kw">class</span> <span class="ty">Dog</span> <span class="kw">extends</span> <span class="ty">Animal</span> {
+  #breed;
+  <span class="kw">constructor</span>(name, breed) {
+    <span class="kw">super</span>(name);
+    <span class="kw">this</span>.#breed = breed;
+  }
+  <span class="fn">speak</span>() { <span class="kw">return super</span>.<span class="fn">speak</span>() + <span class="st">" Wau!"</span>; }
+}
+
+<span class="kw">const</span> d = <span class="kw">new</span> <span class="ty">Dog</span>(<span class="st">"Rex"</span>, <span class="st">"Labrador"</span>);</pre>
+  </div>
+</div>
+
+<!-- CONTROL FLOW -->
+<div class="card c-green">
+  <div class="card-header"><div class="card-icon">⇀</div><span class="card-title">Control Flow &amp; Loops</span></div>
+  <div class="card-body">
+<pre><span class="cm">// if / else</span>
+<span class="kw">if</span> (x > <span class="nm">0</span>) { } <span class="kw">else if</span> (x==<span class="nm">0</span>) { } <span class="kw">else</span> { }
+
+<span class="cm">// switch</span>
+<span class="kw">switch</span>(val) {
+  <span class="kw">case</span> <span class="nm">1</span>: ...; <span class="kw">break</span>;
+  <span class="kw">default</span>: ...; <span class="kw">break</span>;
+}
+
+<span class="cm">// for</span>
+<span class="kw">for</span> (<span class="kw">let</span> i=<span class="nm">0</span>; i&lt;<span class="nm">10</span>; i++) { }
+
+<span class="cm">// for...of (Werte)</span>
+<span class="kw">for</span> (<span class="kw">const</span> item <span class="kw">of</span> array) { }
+<span class="kw">for</span> (<span class="kw">const</span> [i, v] <span class="kw">of</span> arr.<span class="fn">entries</span>()) { }
+
+<span class="cm">// for...in (Keys)</span>
+<span class="kw">for</span> (<span class="kw">const</span> key <span class="kw">in</span> obj) { }
+
+<span class="cm">// while / do-while</span>
+<span class="kw">while</span> (cond) { }
+<span class="kw">do</span> { } <span class="kw">while</span> (cond);
+
+<span class="cm">// break / continue / label</span>
+outer: <span class="kw">for</span> (...) {
+  <span class="kw">for</span> (...) { <span class="kw">break</span> outer; }
+}
+
+<span class="cm">// try / catch / finally</span>
+<span class="kw">try</span> { } <span class="kw">catch</span>(e) {
+  <span class="ty">console</span>.<span class="fn">error</span>(e.message);
+} <span class="kw">finally</span> { }</pre>
+  </div>
+</div>
+
+<!-- PROMISES & ASYNC -->
+<div class="card c-purple col-2">
+  <div class="card-header"><div class="card-icon">⟳</div><span class="card-title">Promises &amp; async/await</span></div>
+  <div class="card-body">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div>
+<pre><span class="cm">// Promise erstellen</span>
+<span class="kw">const</span> p = <span class="kw">new</span> <span class="ty">Promise</span>((resolve, reject) => {
+  <span class="kw">if</span> (ok) <span class="fn">resolve</span>(<span class="st">"data"</span>);
+  <span class="kw">else</span>    <span class="fn">reject</span>(<span class="kw">new</span> <span class="ty">Error</span>(<span class="st">"fail"</span>));
+});
+
+<span class="cm">// .then / .catch / .finally</span>
+p.<span class="fn">then</span>(data => <span class="ty">console</span>.<span class="fn">log</span>(data))
+ .<span class="fn">catch</span>(e => <span class="ty">console</span>.<span class="fn">error</span>(e))
+ .<span class="fn">finally</span>(() => <span class="ty">console</span>.<span class="fn">log</span>(<span class="st">"done"</span>));
+
+<span class="cm">// Promise-Kombinatoren</span>
+<span class="ty">Promise</span>.<span class="fn">all</span>([p1, p2])      <span class="cm">// all fulfilled</span>
+<span class="ty">Promise</span>.<span class="fn">allSettled</span>([...])  <span class="cm">// all settled</span>
+<span class="ty">Promise</span>.<span class="fn">race</span>([p1, p2])     <span class="cm">// fastest</span>
+<span class="ty">Promise</span>.<span class="fn">any</span>([p1, p2])      <span class="cm">// first fulfilled</span>
+<span class="ty">Promise</span>.<span class="fn">resolve</span>(<span class="nm">42</span>)
+<span class="ty">Promise</span>.<span class="fn">reject</span>(<span class="kw">new</span> <span class="ty">Error</span>())</pre>
+      </div>
+      <div>
+<pre><span class="cm">// async / await</span>
+<span class="kw">async function</span> <span class="fn">fetchUser</span>(id) {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="op">`/api/${id}`</span>);
+    <span class="kw">const</span> data = <span class="kw">await</span> res.<span class="fn">json</span>();
+    <span class="kw">return</span> data;
+  } <span class="kw">catch</span>(e) {
+    <span class="ty">console</span>.<span class="fn">error</span>(e);
+  }
+}
+
+<span class="cm">// Parallel await</span>
+<span class="kw">const</span> [a, b] = <span class="kw">await</span> <span class="ty">Promise</span>.<span class="fn">all</span>([
+  <span class="fn">fetchA</span>(), <span class="fn">fetchB</span>()
+]);
+
+<span class="cm">// Async IIFE</span>
+(<span class="kw">async</span> () => {
+  <span class="kw">const</span> x = <span class="kw">await</span> <span class="fn">getX</span>();
+})();</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DOM -->
+<div class="card c-yellow col-2">
+  <div class="card-header"><div class="card-icon">DOM</div><span class="card-title">DOM Manipulation</span></div>
+  <div class="card-body">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div>
+<pre><span class="cm">// Selection</span>
+<span class="ty">document</span>.<span class="fn">getElementById</span>(<span class="st">"id"</span>)
+<span class="ty">document</span>.<span class="fn">querySelector</span>(<span class="st">".class"</span>)
+<span class="ty">document</span>.<span class="fn">querySelectorAll</span>(<span class="st">"div"</span>)
+<span class="ty">document</span>.<span class="fn">getElementsByClassName</span>(<span class="st">"c"</span>)
+<span class="ty">document</span>.<span class="fn">getElementsByTagName</span>(<span class="st">"p"</span>)
+el.<span class="fn">closest</span>(<span class="st">".parent"</span>)
+el.<span class="fn">matches</span>(<span class="st">".active"</span>)
+
+<span class="cm">// Create &amp; Einfügen</span>
+<span class="kw">const</span> d = <span class="ty">document</span>.<span class="fn">createElement</span>(<span class="st">"div"</span>);
+<span class="ty">document</span>.<span class="fn">createTextNode</span>(<span class="st">"text"</span>)
+parent.<span class="fn">appendChild</span>(child)
+parent.<span class="fn">prepend</span>(el)
+parent.<span class="fn">append</span>(el, <span class="st">"text"</span>)
+el.<span class="fn">before</span>(other)
+el.<span class="fn">after</span>(other)
+el.<span class="fn">replaceWith</span>(newEl)
+el.<span class="fn">remove</span>()</pre>
+      </div>
+      <div>
+<pre><span class="cm">// Content &amp; attributes</span>
+el.textContent = <span class="st">"text"</span>
+el.innerHTML   = <span class="st">"&lt;b&gt;hi&lt;/b&gt;"</span>
+el.<span class="fn">getAttribute</span>(<span class="st">"src"</span>)
+el.<span class="fn">setAttribute</span>(<span class="st">"src"</span>, <span class="st">"x"</span>)
+el.<span class="fn">removeAttribute</span>(<span class="st">"class"</span>)
+el.dataset.myKey  <span class="cm">// data-my-key</span>
+
+<span class="cm">// Classes &amp; style</span>
+el.classList.<span class="fn">add</span>(<span class="st">"active"</span>)
+el.classList.<span class="fn">remove</span>(<span class="st">"active"</span>)
+el.classList.<span class="fn">toggle</span>(<span class="st">"open"</span>)
+el.classList.<span class="fn">contains</span>(<span class="st">"x"</span>)
+el.style.color = <span class="st">"red"</span>
+
+<span class="cm">// Events</span>
+el.<span class="fn">addEventListener</span>(<span class="st">"click"</span>, handler)
+el.<span class="fn">removeEventListener</span>(<span class="st">"click"</span>, h)
+el.<span class="fn">dispatchEvent</span>(<span class="kw">new</span> <span class="ty">Event</span>(<span class="st">"click"</span>))</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DESTRUCTURING & SPREAD -->
+<div class="card c-red">
+  <div class="card-header"><div class="card-icon">⊕</div><span class="card-title">Destructuring &amp; Spread</span></div>
+  <div class="card-body">
+<pre><span class="cm">// Array destructuring</span>
+<span class="kw">const</span> [a, b, c] = [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>];
+<span class="kw">const</span> [x, , z] = arr;   <span class="cm">// skip</span>
+<span class="kw">const</span> [h, ...tail] = arr;
+<span class="kw">const</span> [p = <span class="nm">0</span>] = [];     <span class="cm">// default</span>
+<span class="kw">let</span> a, b; [a, b] = [b, a]; <span class="cm">// swap!</span>
+
+<span class="cm">// Object destructuring</span>
+<span class="kw">const</span> { x, y } = point;
+<span class="kw">const</span> { x: px, y: py } = point; <span class="cm">// rename</span>
+<span class="kw">const</span> { a: { b } } = nested;
+<span class="kw">const</span> { n = <span class="nm">0</span>, ...rest } = obj;
+
+<span class="cm">// Spread</span>
+<span class="kw">const</span> arr2 = [...arr1, <span class="nm">4</span>, <span class="nm">5</span>];
+<span class="kw">const</span> obj2 = { ...obj1, key: <span class="st">"val"</span> };
+<span class="fn">func</span>(...args)   <span class="cm">// spread as arguments</span></pre>
+  </div>
+</div>
+
+<!-- MODULES -->
+<div class="card c-purple">
+  <div class="card-header"><div class="card-icon">📦</div><span class="card-title">Module (ES Modules)</span></div>
+  <div class="card-body">
+<pre><span class="cm">// Export</span>
+<span class="kw">export const</span> PI = <span class="nm">3.14</span>;
+<span class="kw">export function</span> <span class="fn">add</span>(a,b) { ... }
+<span class="kw">export class</span> <span class="ty">User</span> { ... }
+<span class="kw">export default</span> <span class="kw">class</span> <span class="ty">App</span> { ... }
+<span class="kw">export</span> { foo, bar };
+<span class="kw">export</span> { foo <span class="kw">as</span> myFoo };
+
+<span class="cm">// Import</span>
+<span class="kw">import</span> App <span class="kw">from</span> <span class="st">'./App.js'</span>;
+<span class="kw">import</span> { add, PI } <span class="kw">from</span> <span class="st">'./math.js'</span>;
+<span class="kw">import</span> { add <span class="kw">as</span> sum } <span class="kw">from</span> <span class="st">'./math.js'</span>;
+<span class="kw">import</span> * <span class="kw">as</span> math <span class="kw">from</span> <span class="st">'./math.js'</span>;
+<span class="kw">import</span> <span class="st">'./styles.css'</span>; <span class="cm">// side-effect</span>
+
+<span class="cm">// Dynamic Import</span>
+<span class="kw">const</span> mod = <span class="kw">await import</span>(<span class="st">'./mod.js'</span>);
+mod.default();  mod.namedExport();</pre>
+  </div>
+</div>
+
+<!-- MAP SET -->
+<div class="card c-green">
+  <div class="card-header"><div class="card-icon">⊞</div><span class="card-title">Map, Set, WeakMap, WeakSet</span></div>
+  <div class="card-body">
+<pre><span class="cm">// Map — geordnete Key-Value Paare</span>
+<span class="kw">const</span> m = <span class="kw">new</span> <span class="ty">Map</span>();
+m.<span class="fn">set</span>(<span class="st">"key"</span>, <span class="nm">42</span>);
+m.<span class="fn">get</span>(<span class="st">"key"</span>);         <span class="cm">// 42</span>
+m.<span class="fn">has</span>(<span class="st">"key"</span>);
+m.<span class="fn">delete</span>(<span class="st">"key"</span>);
+m.size;
+<span class="kw">for</span> (<span class="kw">const</span> [k,v] <span class="kw">of</span> m) { }
+<span class="ty">Map</span>.<span class="fn">groupBy</span>(arr, x => x.type) <span class="cm">// ES2024</span>
+
+<span class="cm">// Set — einzigartige Werte</span>
+<span class="kw">const</span> s = <span class="kw">new</span> <span class="ty">Set</span>([<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>,<span class="nm">2</span>]);
+s.<span class="fn">add</span>(<span class="nm">4</span>);  s.<span class="fn">has</span>(<span class="nm">2</span>);  s.<span class="fn">delete</span>(<span class="nm">2</span>);
+s.size;
+[...s]            <span class="cm">// to array</span>
+<span class="kw">const</span> unique = [...<span class="kw">new</span> <span class="ty">Set</span>(arr)];
+
+<span class="cm">// WeakMap / WeakSet — keine strong refs</span>
+<span class="kw">const</span> wm = <span class="kw">new</span> <span class="ty">WeakMap</span>();
+wm.<span class="fn">set</span>(obj, data);
+<span class="kw">const</span> ws = <span class="kw">new</span> <span class="ty">WeakSet</span>();
+ws.<span class="fn">add</span>(obj);</pre>
+  </div>
+</div>
+
+<!-- GENERATORS & ITERATORS -->
+<div class="card c-blue">
+  <div class="card-header"><div class="card-icon">*</div><span class="card-title">Generators &amp; Iterators</span></div>
+  <div class="card-body">
+<pre><span class="cm">// Generator Function</span>
+<span class="kw">function</span>* <span class="fn">range</span>(start, end) {
+  <span class="kw">for</span> (<span class="kw">let</span> i=start; i&lt;end; i++) <span class="kw">yield</span> i;
+}
+<span class="kw">const</span> gen = <span class="fn">range</span>(<span class="nm">0</span>, <span class="nm">5</span>);
+gen.<span class="fn">next</span>();  <span class="cm">// { value: 0, done: false }</span>
+[...<span class="fn">range</span>(<span class="nm">0</span>,<span class="nm">5</span>)]  <span class="cm">// [0,1,2,3,4]</span>
+
+<span class="cm">// Iterable Protocol</span>
+<span class="kw">const</span> iterable = {
+  [<span class="ty">Symbol</span>.iterator]() {
+    <span class="kw">let</span> n = <span class="nm">0</span>;
+    <span class="kw">return</span> {
+      <span class="fn">next</span>() {
+        <span class="kw">return</span> n &lt; <span class="nm">3</span>
+          ? { value: n++, done: <span class="kw">false</span> }
+          : { done: <span class="kw">true</span> };
+      }
+    };
+  }
+};
+
+<span class="cm">// Async Generator</span>
+<span class="kw">async function</span>* <span class="fn">stream</span>() {
+  <span class="kw">yield await</span> <span class="fn">fetch</span>(<span class="st">"/a"</span>);
+}
+<span class="kw">for await</span> (<span class="kw">const</span> v <span class="kw">of</span> <span class="fn">stream</span>()) { }</pre>
+  </div>
+</div>
+
+<!-- REGEX -->
+<div class="card c-red">
+  <div class="card-header"><div class="card-icon">/r/</div><span class="card-title">Regular Expressions</span></div>
+  <div class="card-body">
+<pre><span class="cm">// Create</span>
+<span class="kw">const</span> re = <span class="op">/pattern/flags</span>;
+<span class="kw">const</span> re = <span class="kw">new</span> <span class="ty">RegExp</span>(<span class="st">"pattern"</span>, <span class="st">"g"</span>);
+
+<span class="cm">// Flags</span>
+<span class="op">g</span>  <span class="cm">// global</span>
+<span class="op">i</span>  <span class="cm">// case-insensitive</span>
+<span class="op">m</span>  <span class="cm">// multiline</span>
+<span class="op">s</span>  <span class="cm">// dotAll (. = newline)</span>
+<span class="op">u</span>  <span class="cm">// unicode</span>
+<span class="op">d</span>  <span class="cm">// indices</span>
+
+<span class="cm">// Methods</span>
+<span class="op">/abc/</span>.<span class="fn">test</span>(<span class="st">"abcdef"</span>)   <span class="cm">// true</span>
+<span class="st">"hi"</span>.<span class="fn">match</span>(<span class="op">/h(i)/</span>)      <span class="cm">// array</span>
+<span class="st">"hi"</span>.<span class="fn">matchAll</span>(<span class="op">/h/g</span>)
+<span class="st">"hi"</span>.<span class="fn">replace</span>(<span class="op">/h/</span>, <span class="st">"H"</span>)
+<span class="st">"a,b"</span>.<span class="fn">split</span>(<span class="op">/,/</span>)
+
+<span class="cm">// Gruppen</span>
+<span class="op">(?&lt;name&gt;pattern)</span>  <span class="cm">// named group</span>
+<span class="op">(?:pattern)</span>        <span class="cm">// non-capturing</span>
+<span class="op">(?=pattern)</span>        <span class="cm">// lookahead</span>
+<span class="op">(?!pattern)</span>        <span class="cm">// negative lookahead</span></pre>
+  </div>
+</div>
+
+<!-- SYMBOLS PROXIES -->
+<div class="card c-green">
+  <div class="card-header"><div class="card-icon">⊛</div><span class="card-title">Symbol, Proxy &amp; Reflect</span></div>
+  <div class="card-body">
+<pre><span class="cm">// Symbol — einzigartiger Keys</span>
+<span class="kw">const</span> id = <span class="ty">Symbol</span>(<span class="st">"id"</span>);
+<span class="kw">const</span> obj = { [id]: <span class="nm">123</span> };
+<span class="ty">Symbol</span>.for(<span class="st">"shared"</span>)   <span class="cm">// global registry</span>
+<span class="ty">Symbol</span>.iterator
+<span class="ty">Symbol</span>.asyncIterator
+<span class="ty">Symbol</span>.toPrimitive
+<span class="ty">Symbol</span>.toStringTag
+
+<span class="cm">// Proxy</span>
+<span class="kw">const</span> proxy = <span class="kw">new</span> <span class="ty">Proxy</span>(target, {
+  <span class="fn">get</span>(t, key)    { <span class="kw">return</span> <span class="ty">Reflect</span>.<span class="fn">get</span>(t,key); },
+  <span class="fn">set</span>(t, key, v) { t[key]=v; <span class="kw">return true</span>; },
+  <span class="fn">has</span>(t, key)    { <span class="kw">return</span> key <span class="kw">in</span> t; },
+  <span class="fn">apply</span>(t, th, a){ ... }
+});
+
+<span class="cm">// Reflect</span>
+<span class="ty">Reflect</span>.<span class="fn">get</span>(obj, <span class="st">"key"</span>)
+<span class="ty">Reflect</span>.<span class="fn">set</span>(obj, <span class="st">"key"</span>, val)
+<span class="ty">Reflect</span>.<span class="fn">has</span>(obj, <span class="st">"key"</span>)
+<span class="ty">Reflect</span>.<span class="fn">ownKeys</span>(obj)</pre>
+  </div>
+</div>
+
+<!-- ERROR & CLOSURES -->
+<div class="card c-yellow col-3">
+  <div class="card-header"><div class="card-icon">✦</div><span class="card-title">Closures, Scoping, Error, JSON &amp; Nützliches</span></div>
+  <div class="card-body">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+      <div>
+        <div class="section-label">Closures &amp; Scope</div>
+<pre><span class="kw">function</span> <span class="fn">counter</span>() {
+  <span class="kw">let</span> n = <span class="nm">0</span>;
+  <span class="kw">return</span> () => ++n;
+}
+<span class="kw">const</span> inc = <span class="fn">counter</span>();
+<span class="fn">inc</span>(); <span class="cm">// 1</span>
+<span class="fn">inc</span>(); <span class="cm">// 2</span>
+
+<span class="cm">// Hoisting</span>
+<span class="cm">// var: declaration hoisted</span>
+<span class="cm">// let/const: TDZ</span>
+<span class="cm">// function: fully hoisted</span></pre>
+      </div>
+      <div>
+        <div class="section-label">Error Handling</div>
+<pre><span class="kw">throw new</span> <span class="ty">Error</span>(<span class="st">"msg"</span>);
+<span class="kw">throw new</span> <span class="ty">TypeError</span>(<span class="st">"msg"</span>);
+<span class="kw">throw new</span> <span class="ty">RangeError</span>(<span class="st">"msg"</span>);
+<span class="kw">throw new</span> <span class="ty">SyntaxError</span>();
+<span class="kw">throw new</span> <span class="ty">ReferenceError</span>();
+
+<span class="cm">// Error Properties</span>
+e.message
+e.name
+e.stack
+
+<span class="cm">// Custom Error</span>
+<span class="kw">class</span> <span class="ty">AppError</span> <span class="kw">extends</span> <span class="ty">Error</span> {
+  <span class="kw">constructor</span>(msg) {
+    <span class="kw">super</span>(msg);
+    <span class="kw">this</span>.name=<span class="st">"AppError"</span>;
+  }
+}</pre>
+      </div>
+      <div>
+        <div class="section-label">JSON</div>
+<pre><span class="ty">JSON</span>.<span class="fn">stringify</span>(obj)
+<span class="ty">JSON</span>.<span class="fn">stringify</span>(obj, <span class="kw">null</span>, <span class="nm">2</span>)
+<span class="ty">JSON</span>.<span class="fn">parse</span>(<span class="st">'{"a":1}'</span>)
+<span class="cm">// Replacer / Reviver</span>
+<span class="ty">JSON</span>.<span class="fn">stringify</span>(obj, (k,v) => v)
+<span class="ty">JSON</span>.<span class="fn">parse</span>(s, (k,v) => v)
+
+<span class="cm">// Deep clone (no functions)</span>
+<span class="ty">structuredClone</span>(obj)
+
+<span class="cm">// Useful globals</span>
+<span class="fn">parseInt</span>(<span class="st">"42px"</span>)  <span class="cm">// 42</span>
+<span class="fn">parseFloat</span>(<span class="st">"3.14"</span>)
+<span class="fn">isNaN</span>(<span class="st">"abc"</span>)    <span class="cm">// true</span>
+<span class="fn">isFinite</span>(<span class="nm">42</span>)    <span class="cm">// true</span>
+<span class="fn">encodeURIComponent</span>(str)
+<span class="fn">decodeURIComponent</span>(str)</pre>
+      </div>
+      <div>
+        <div class="section-label">Nützliche APIs</div>
+<pre><span class="cm">// console</span>
+<span class="ty">console</span>.<span class="fn">log</span> / <span class="fn">warn</span> / <span class="fn">error</span>
+<span class="ty">console</span>.<span class="fn">table</span>(arr)
+<span class="ty">console</span>.<span class="fn">group</span>(<span class="st">"label"</span>)
+<span class="ty">console</span>.<span class="fn">time</span>(<span class="st">"id"</span>)
+<span class="ty">console</span>.<span class="fn">timeEnd</span>(<span class="st">"id"</span>)
+
+<span class="cm">// Timer</span>
+<span class="fn">setTimeout</span>(fn, <span class="nm">1000</span>)
+<span class="fn">setInterval</span>(fn, <span class="nm">500</span>)
+<span class="fn">clearTimeout</span>(id)
+<span class="fn">clearInterval</span>(id)
+<span class="fn">queueMicrotask</span>(fn)
+<span class="fn">requestAnimationFrame</span>(fn)
+
+<span class="cm">// Math Extras</span>
+<span class="ty">Math</span>.<span class="fn">random</span>()
+<span class="ty">Math</span>.<span class="fn">floor</span> / <span class="fn">ceil</span> / <span class="fn">round</span>
+<span class="ty">Math</span>.<span class="fn">max</span>(...arr)
+<span class="ty">Math</span>.<span class="fn">min</span>(...arr)</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div></div>
+<footer>JavaScript ES2024 Cheat Sheet</footer>
+</body></html>

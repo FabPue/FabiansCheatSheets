@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C# Cheat Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#0e0e14;--surface:#15151f;--surface2:#1c1c2e;--border:#2a2a42;--accent:#7c6af7;--accent2:#f7746a;--accent3:#5dd8b0;--accent4:#f7c86a;--accent5:#74b8f7;--text:#e0dff5;--muted:#6e6d8a;--kw:#c792ea;--type:#82aaff;--string:#c3e88d;--num:#f78c6c;--comment:#546e7a;--fn:#82aaff;--op:#89ddff; }
+  * { margin:0;padding:0;box-sizing:border-box; }
+  body { font-family:'JetBrains Mono',monospace;background:var(--bg);color:var(--text);line-height:1.6;font-size:13px; }
+  header { background:var(--surface);border-bottom:2px solid var(--accent);padding:22px 36px;display:flex;align-items:center;gap:20px;position:sticky;top:0;z-index:100;box-shadow:0 4px 40px rgba(124,106,247,.15); }
+  .logo { width:48px;height:48px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:#fff;flex-shrink:0; }
+  header h1 { font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#fff; }
+  header p { color:var(--muted);font-size:11px;margin-top:2px; }
+  .tag-row { margin-left:auto;display:flex;gap:8px;flex-wrap:wrap; }
+  .tag { background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:3px 10px;font-size:11px;color:var(--muted); }
+  .page { padding:28px 36px; }
+  .grid { display:grid;grid-template-columns:repeat(3,1fr);gap:14px; }
+  .col-2 { grid-column:span 2; }
+  .col-3 { grid-column:span 3; }
+  .card { background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:border-color .2s; }
+  .card:hover { border-color:var(--accent); }
+  .card-header { padding:9px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);background:var(--surface2); }
+  .card-icon { width:20px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0; }
+  .card-title { font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase; }
+  .card-body { padding:12px 14px; }
+  pre { background:#0a0a12;border-radius:7px;padding:10px 12px;overflow-x:auto;font-size:11.5px;line-height:1.7;margin-bottom:8px;border:1px solid #1e1e30; }
+  pre:last-child { margin-bottom:0; }
+  .kw{color:var(--kw)} .ty{color:var(--type)} .st{color:var(--string)} .nm{color:var(--num)} .cm{color:var(--comment)} .fn{color:var(--fn)} .op{color:var(--op)}
+  .kv-table { width:100%;border-collapse:collapse;font-size:11.5px;margin-bottom:6px; }
+  .kv-table td { padding:4px 7px;border-bottom:1px solid var(--border);vertical-align:top; }
+  .kv-table tr:last-child td { border-bottom:none; }
+  .kv-table td:first-child { color:var(--type);white-space:nowrap;font-weight:500;width:38%; }
+  .kv-table td:last-child { color:var(--muted); }
+  .section-label { font-family:'Syne',sans-serif;font-size:9px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin:10px 0 5px; }
+  .section-label:first-child { margin-top:0; }
+  .c-purple .card-icon{background:rgba(124,106,247,.2);color:var(--accent)} .c-red .card-icon{background:rgba(247,116,106,.2);color:var(--accent2)} .c-green .card-icon{background:rgba(93,216,176,.2);color:var(--accent3)} .c-yellow .card-icon{background:rgba(247,200,106,.2);color:var(--accent4)} .c-blue .card-icon{background:rgba(116,184,247,.2);color:var(--accent5)}
+  .c-purple .card-title{color:var(--accent)} .c-red .card-title{color:var(--accent2)} .c-green .card-title{color:var(--accent3)} .c-yellow .card-title{color:var(--accent4)} .c-blue .card-title{color:var(--accent5)}
+  footer { text-align:center;padding:20px;color:var(--muted);font-size:11px;border-top:1px solid var(--border);margin-top:20px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">C#</div>
+  <div><h1>C# Cheat Sheet</h1><p>Complete reference — Syntax, Types, OOP, LINQ, async/await & more</p></div>
+  <div class="tag-row"><span class="tag">.NET 8+</span><span class="tag">C# 12</span><span class="tag">OOP</span><span class="tag">LINQ</span><span class="tag">async/await</span></div>
+</header>
+<div class="page"><div class="grid">
+
+<div class="card c-blue">
+  <div class="card-header"><div class="card-icon">T</div><span class="card-title">Primitive Data Types</span></div>
+  <div class="card-body">
+    <table class="kv-table">
+      <tr><td>bool</td><td>true / false</td></tr>
+      <tr><td>byte</td><td>0 … 255</td></tr>
+      <tr><td>sbyte</td><td>-128 … 127</td></tr>
+      <tr><td>short</td><td>-32 768 … 32 767</td></tr>
+      <tr><td>int</td><td>-2 147 M … 2 147 M</td></tr>
+      <tr><td>uint</td><td>0 … 4 294 M</td></tr>
+      <tr><td>long</td><td>±9.2 × 10¹⁸</td></tr>
+      <tr><td>float</td><td>±3.4 × 10³⁸  (7 digits)</td></tr>
+      <tr><td>double</td><td>±1.7 × 10³⁰⁸ (15 digits)</td></tr>
+      <tr><td>decimal</td><td>±7.9 × 10²⁸ (28 digits)</td></tr>
+      <tr><td>char</td><td>Unicode character (16-bit)</td></tr>
+      <tr><td>string</td><td>Character sequence (ref type)</td></tr>
+      <tr><td>object</td><td>Base type of all types</td></tr>
+      <tr><td>dynamic</td><td>Runtime type resolution</td></tr>
+      <tr><td>var</td><td>Implicit typing</td></tr>
+    </table>
+<pre><span class="kw">int</span>     i  = <span class="nm">42</span>;
+<span class="kw">double</span>  d  = <span class="nm">3.14</span>;
+<span class="kw">decimal</span> m  = <span class="nm">9.99</span>m;
+<span class="kw">bool</span>    ok = <span class="kw">true</span>;
+<span class="kw">char</span>    c  = <span class="st">'A'</span>;
+<span class="kw">string</span>  s  = <span class="st">"Hello"</span>;
+<span class="kw">var</span>     x  = <span class="nm">100</span>; <span class="cm">// inferred as int</span></pre>
+  </div>
+</div>
+
+<div class="card c-purple">
+  <div class="card-header"><div class="card-icon">V</div><span class="card-title">Variables &amp; Constants</span></div>
+  <div class="card-body">
+<pre><span class="cm">// Declaration &amp; assignment</span>
+<span class="kw">int</span> x;          <span class="cm">// declaration</span>
+x = <span class="nm">5</span>;          <span class="cm">// assignment</span>
+<span class="kw">int</span> y = <span class="nm">10</span>;     <span class="cm">// initialization</span>
+
+<span class="cm">// Constants</span>
+<span class="kw">const int</span> MAX = <span class="nm">100</span>;
+
+<span class="cm">// Readonly (set at runtime)</span>
+<span class="kw">readonly int</span> id = <span class="fn">GetId</span>();
+
+<span class="cm">// Nullable types</span>
+<span class="kw">int</span>? nullableInt = <span class="kw">null</span>;
+<span class="kw">string</span>? nullStr = <span class="kw">null</span>;
+
+<span class="cm">// Multiple assignment</span>
+<span class="kw">int</span> a = b = c = <span class="nm">0</span>;
+
+<span class="cm">// Type casting</span>
+<span class="kw">double</span> d = <span class="nm">9.7</span>;
+<span class="kw">int</span> n = (<span class="kw">int</span>)d;      <span class="cm">// explicit: 9</span>
+<span class="kw">int</span> p = <span class="fn">Convert.ToInt32</span>(d);
+
+<span class="cm">// is / as</span>
+<span class="kw">if</span> (obj <span class="kw">is string</span> s) { }
+<span class="kw">var</span> t = obj <span class="kw">as string</span>;
+
+<span class="cm">// Pattern variable</span>
+<span class="kw">if</span> (obj <span class="kw">is int</span> val &amp;&amp; val &gt; <span class="nm">0</span>) { }</pre>
+  </div>
+</div>
+
+<div class="card c-red">
+  <div class="card-header"><div class="card-icon">±</div><span class="card-title">Operators</span></div>
+  <div class="card-body">
+    <div class="section-label">Arithmetic</div>
+<pre>+  -  *  /  %         <span class="cm">// basic math</span>
+++x  x++  --x  x--    <span class="cm">// increment/decrement</span></pre>
+    <div class="section-label">Comparison</div>
+<pre>==  !=  &lt;  &gt;  &lt;=  &gt;=</pre>
+    <div class="section-label">Logical</div>
+<pre>&amp;&amp;  ||  !   <span class="cm">// short-circuit</span>
+&amp;  |  ^  ~  &lt;&lt;  &gt;&gt;  &gt;&gt;&gt;  <span class="cm">// bitwise</span></pre>
+    <div class="section-label">Assignment</div>
+<pre>= += -= *= /= %= &amp;= |= ^= &lt;&lt;= &gt;&gt;=</pre>
+    <div class="section-label">Special</div>
+<pre>?:   <span class="cm">// ternary:      a ? b : c</span>
+??   <span class="cm">// null-coalesce: x ?? y</span>
+??=  <span class="cm">// null-assign:   x ??= default</span>
+?.   <span class="cm">// null-safe:     obj?.Prop</span>
+!.   <span class="cm">// null-forgive:  obj!.Prop</span>
+..   <span class="cm">// range:         arr[1..4]</span>
+^    <span class="cm">// index from end: arr[^1]</span>
+=&gt;   <span class="cm">// lambda / expression body</span>
+<span class="kw">typeof</span>(<span class="ty">int</span>)    <span class="cm">// get Type object</span>
+<span class="kw">nameof</span>(x)     <span class="cm">// "x" as string</span>
+<span class="kw">sizeof</span>(<span class="ty">int</span>)   <span class="cm">// bytes of type</span></pre>
+  </div>
+</div>
+
+<div class="card c-green">
+  <div class="card-header"><div class="card-icon">⇀</div><span class="card-title">Control Flow</span></div>
+  <div class="card-body">
+<pre><span class="cm">// if / else if / else</span>
+<span class="kw">if</span> (x &gt; <span class="nm">0</span>) { }
+<span class="kw">else if</span> (x == <span class="nm">0</span>) { }
+<span class="kw">else</span> { }
+
+<span class="cm">// Ternary</span>
+<span class="kw">var</span> r = x &gt; <span class="nm">0</span> ? <span class="st">"pos"</span> : <span class="st">"neg"</span>;
+
+<span class="cm">// switch statement</span>
+<span class="kw">switch</span> (val) {
+  <span class="kw">case</span> <span class="nm">1</span>: <span class="kw">break</span>;
+  <span class="kw">case</span> <span class="nm">2</span>:  <span class="cm">// fall-through</span>
+  <span class="kw">case</span> <span class="nm">3</span>: ...; <span class="kw">break</span>;
+  <span class="kw">default</span>: <span class="kw">break</span>;
+}
+
+<span class="cm">// switch expression (C# 8+)</span>
+<span class="kw">string</span> msg = val <span class="kw">switch</span> {
+  <span class="nm">1</span>     =&gt; <span class="st">"One"</span>,
+  <span class="nm">2</span>     =&gt; <span class="st">"Two"</span>,
+  &gt; <span class="nm">10</span>  =&gt; <span class="st">"Large"</span>,
+  _     =&gt; <span class="st">"Other"</span>
+};
+
+<span class="cm">// Pattern matching</span>
+<span class="kw">if</span> (shape <span class="kw">is</span> Circle { Radius: > <span class="nm">5</span> } c) { }</pre>
+  </div>
+</div>
+
+<div class="card c-yellow">
+  <div class="card-header"><div class="card-icon">↻</div><span class="card-title">Loops</span></div>
+  <div class="card-body">
+<pre><span class="cm">// for</span>
+<span class="kw">for</span> (<span class="kw">int</span> i = <span class="nm">0</span>; i &lt; <span class="nm">10</span>; i++) { }
+
+<span class="cm">// foreach</span>
+<span class="kw">foreach</span> (<span class="kw">var</span> item <span class="kw">in</span> collection) { }
+
+<span class="cm">// while</span>
+<span class="kw">while</span> (condition) { }
+
+<span class="cm">// do-while</span>
+<span class="kw">do</span> { } <span class="kw">while</span> (condition);
+
+<span class="cm">// Control keywords</span>
+<span class="kw">break</span>;     <span class="cm">// exit loop</span>
+<span class="kw">continue</span>; <span class="cm">// next iteration</span>
+<span class="kw">goto</span> Label; <span class="cm">// (rarely used)</span>
+
+<span class="cm">// Infinite loop</span>
+<span class="kw">while</span> (<span class="kw">true</span>) { <span class="kw">break</span>; }
+
+<span class="cm">// Index + value (C# 9+)</span>
+<span class="kw">foreach</span> (<span class="kw">var</span> (i, v) <span class="kw">in</span> list.<span class="fn">Index</span>()) { }</pre>
+  </div>
+</div>
+
+<div class="card c-blue">
+  <div class="card-header"><div class="card-icon">"</div><span class="card-title">Strings</span></div>
+  <div class="card-body">
+<pre><span class="cm">// String literals</span>
+<span class="kw">string</span> s1 = <span class="st">"Hello\nWorld"</span>;
+<span class="kw">string</span> s2 = <span class="op">@"</span><span class="st">C:\Users\path</span><span class="op">"</span>;   <span class="cm">// verbatim</span>
+<span class="kw">string</span> s3 = <span class="op">$"</span><span class="st">Value: {x * 2}</span><span class="op">"</span>; <span class="cm">// interpolated</span>
+<span class="kw">string</span> s4 = <span class="op">$@"</span><span class="st">Path: {path}</span><span class="op">"</span>; <span class="cm">// combined</span>
+
+<span class="cm">// Key methods</span>
+s.<span class="fn">Length</span>
+s.<span class="fn">ToUpper</span>() / <span class="fn">ToLower</span>()
+s.<span class="fn">Trim</span>() / <span class="fn">TrimStart</span>() / <span class="fn">TrimEnd</span>()
+s.<span class="fn">Replace</span>(<span class="st">"a"</span>, <span class="st">"b"</span>)
+s.<span class="fn">Split</span>(<span class="st">','</span>)
+s.<span class="fn">Contains</span>(<span class="st">"x"</span>)
+s.<span class="fn">StartsWith</span>(<span class="st">"H"</span>) / <span class="fn">EndsWith</span>(<span class="st">"d"</span>)
+s.<span class="fn">IndexOf</span>(<span class="st">"l"</span>)
+s.<span class="fn">Substring</span>(<span class="nm">1</span>, <span class="nm">3</span>)
+s[<span class="nm">1</span>..<span class="nm">4</span>]                   <span class="cm">// range index</span>
+s.<span class="fn">PadLeft</span>(<span class="nm">10</span>) / <span class="fn">PadRight</span>(<span class="nm">10</span>)
+<span class="ty">string</span>.<span class="fn">IsNullOrEmpty</span>(s)
+<span class="ty">string</span>.<span class="fn">IsNullOrWhiteSpace</span>(s)
+<span class="ty">string</span>.<span class="fn">Join</span>(<span class="st">", "</span>, arr)
+<span class="ty">string</span>.<span class="fn">Format</span>(<span class="st">"{0} = {1}"</span>, k, v)</pre>
+  </div>
+</div>
+
+<div class="card c-purple">
+  <div class="card-header"><div class="card-icon">[]</div><span class="card-title">Arrays</span></div>
+  <div class="card-body">
+<pre><span class="cm">// 1D array</span>
+<span class="kw">int</span>[] arr = <span class="kw">new int</span>[<span class="nm">5</span>];
+<span class="kw">int</span>[] arr = { <span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span> };
+
+<span class="cm">// 2D array</span>
+<span class="kw">int</span>[,] matrix = <span class="kw">new int</span>[<span class="nm">3</span>,<span class="nm">4</span>];
+matrix[<span class="nm">0</span>,<span class="nm">0</span>] = <span class="nm">1</span>;
+
+<span class="cm">// Jagged array</span>
+<span class="kw">int</span>[][] jag = <span class="kw">new int</span>[<span class="nm">3</span>][];
+jag[<span class="nm">0</span>] = <span class="kw">new int</span>[] { <span class="nm">1</span>, <span class="nm">2</span> };
+
+<span class="cm">// Array methods</span>
+arr.<span class="fn">Length</span>
+<span class="ty">Array</span>.<span class="fn">Sort</span>(arr)
+<span class="ty">Array</span>.<span class="fn">Reverse</span>(arr)
+<span class="ty">Array</span>.<span class="fn">Copy</span>(src, dst, len)
+<span class="ty">Array</span>.<span class="fn">IndexOf</span>(arr, val)
+<span class="ty">Array</span>.<span class="fn">Fill</span>(arr, val)
+<span class="ty">Array</span>.<span class="fn">Resize</span>(<span class="kw">ref</span> arr, <span class="nm">10</span>)
+
+<span class="cm">// Spans (high-performance slices)</span>
+<span class="ty">Span</span>&lt;<span class="kw">int</span>&gt; s = arr.<span class="fn">AsSpan</span>(<span class="nm">1</span>, <span class="nm">3</span>);</pre>
+  </div>
+</div>
+
+<div class="card c-green col-2">
+  <div class="card-header"><div class="card-icon">⊞</div><span class="card-title">Collections (System.Collections.Generic)</span></div>
+  <div class="card-body">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div>
+        <div class="section-label">List&lt;T&gt;</div>
+<pre><span class="kw">var</span> list = <span class="kw">new</span> <span class="ty">List</span>&lt;<span class="kw">int</span>&gt; { <span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span> };
+list.<span class="fn">Add</span>(<span class="nm">4</span>);
+list.<span class="fn">AddRange</span>(<span class="kw">new</span>[] { <span class="nm">5</span>, <span class="nm">6</span> });
+list.<span class="fn">Insert</span>(<span class="nm">0</span>, <span class="nm">99</span>);
+list.<span class="fn">Remove</span>(<span class="nm">2</span>);
+list.<span class="fn">RemoveAt</span>(<span class="nm">0</span>);
+list.<span class="fn">Contains</span>(<span class="nm">3</span>);
+list.<span class="fn">Sort</span>();  list.<span class="fn">Reverse</span>();
+list.<span class="fn">Count</span>;  list.<span class="fn">Clear</span>();</pre>
+
+        <div class="section-label">HashSet&lt;T&gt; — unique values</div>
+<pre><span class="kw">var</span> set = <span class="kw">new</span> <span class="ty">HashSet</span>&lt;<span class="kw">int</span>&gt;();
+set.<span class="fn">Add</span>(<span class="nm">1</span>);  set.<span class="fn">Remove</span>(<span class="nm">1</span>);
+set.<span class="fn">Contains</span>(<span class="nm">1</span>);
+set.<span class="fn">UnionWith</span>(other);
+set.<span class="fn">IntersectWith</span>(other);
+set.<span class="fn">ExceptWith</span>(other);</pre>
+      </div>
+      <div>
+        <div class="section-label">Dictionary&lt;TKey,TVal&gt;</div>
+<pre><span class="kw">var</span> d = <span class="kw">new</span> <span class="ty">Dictionary</span>&lt;<span class="kw">string</span>,<span class="kw">int</span>&gt;();
+d[<span class="st">"a"</span>] = <span class="nm">1</span>;
+d.<span class="fn">Add</span>(<span class="st">"b"</span>, <span class="nm">2</span>);
+d.<span class="fn">TryGetValue</span>(<span class="st">"a"</span>, <span class="kw">out var</span> v);
+d.<span class="fn">ContainsKey</span>(<span class="st">"a"</span>);
+d.<span class="fn">Remove</span>(<span class="st">"a"</span>);
+d.<span class="fn">Keys</span> / d.<span class="fn">Values</span>;
+<span class="kw">foreach</span>(<span class="kw">var</span> (k,v) <span class="kw">in</span> d) { }</pre>
+
+        <div class="section-label">Queue / Stack</div>
+<pre><span class="kw">var</span> q = <span class="kw">new</span> <span class="ty">Queue</span>&lt;<span class="kw">int</span>&gt;();
+q.<span class="fn">Enqueue</span>(<span class="nm">1</span>); q.<span class="fn">Dequeue</span>();
+q.<span class="fn">Peek</span>();    q.<span class="fn">Count</span>;
+
+<span class="kw">var</span> s = <span class="kw">new</span> <span class="ty">Stack</span>&lt;<span class="kw">int</span>&gt;();
+s.<span class="fn">Push</span>(<span class="nm">1</span>);  s.<span class="fn">Pop</span>();
+s.<span class="fn">Peek</span>();  s.<span class="fn">Count</span>;</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card c-yellow col-2">
+  <div class="card-header"><div class="card-icon">ƒ</div><span class="card-title">Methods &amp; Parameters</span></div>
+  <div class="card-body">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div>
+<pre><span class="cm">// Basic method</span>
+<span class="kw">int</span> <span class="fn">Add</span>(<span class="kw">int</span> a, <span class="kw">int</span> b) => a + b;
+
+<span class="cm">// Default parameter</span>
+<span class="kw">void</span> <span class="fn">Say</span>(<span class="kw">string</span> s = <span class="st">"Hi"</span>) { }
+
+<span class="cm">// Named arguments</span>
+<span class="fn">Say</span>(s: <span class="st">"Hello"</span>);
+
+<span class="cm">// params (variable args)</span>
+<span class="kw">int</span> <span class="fn">Sum</span>(<span class="kw">params int</span>[] nums) =>
+  nums.<span class="fn">Sum</span>();
+<span class="fn">Sum</span>(<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>);
+
+<span class="cm">// out parameter</span>
+<span class="kw">bool</span> <span class="fn">Try</span>(<span class="kw">out int</span> result) {
+  result = <span class="nm">42</span>; <span class="kw">return true</span>;
+}
+<span class="fn">Try</span>(<span class="kw">out int</span> r);</pre>
+      </div>
+      <div>
+<pre><span class="cm">// ref parameter (pass by reference)</span>
+<span class="kw">void</span> <span class="fn">Inc</span>(<span class="kw">ref int</span> x) { x++; }
+<span class="fn">Inc</span>(<span class="kw">ref</span> myVar);
+
+<span class="cm">// in parameter (readonly ref)</span>
+<span class="kw">void</span> <span class="fn">Read</span>(<span class="kw">in int</span> x) { }
+
+<span class="cm">// Multiple return via tuple</span>
+(<span class="kw">int</span> min, <span class="kw">int</span> max) <span class="fn">MinMax</span>(<span class="kw">int</span>[] a) =>
+  (a.<span class="fn">Min</span>(), a.<span class="fn">Max</span>());
+<span class="kw">var</span> (lo, hi) = <span class="fn">MinMax</span>(arr);
+
+<span class="cm">// Local function</span>
+<span class="kw">void</span> <span class="fn">Outer</span>() {
+  <span class="kw">int</span> <span class="fn">Inner</span>(<span class="kw">int</span> x) => x * x;
+}
+
+<span class="cm">// Expression body</span>
+<span class="kw">string</span> <span class="fn">Greet</span>(<span class="kw">string</span> n) => <span class="op">$"Hi {n}"</span>;</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card c-purple">
+  <div class="card-header"><div class="card-icon">◇</div><span class="card-title">Classes &amp; OOP</span></div>
+  <div class="card-body">
+<pre><span class="kw">public class</span> <span class="ty">Person</span> {
+  <span class="cm">// Field</span>
+  <span class="kw">private string</span> _name;
+
+  <span class="cm">// Auto-property</span>
+  <span class="kw">public int</span> Age { <span class="kw">get</span>; <span class="kw">set</span>; }
+
+  <span class="cm">// Read-only property</span>
+  <span class="kw">public string</span> Name => _name;
+
+  <span class="cm">// Init-only (C# 9)</span>
+  <span class="kw">public string</span> Id { <span class="kw">get</span>; <span class="kw">init</span>; }
+
+  <span class="cm">// Constructor</span>
+  <span class="kw">public</span> <span class="fn">Person</span>(<span class="kw">string</span> name, <span class="kw">int</span> age) {
+    _name = name; Age = age;
+  }
+
+  <span class="cm">// Static member</span>
+  <span class="kw">public static int</span> Count = <span class="nm">0</span>;
+
+  <span class="cm">// Override toString</span>
+  <span class="kw">public override string</span> <span class="fn">ToString</span>() =>
+    <span class="op">$"{_name} ({Age})"</span>;
+}
+
+<span class="cm">// Instantiation</span>
+<span class="kw">var</span> p = <span class="kw">new</span> <span class="ty">Person</span>(<span class="st">"Anna"</span>, <span class="nm">30</span>);
+
+<span class="cm">// Object initializer</span>
+<span class="kw">var</span> p2 = <span class="kw">new</span> <span class="ty">Person</span> { Age = <span class="nm">25</span> };</pre>
+  </div>
+</div>
+
+<div class="card c-red">
+  <div class="card-header"><div class="card-icon">↑</div><span class="card-title">Inheritance &amp; Polymorphism</span></div>
+  <div class="card-body">
+<pre><span class="kw">public class</span> <span class="ty">Animal</span> {
+  <span class="kw">public virtual void</span> <span class="fn">Speak</span>() =>
+    <span class="ty">Console</span>.<span class="fn">WriteLine</span>(<span class="st">"..."</span>);
+}
+
+<span class="kw">public class</span> <span class="ty">Dog</span> : <span class="ty">Animal</span> {
+  <span class="kw">public override void</span> <span class="fn">Speak</span>() =>
+    <span class="ty">Console</span>.<span class="fn">WriteLine</span>(<span class="st">"Woof!"</span>);
+  <span class="cm">// new = hides base member</span>
+  <span class="kw">public new string</span> Name => <span class="st">"Dog"</span>;
+}
+
+<span class="cm">// sealed = no further inheritance</span>
+<span class="kw">public sealed class</span> <span class="ty">Final</span> { }
+
+<span class="cm">// abstract class</span>
+<span class="kw">public abstract class</span> <span class="ty">Shape</span> {
+  <span class="kw">public abstract double</span> <span class="fn">Area</span>();
+  <span class="kw">public virtual void</span> <span class="fn">Draw</span>() { }
+}
+
+<span class="cm">// Primary constructor call</span>
+<span class="kw">public class</span> <span class="ty">Cat</span>(<span class="kw">string</span> name)
+  : <span class="kw">base</span>(name) { }
+
+<span class="cm">// Call base implementation</span>
+<span class="kw">public override void</span> <span class="fn">Speak</span>() {
+  <span class="kw">base</span>.<span class="fn">Speak</span>();
+}</pre>
+  </div>
+</div>
+
+<div class="card c-green">
+  <div class="card-header"><div class="card-icon">I</div><span class="card-title">Interfaces</span></div>
+  <div class="card-body">
+<pre><span class="kw">public interface</span> <span class="ty">IAnimal</span> {
+  <span class="kw">string</span> Name { <span class="kw">get</span>; }
+  <span class="kw">void</span> <span class="fn">Speak</span>();
+  <span class="cm">// Default implementation (C# 8)</span>
+  <span class="kw">void</span> <span class="fn">Sleep</span>() => <span class="ty">Console</span>.<span class="fn">WriteLine</span>(<span class="st">"Zzz"</span>);
+}
+
+<span class="cm">// Multiple interfaces</span>
+<span class="kw">class</span> <span class="ty">Robot</span> : <span class="ty">IAnimal</span>, <span class="ty">IDisposable</span> {
+  <span class="kw">public string</span> Name => <span class="st">"R2D2"</span>;
+  <span class="kw">public void</span> <span class="fn">Speak</span>() { }
+  <span class="kw">public void</span> <span class="fn">Dispose</span>() { }
+}
+
+<span class="cm">// Generic interface</span>
+<span class="kw">interface</span> <span class="ty">IRepository</span>&lt;<span class="ty">T</span>&gt; {
+  <span class="ty">T</span> <span class="fn">Get</span>(<span class="kw">int</span> id);
+  <span class="kw">void</span> <span class="fn">Save</span>(<span class="ty">T</span> entity);
+}
+
+<span class="cm">// Common .NET interfaces</span>
+<span class="ty">IEnumerable</span>&lt;T&gt;  <span class="cm">// foreach support</span>
+<span class="ty">IDisposable</span>      <span class="cm">// using statement</span>
+<span class="ty">IComparable</span>&lt;T&gt;  <span class="cm">// sorting</span>
+<span class="ty">IEquatable</span>&lt;T&gt;   <span class="cm">// equality</span>
+<span class="ty">ICloneable</span>       <span class="cm">// Clone()</span></pre>
+  </div>
+</div>
+
+<div class="card c-blue">
+  <div class="card-header"><div class="card-icon">⟨T⟩</div><span class="card-title">Generics</span></div>
+  <div class="card-body">
+<pre><span class="cm">// Generic class</span>
+<span class="kw">class</span> <span class="ty">Box</span>&lt;<span class="ty">T</span>&gt; {
+  <span class="kw">public</span> <span class="ty">T</span> Value { <span class="kw">get</span>; <span class="kw">set</span>; }
+}
+
+<span class="cm">// Generic method</span>
+<span class="ty">T</span> <span class="fn">Max</span>&lt;<span class="ty">T</span>&gt;(<span class="ty">T</span> a, <span class="ty">T</span> b) <span class="kw">where</span> <span class="ty">T</span> :
+  <span class="ty">IComparable</span>&lt;<span class="ty">T</span>&gt; =>
+  a.<span class="fn">CompareTo</span>(b) &gt; <span class="nm">0</span> ? a : b;
+
+<span class="cm">// Constraints</span>
+<span class="kw">where</span> <span class="ty">T</span> : <span class="kw">class</span>         <span class="cm">// reference type</span>
+<span class="kw">where</span> <span class="ty">T</span> : <span class="kw">struct</span>        <span class="cm">// value type</span>
+<span class="kw">where</span> <span class="ty">T</span> : <span class="kw">new</span>()         <span class="cm">// parameterless ctor</span>
+<span class="kw">where</span> <span class="ty">T</span> : <span class="ty">Animal</span>        <span class="cm">// base class</span>
+<span class="kw">where</span> <span class="ty">T</span> : <span class="ty">IDisposable</span>   <span class="cm">// interface</span>
+<span class="kw">where</span> <span class="ty">T</span> : <span class="kw">notnull</span>       <span class="cm">// not null</span>
+<span class="kw">where</span> <span class="ty">T</span> : <span class="kw">unmanaged</span>     <span class="cm">// no ref</span></pre>
+  </div>
+</div>
+
+<div class="card c-purple col-2">
+  <div class="card-header"><div class="card-icon">∑</div><span class="card-title">LINQ (Language Integrated Query)</span></div>
+  <div class="card-body">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div>
+        <div class="section-label">Query syntax</div>
+<pre><span class="kw">var</span> res = <span class="kw">from</span> x <span class="kw">in</span> numbers
+          <span class="kw">where</span> x &gt; <span class="nm">5</span>
+          <span class="kw">orderby</span> x <span class="kw">descending</span>
+          <span class="kw">select</span> x * x;</pre>
+
+        <div class="section-label">Method syntax (preferred)</div>
+<pre>numbers
+  .<span class="fn">Where</span>(x => x &gt; <span class="nm">5</span>)
+  .<span class="fn">OrderByDescending</span>(x => x)
+  .<span class="fn">Select</span>(x => x * x)
+  .<span class="fn">ToList</span>();</pre>
+
+        <div class="section-label">Aggregates &amp; checks</div>
+<pre>list.<span class="fn">Count</span>()
+list.<span class="fn">Count</span>(x => x&gt;<span class="nm">0</span>)
+list.<span class="fn">Sum</span>(x => x)
+list.<span class="fn">Min</span>() / .<span class="fn">Max</span>()
+list.<span class="fn">Average</span>()
+list.<span class="fn">Any</span>(x => x &gt; <span class="nm">0</span>)
+list.<span class="fn">All</span>(x => x &gt; <span class="nm">0</span>)</pre>
+      </div>
+      <div>
+        <div class="section-label">Transformations</div>
+<pre>list.<span class="fn">Select</span>(x => x.Name)
+list.<span class="fn">SelectMany</span>(x => x.Items)
+list.<span class="fn">GroupBy</span>(x => x.Category)
+list.<span class="fn">OrderBy</span>(x => x.Name)
+list.<span class="fn">Distinct</span>()
+list.<span class="fn">DistinctBy</span>(x => x.Id)
+list.<span class="fn">Zip</span>(other, (a,b) => a+b)</pre>
+
+        <div class="section-label">Paging &amp; searching</div>
+<pre>list.<span class="fn">Take</span>(<span class="nm">5</span>)
+list.<span class="fn">Skip</span>(<span class="nm">10</span>)
+list.<span class="fn">First</span>() / .<span class="fn">FirstOrDefault</span>()
+list.<span class="fn">Last</span>()  / .<span class="fn">LastOrDefault</span>()
+list.<span class="fn">Single</span>() / .<span class="fn">SingleOrDefault</span>()
+
+<span class="cm">// Joins</span>
+a.<span class="fn">Join</span>(b,
+  x => x.Id, y => y.Id,
+  (x,y) => <span class="kw">new</span> { x, y });
+
+<span class="cm">// Conversion</span>
+.<span class="fn">ToList</span>() / .<span class="fn">ToArray</span>()
+.<span class="fn">ToDictionary</span>(x => x.Id)
+.<span class="fn">ToHashSet</span>()</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card c-red">
+  <div class="card-header"><div class="card-icon">→</div><span class="card-title">Delegates, Func &amp; Action</span></div>
+  <div class="card-body">
+<pre><span class="cm">// Delegate type</span>
+<span class="kw">delegate int</span> <span class="ty">MathOp</span>(<span class="kw">int</span> a, <span class="kw">int</span> b);
+<span class="ty">MathOp</span> add = (a, b) => a + b;
+
+<span class="cm">// Action (no return value)</span>
+<span class="ty">Action</span> greet = () => <span class="ty">Console</span>.<span class="fn">WriteLine</span>(<span class="st">"Hi"</span>);
+<span class="ty">Action</span>&lt;<span class="kw">string</span>&gt; say = s => <span class="ty">Console</span>.<span class="fn">WriteLine</span>(s);
+
+<span class="cm">// Func (with return value)</span>
+<span class="ty">Func</span>&lt;<span class="kw">int</span>, <span class="kw">int</span>&gt; sq = x => x * x;
+<span class="ty">Func</span>&lt;<span class="kw">int</span>, <span class="kw">int</span>, <span class="kw">int</span>&gt; add2 = (a,b) => a+b;
+
+<span class="cm">// Predicate (bool return)</span>
+<span class="ty">Predicate</span>&lt;<span class="kw">int</span>&gt; isEven = x => x % <span class="nm">2</span> == <span class="nm">0</span>;
+
+<span class="cm">// Multicast delegate</span>
+<span class="ty">Action</span> multi = greet + greet;
+multi();
+multi -= greet; <span class="cm">// remove handler</span></pre>
+  </div>
+</div>
+
+<div class="card c-yellow">
+  <div class="card-header"><div class="card-icon">⚡</div><span class="card-title">Events</span></div>
+  <div class="card-body">
+<pre><span class="kw">class</span> <span class="ty">Button</span> {
+  <span class="kw">public event</span> <span class="ty">EventHandler</span>&lt;<span class="ty">EventArgs</span>&gt;?
+    Clicked;
+
+  <span class="kw">protected virtual void</span> <span class="fn">OnClicked</span>() {
+    Clicked?.Invoke(<span class="kw">this</span>, <span class="ty">EventArgs</span>.Empty);
+  }
+}
+
+<span class="cm">// Subscribe / unsubscribe</span>
+btn.Clicked += <span class="fn">Handler</span>;
+btn.Clicked -= <span class="fn">Handler</span>;
+
+<span class="cm">// Custom EventArgs</span>
+<span class="kw">class</span> <span class="ty">MyArgs</span> : <span class="ty">EventArgs</span> {
+  <span class="kw">public string</span> Message { <span class="kw">get</span>; <span class="kw">set</span>; }
+}
+
+<span class="cm">// Lambda handler</span>
+btn.Clicked += (s, e) => { <span class="cm">/* ... */</span> };</pre>
+  </div>
+</div>
+
+<div class="card c-red col-2">
+  <div class="card-header"><div class="card-icon">!</div><span class="card-title">Exception Handling</span></div>
+  <div class="card-body">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div>
+<pre><span class="cm">// try / catch / finally</span>
+<span class="kw">try</span> {
+  <span class="kw">var</span> x = <span class="kw">int</span>.<span class="fn">Parse</span>(<span class="st">"abc"</span>);
+}
+<span class="kw">catch</span> (<span class="ty">FormatException</span> ex) {
+  <span class="ty">Console</span>.<span class="fn">WriteLine</span>(ex.Message);
+}
+<span class="kw">catch</span> (<span class="ty">Exception</span> ex)
+    <span class="kw">when</span> (ex.Message.<span class="fn">Contains</span>(<span class="st">"x"</span>)) { }
+<span class="kw">catch</span> { <span class="cm">// catch everything</span> }
+<span class="kw">finally</span> { <span class="cm">// always runs</span> }
+
+<span class="cm">// Custom exception</span>
+<span class="kw">class</span> <span class="ty">AppException</span> : <span class="ty">Exception</span> {
+  <span class="kw">public</span> <span class="fn">AppException</span>(<span class="kw">string</span> msg)
+    : <span class="kw">base</span>(msg) { }
+}</pre>
+      </div>
+      <div>
+<pre><span class="cm">// throw</span>
+<span class="kw">throw new</span> <span class="ty">InvalidOperationException</span>(<span class="st">"!"</span>);
+
+<span class="cm">// Re-throw (preserves stack)</span>
+<span class="kw">catch</span> (<span class="ty">Exception</span> ex) { <span class="kw">throw</span>; }
+
+<span class="cm">// Throw expression (C# 7)</span>
+<span class="kw">string</span> name = s ?? <span class="kw">throw new</span>
+  <span class="ty">ArgumentNullException</span>(<span class="kw">nameof</span>(s));
+
+<span class="cm">// Common exceptions</span>
+<span class="ty">ArgumentNullException</span>
+<span class="ty">ArgumentOutOfRangeException</span>
+<span class="ty">InvalidOperationException</span>
+<span class="ty">NotImplementedException</span>
+<span class="ty">NullReferenceException</span>
+<span class="ty">IndexOutOfRangeException</span>
+<span class="ty">OverflowException</span>
+<span class="ty">IOException</span> / <span class="ty">FileNotFoundException</span>
+<span class="ty">FormatException</span>
+<span class="ty">TimeoutException</span></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card c-purple">
+  <div class="card-header"><div class="card-icon">⟳</div><span class="card-title">async / await</span></div>
+  <div class="card-body">
+<pre><span class="cm">// async method</span>
+<span class="kw">public async</span> <span class="ty">Task</span>&lt;<span class="kw">string</span>&gt; <span class="fn">GetAsync</span>(<span class="kw">string</span> url) {
+  <span class="kw">using var</span> client = <span class="kw">new</span> <span class="ty">HttpClient</span>();
+  <span class="kw">return await</span> client.<span class="fn">GetStringAsync</span>(url);
+}
+
+<span class="cm">// async void (event handlers only)</span>
+<span class="kw">async void</span> <span class="fn">OnClick</span>(<span class="kw">object</span> s, <span class="ty">EventArgs</span> e)
+  { <span class="kw">await</span> <span class="fn">DoWorkAsync</span>(); }
+
+<span class="cm">// Run in parallel</span>
+<span class="kw">var</span> (a, b) = <span class="kw">await</span> (<span class="fn">TaskA</span>(), <span class="fn">TaskB</span>());
+<span class="kw">await</span> <span class="ty">Task</span>.<span class="fn">WhenAll</span>(t1, t2, t3);
+<span class="kw">var</span> first = <span class="kw">await</span> <span class="ty">Task</span>.<span class="fn">WhenAny</span>(t1, t2);
+
+<span class="cm">// CancellationToken</span>
+<span class="kw">async</span> <span class="ty">Task</span> <span class="fn">Work</span>(<span class="ty">CancellationToken</span> ct) {
+  ct.<span class="fn">ThrowIfCancellationRequested</span>();
+  <span class="kw">await</span> <span class="ty">Task</span>.<span class="fn">Delay</span>(<span class="nm">500</span>, ct);
+}</pre>
+  </div>
+</div>
+
+<div class="card c-blue">
+  <div class="card-header"><div class="card-icon">🔒</div><span class="card-title">Access Modifiers</span></div>
+  <div class="card-body">
+    <table class="kv-table">
+      <tr><td>public</td><td>Accessible everywhere</td></tr>
+      <tr><td>private</td><td>Class only</td></tr>
+      <tr><td>protected</td><td>Class + derived classes</td></tr>
+      <tr><td>internal</td><td>Same assembly only</td></tr>
+      <tr><td>protected internal</td><td>protected OR internal</td></tr>
+      <tr><td>private protected</td><td>protected AND internal</td></tr>
+      <tr><td>file</td><td>This file only (C# 11)</td></tr>
+    </table>
+    <div class="section-label">Additional modifiers</div>
+    <table class="kv-table">
+      <tr><td>static</td><td>Class-level, no instance</td></tr>
+      <tr><td>abstract</td><td>Must be overridden</td></tr>
+      <tr><td>virtual</td><td>Can be overridden</td></tr>
+      <tr><td>override</td><td>Overrides virtual member</td></tr>
+      <tr><td>sealed</td><td>No further override/inherit</td></tr>
+      <tr><td>readonly</td><td>Constructor-only assignment</td></tr>
+      <tr><td>volatile</td><td>Thread-safe reads</td></tr>
+      <tr><td>partial</td><td>Split class across files</td></tr>
+      <tr><td>unsafe</td><td>Enable pointer code</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card c-green">
+  <div class="card-header"><div class="card-icon">≅</div><span class="card-title">Records, Structs &amp; Enums</span></div>
+  <div class="card-body">
+    <div class="section-label">Record (C# 9) — immutable by default</div>
+<pre><span class="kw">record</span> <span class="ty">Point</span>(<span class="kw">int</span> X, <span class="kw">int</span> Y);
+<span class="kw">var</span> p = <span class="kw">new</span> <span class="ty">Point</span>(<span class="nm">1</span>, <span class="nm">2</span>);
+<span class="kw">var</span> p2 = p <span class="kw">with</span> { X = <span class="nm">99</span> }; <span class="cm">// copy</span>
+
+<span class="cm">// record struct (value type)</span>
+<span class="kw">record struct</span> <span class="ty">Size</span>(<span class="kw">int</span> W, <span class="kw">int</span> H);</pre>
+
+    <div class="section-label">Struct — value type</div>
+<pre><span class="kw">struct</span> <span class="ty">Color</span> {
+  <span class="kw">public byte</span> R, G, B;
+  <span class="kw">public</span> <span class="fn">Color</span>(<span class="kw">byte</span> r, <span class="kw">byte</span> g, <span class="kw">byte</span> b)
+    => (R,G,B) = (r,g,b);
+}</pre>
+
+    <div class="section-label">Enum</div>
+<pre><span class="kw">enum</span> <span class="ty">Direction</span> { North, South, East, West }
+[<span class="ty">Flags</span>]
+<span class="kw">enum</span> <span class="ty">Perms</span> { Read=<span class="nm">1</span>, Write=<span class="nm">2</span>, Exec=<span class="nm">4</span> }
+<span class="kw">var</span> d = <span class="ty">Direction</span>.North;
+(<span class="kw">int</span>)d;  <span class="ty">Enum</span>.<span class="fn">Parse</span>&lt;<span class="ty">Direction</span>&gt;(<span class="st">"North"</span>);</pre>
+  </div>
+</div>
+
+<div class="card c-yellow">
+  <div class="card-header"><div class="card-icon">λ</div><span class="card-title">Lambda &amp; Functional</span></div>
+  <div class="card-body">
+<pre><span class="cm">// Expression lambda</span>
+<span class="ty">Func</span>&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt; sq = x => x * x;
+
+<span class="cm">// Statement lambda</span>
+<span class="ty">Func</span>&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt; abs = x => {
+  <span class="kw">if</span> (x &lt; <span class="nm">0</span>) x = -x;
+  <span class="kw">return</span> x;
+};
+
+<span class="cm">// Closures (capture variables)</span>
+<span class="kw">int</span> factor = <span class="nm">3</span>;
+<span class="ty">Func</span>&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt; multiply = x => x * factor;
+
+<span class="cm">// static lambda (no capture)</span>
+<span class="ty">Func</span>&lt;<span class="kw">int</span>,<span class="kw">int</span>&gt; pure = <span class="kw">static</span> x => x * x;
+
+<span class="cm">// Method group conversion</span>
+<span class="ty">Action</span>&lt;<span class="kw">string</span>&gt; print = <span class="ty">Console</span>.WriteLine;
+
+<span class="cm">// Pattern Matching</span>
+<span class="kw">if</span> (score <span class="kw">is</span> &gt;= <span class="nm">90</span> <span class="kw">and</span> &lt;= <span class="nm">100</span>) { }
+<span class="kw">if</span> (p <span class="kw">is</span> { Age: > <span class="nm">18</span>, Name: <span class="st">"Max"</span> }) { }
+<span class="kw">if</span> (arr <span class="kw">is</span> [<span class="nm">1</span>, <span class="nm">2</span>, ..]) { } <span class="cm">// list pattern</span></pre>
+  </div>
+</div>
+
+<div class="card c-green col-3">
+  <div class="card-header"><div class="card-icon">✦</div><span class="card-title">Modern C# Features (9–12)</span></div>
+  <div class="card-body">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
+      <div>
+        <div class="section-label">C# 9 — Records &amp; Top-Level</div>
+<pre><span class="cm">// Top-level statements</span>
+<span class="ty">Console</span>.<span class="fn">WriteLine</span>(<span class="st">"Hello!"</span>);
+
+<span class="cm">// Init-only properties</span>
+<span class="kw">public string</span> Name { <span class="kw">get</span>; <span class="kw">init</span>; }
+
+<span class="cm">// Target-typed new</span>
+<span class="ty">List</span>&lt;<span class="kw">int</span>&gt; list = <span class="kw">new</span>();
+
+<span class="cm">// with-expression</span>
+<span class="kw">var</span> p2 = p1 <span class="kw">with</span> { Age = <span class="nm">30</span> };</pre>
+      </div>
+      <div>
+        <div class="section-label">C# 10–11 — Raw Strings &amp; more</div>
+<pre><span class="cm">// Raw string literals (C# 11)</span>
+<span class="kw">var</span> json = <span class="st">"""
+  { "key": "value" }
+  """</span>;
+
+<span class="cm">// Global &amp; file-scoped namespaces</span>
+<span class="kw">global using</span> System;
+<span class="kw">namespace</span> MyApp;
+
+<span class="cm">// Required members (C# 11)</span>
+<span class="kw">public required string</span> Name { <span class="kw">get</span>; <span class="kw">set</span>; }</pre>
+      </div>
+      <div>
+        <div class="section-label">C# 12 — Primary Constructors</div>
+<pre><span class="cm">// Primary constructor</span>
+<span class="kw">class</span> <span class="ty">Service</span>(<span class="ty">ILogger</span> logger) {
+  <span class="kw">void</span> <span class="fn">Log</span>(<span class="kw">string</span> msg) =>
+    logger.<span class="fn">Log</span>(msg);
+}
+
+<span class="cm">// Collection expressions</span>
+<span class="kw">int</span>[] nums = [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>];
+<span class="ty">List</span>&lt;<span class="kw">int</span>&gt; l = [<span class="nm">1</span>, <span class="nm">2</span>, ..<span class="fn">More</span>()];
+
+<span class="cm">// Type aliases</span>
+<span class="kw">using</span> <span class="ty">Coord</span> = (<span class="kw">int</span> X, <span class="kw">int</span> Y);</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div></div>
+<footer>C# 12 &amp; .NET 8 Cheat Sheet — Fabian's Cheat Sheets</footer>
+</body></html>

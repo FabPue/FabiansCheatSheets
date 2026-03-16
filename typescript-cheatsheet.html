@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TypeScript Cheat Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c1220;
+    --surface: #131c2e;
+    --surface2: #1a2540;
+    --border: #233050;
+    --accent: #3b82f6;
+    --accent2: #38bdf8;
+    --accent3: #a78bfa;
+    --accent4: #34d399;
+    --accent5: #fb923c;
+    --text: #e1e8f5;
+    --muted: #526080;
+    --kw: #93c5fd;
+    --type: #7dd3fc;
+    --string: #86efac;
+    --num: #fca5a5;
+    --comment: #3d5070;
+    --fn: #c4b5fd;
+    --op: #67e8f9;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'JetBrains Mono', monospace; background: var(--bg); color: var(--text); line-height: 1.6; font-size: 13px; }
+  header { background: var(--surface); border-bottom: 2px solid var(--accent); padding: 24px 40px; display: flex; align-items: center; gap: 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 40px rgba(59,130,246,0.15); }
+  .logo { width: 50px; height: 50px; background: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; color: #fff; flex-shrink: 0; }
+  header h1 { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; color: #fff; }
+  header p { color: var(--muted); font-size: 11px; margin-top: 2px; }
+  .tag-row { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 3px 10px; font-size: 11px; color: var(--muted); }
+  .page { padding: 28px 40px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .col-2 { grid-column: span 2; }
+  .col-3 { grid-column: span 3; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: border-color 0.2s; }
+  .card:hover { border-color: var(--accent); }
+  .card-header { padding: 9px 14px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); background: var(--surface2); }
+  .card-icon { width: 20px; height: 20px; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+  .card-title { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+  .card-body { padding: 12px 14px; }
+  pre { background: #080e1a; border-radius: 7px; padding: 10px 12px; overflow-x: auto; font-size: 11.5px; line-height: 1.7; margin-bottom: 8px; border: 1px solid #18253d; }
+  pre:last-child { margin-bottom: 0; }
+  .kw { color: var(--kw); } .ty { color: var(--type); } .st { color: var(--string); } .nm { color: var(--num); } .cm { color: var(--comment); } .fn { color: var(--fn); } .op { color: var(--op); }
+  .kv-table { width: 100%; border-collapse: collapse; font-size: 11.5px; margin-bottom: 6px; }
+  .kv-table td { padding: 4px 7px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .kv-table tr:last-child td { border-bottom: none; }
+  .kv-table td:first-child { color: var(--type); white-space: nowrap; font-weight: 500; width: 40%; }
+  .kv-table td:last-child { color: var(--muted); }
+  .section-label { font-family: 'Syne', sans-serif; font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); margin: 10px 0 5px; }
+  .section-label:first-child { margin-top: 0; }
+  .c-blue   .card-icon { background: rgba(59,130,246,0.2); color: var(--accent); }
+  .c-sky    .card-icon { background: rgba(56,189,248,0.2); color: var(--accent2); }
+  .c-purple .card-icon { background: rgba(167,139,250,0.2); color: var(--accent3); }
+  .c-green  .card-icon { background: rgba(52,211,153,0.2); color: var(--accent4); }
+  .c-orange .card-icon { background: rgba(251,146,60,0.2); color: var(--accent5); }
+  .c-blue   .card-title { color: var(--accent); }
+  .c-sky    .card-title { color: var(--accent2); }
+  .c-purple .card-title { color: var(--accent3); }
+  .c-green  .card-title { color: var(--accent4); }
+  .c-orange .card-title { color: var(--accent5); }
+  footer { text-align: center; padding: 20px; color: var(--muted); font-size: 11px; border-top: 1px solid var(--border); margin-top: 20px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">TS</div>
+  <div><h1>TypeScript Cheat Sheet</h1><p>TypeScript 5.x — Typsystem, Generics, Utility Types, Decorators & mehr</p></div>
+  <div class="tag-row"><span class="tag">TS 5.x</span><span class="tag">Strict Mode</span><span class="tag">Generics</span><span class="tag">Decorators</span><span class="tag">Utility Types</span></div>
+</header>
+<div class="page"><div class="grid">
+
+<!-- PRIMITIVE & BASIC TYPES -->
+<div class="card c-blue">
+  <div class="card-header"><div class="card-icon">T</div><span class="card-title">Primitive &amp; Basic Types</span></div>
+  <div class="card-body">
+<pre><span class="cm">// Primitives</span>
+<span class="kw">let</span> n:    <span class="ty">number</span>  = <span class="nm">42</span>;
+<span class="kw">let</span> s:    <span class="ty">string</span>  = <span class="st">"hi"</span>;
+<span class="kw">let</span> b:    <span class="ty">boolean</span> = <span class="kw">true</span>;
+<span class="kw">let</span> big:  <span class="ty">bigint</span>  = <span class="nm">100n</span>;
+<span class="kw">let</span> sym:  <span class="ty">symbol</span>  = <span class="ty">Symbol</span>();
+<span class="kw">let</span> u:    <span class="ty">undefined</span> = <span class="kw">undefined</span>;
+<span class="kw">let</span> nil:  <span class="ty">null</span>    = <span class="kw">null</span>;
+
+<span class="cm">// Special</span>
+<span class="kw">let</span> a:  <span class="ty">any</span>;      <span class="cm">// deaktiviert Checks</span>
+<span class="kw">let</span> uk: <span class="ty">unknown</span>;  <span class="cm">// safe any</span>
+<span class="kw">let</span> v:  <span class="ty">void</span>;     <span class="cm">// kein Rückgabewert</span>
+<span class="kw">let</span> nv: <span class="ty">never</span>;    <span class="cm">// unerreichbarer Code</span>
+<span class="kw">let</span> obj: <span class="ty">object</span>;  <span class="cm">// non-primitive</span>
+
+<span class="cm">// Object type</span>
+<span class="kw">let</span> p: { name: <span class="ty">string</span>; age: <span class="ty">number</span> };
+
+<span class="cm">// Array</span>
+<span class="kw">let</span> arr: <span class="ty">number</span>[]         = [<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>];
+<span class="kw">let</span> arr: <span class="ty">Array</span>&lt;<span class="ty">string</span>&gt;   = [];
+<span class="kw">let</span> ro:  <span class="ty">readonly</span> <span class="ty">number</span>[] = [<span class="nm">1</span>,<span class="nm">2</span>];
+
+<span class="cm">// Tuple</span>
+<span class="kw">let</span> t: [<span class="ty">string</span>, <span class="ty">number</span>] = [<span class="st">"hi"</span>, <span class="nm">1</span>];
+<span class="kw">let</span> t: [<span class="ty">string</span>, ...<span class="ty">number</span>[]] = [<span class="st">"a"</span>, <span class="nm">1</span>, <span class="nm">2</span>];</pre>
+  </div>
+</div>
+
+<!-- INTERFACES -->
+<div class="card c-sky">
+  <div class="card-header"><div class="card-icon">I</div><span class="card-title">Interfaces</span></div>
+  <div class="card-body">
+<pre><span class="kw">interface</span> <span class="ty">User</span> {
+  <span class="kw">readonly</span> id: <span class="ty">number</span>;  <span class="cm">// read-only</span>
+  name:    <span class="ty">string</span>;
+  email?:  <span class="ty">string</span>;       <span class="cm">// optional</span>
+  [key: <span class="ty">string</span>]: <span class="ty">any</span>;  <span class="cm">// index sig</span>
+}
+
+<span class="cm">// Extension</span>
+<span class="kw">interface</span> <span class="ty">Admin</span> <span class="kw">extends</span> <span class="ty">User</span> {
+  role: <span class="ty">string</span>;
+}
+
+<span class="cm">// Multi-Extension</span>
+<span class="kw">interface</span> <span class="ty">SuperAdmin</span>
+  <span class="kw">extends</span> <span class="ty">Admin</span>, <span class="ty">Auditable</span> { }
+
+<span class="cm">// Merging (Declaration Merging)</span>
+<span class="kw">interface</span> <span class="ty">User</span> { phone: <span class="ty">string</span>; }
+<span class="cm">// User hat jetzt auch phone!</span>
+
+<span class="cm">// Callable Interface</span>
+<span class="kw">interface</span> <span class="ty">Formatter</span> {
+  (value: <span class="ty">string</span>): <span class="ty">string</span>;
+  locale: <span class="ty">string</span>;
+}
+
+<span class="cm">// Index Signature</span>
+<span class="kw">interface</span> <span class="ty">StringMap</span> {
+  [key: <span class="ty">string</span>]: <span class="ty">string</span>;
+}</pre>
+  </div>
+</div>
+
+<!-- TYPE ALIASES -->
+<div class="card c-purple">
+  <div class="card-header"><div class="card-icon">≡</div><span class="card-title">Type Aliases</span></div>
+  <div class="card-body">
+<pre><span class="cm">// Basic</span>
+<span class="kw">type</span> <span class="ty">ID</span>     = <span class="ty">string</span> | <span class="ty">number</span>;
+<span class="kw">type</span> <span class="ty">Name</span>   = <span class="ty">string</span>;
+<span class="kw">type</span> <span class="ty">Pair</span>   = [<span class="ty">string</span>, <span class="ty">number</span>];
+
+<span class="cm">// Union &amp; Intersection</span>
+<span class="kw">type</span> <span class="ty">StrNum</span> = <span class="ty">string</span> | <span class="ty">number</span>;
+<span class="kw">type</span> <span class="ty">AB</span>     = <span class="ty">TypeA</span> &amp; <span class="ty">TypeB</span>;  <span class="cm">// both</span>
+
+<span class="cm">// Literal Types</span>
+<span class="kw">type</span> <span class="ty">Dir</span>    = <span class="st">"left"</span> | <span class="st">"right"</span> | <span class="st">"up"</span> | <span class="st">"down"</span>;
+<span class="kw">type</span> <span class="ty">One</span>    = <span class="nm">1</span> | <span class="nm">2</span> | <span class="nm">3</span>;
+
+<span class="cm">// Template literal types</span>
+<span class="kw">type</span> <span class="ty">EventName</span> = <span class="op">`on${string}`</span>;
+<span class="kw">type</span> <span class="ty">Locale</span>    = <span class="op">`${string}-${string}`</span>;
+
+<span class="cm">// Recursive Type</span>
+<span class="kw">type</span> <span class="ty">JSON</span> = <span class="ty">string</span> | <span class="ty">number</span> | <span class="ty">boolean</span>
+  | <span class="kw">null</span> | <span class="ty">JSON</span>[] | { [k:<span class="ty">string</span>]: <span class="ty">JSON</span> };
+
+<span class="cm">// Function Type</span>
+<span class="kw">type</span> <span class="ty">Callback</span>  = (err: <span class="ty">Error</span> | <span class="kw">null</span>) => <span class="ty">void</span>;
+<span class="kw">type</span> <span class="ty">Transform</span> = &lt;<span class="ty">T</span>&gt;(input: <span class="ty">T</span>) => <span class="ty">T</span>;</pre>
+  </div>
+</div>
+
+<!-- GENERICS -->
+<div class="card c-green col-2">
+  <div class="card-header"><div class="card-icon">⟨T⟩</div><span class="card-title">Generics</span></div>
+  <div class="card-body">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div>
+<pre><span class="cm">// Generic function</span>
+<span class="kw">function</span> <span class="fn">identity</span>&lt;<span class="ty">T</span>&gt;(x: <span class="ty">T</span>): <span class="ty">T</span> {
+  <span class="kw">return</span> x;
+}
+<span class="fn">identity</span>&lt;<span class="ty">string</span>&gt;(<span class="st">"hi"</span>);
+<span class="fn">identity</span>(<span class="nm">42</span>); <span class="cm">// inferred</span>
+
+<span class="cm">// Generic class</span>
+<span class="kw">class</span> <span class="ty">Box</span>&lt;<span class="ty">T</span>&gt; {
+  constructor(<span class="kw">public</span> value: <span class="ty">T</span>) {}
+  <span class="fn">map</span>&lt;<span class="ty">U</span>&gt;(f: (v: <span class="ty">T</span>) => <span class="ty">U</span>): <span class="ty">Box</span>&lt;<span class="ty">U</span>&gt; {
+    <span class="kw">return new</span> <span class="ty">Box</span>(f(<span class="kw">this</span>.value));
+  }
+}
+
+<span class="cm">// Constraints</span>
+<span class="kw">function</span> <span class="fn">getLen</span>&lt;<span class="ty">T</span> <span class="kw">extends</span> { length: <span class="ty">number</span> }&gt;
+  (x: <span class="ty">T</span>) { <span class="kw">return</span> x.length; }</pre>
+      </div>
+      <div>
+<pre><span class="cm">// Multiple type parameters</span>
+<span class="kw">function</span> <span class="fn">pair</span>&lt;<span class="ty">A</span>, <span class="ty">B</span>&gt;(a: <span class="ty">A</span>, b: <span class="ty">B</span>):
+  [<span class="ty">A</span>, <span class="ty">B</span>] { <span class="kw">return</span> [a, b]; }
+
+<span class="cm">// keyof Constraint</span>
+<span class="kw">function</span> <span class="fn">getVal</span>&lt;<span class="ty">T</span>, <span class="ty">K</span> <span class="kw">extends</span> <span class="ty">keyof T</span>&gt;
+  (obj: <span class="ty">T</span>, key: <span class="ty">K</span>): <span class="ty">T</span>[<span class="ty">K</span>] {
+  <span class="kw">return</span> obj[key];
+}
+
+<span class="cm">// Default Typ</span>
+<span class="kw">type</span> <span class="ty">List</span>&lt;<span class="ty">T</span> = <span class="ty">string</span>&gt; = <span class="ty">T</span>[];
+
+<span class="cm">// Conditional Type</span>
+<span class="kw">type</span> <span class="ty">IsArray</span>&lt;<span class="ty">T</span>&gt; =
+  <span class="ty">T</span> <span class="kw">extends</span> <span class="ty">any</span>[] ? <span class="st">"yes"</span> : <span class="st">"no"</span>;
+
+<span class="cm">// Infer</span>
+<span class="kw">type</span> <span class="ty">UnwrapArray</span>&lt;<span class="ty">T</span>&gt; =
+  <span class="ty">T</span> <span class="kw">extends</span> (<span class="kw">infer</span> <span class="ty">U</span>)[] ? <span class="ty">U</span> : <span class="ty">T</span>;</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- UTILITY TYPES -->
+<div class="card c-orange col-3">
+  <div class="card-header"><div class="card-icon">⚙</div><span class="card-title">Utility Types — Vollständige Übersicht</span></div>
+  <div class="card-body">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+      <div>
+        <div class="section-label">Objekt-Transformation</div>
+<pre><span class="ty">Partial</span>&lt;<span class="ty">T</span>&gt;
+<span class="cm">// all properties optional</span>
+
+<span class="ty">Required</span>&lt;<span class="ty">T</span>&gt;
+<span class="cm">// all properties required</span>
+
+<span class="ty">Readonly</span>&lt;<span class="ty">T</span>&gt;
+<span class="cm">// all properties readonly</span>
+
+<span class="ty">Record</span>&lt;<span class="ty">K</span>, <span class="ty">V</span>&gt;
+<span class="cm">// {[P in K]: V}</span>
+
+<span class="ty">Pick</span>&lt;<span class="ty">T</span>, <span class="st">"a"</span>|<span class="st">"b"</span>&gt;
+<span class="cm">// nur a und b behalten</span>
+
+<span class="ty">Omit</span>&lt;<span class="ty">T</span>, <span class="st">"a"</span>|<span class="st">"b"</span>&gt;
+<span class="cm">// a und b entfernen</span></pre>
+      </div>
+      <div>
+        <div class="section-label">Mengen &amp; Typen</div>
+<pre><span class="ty">Exclude</span>&lt;<span class="ty">T</span>, <span class="ty">U</span>&gt;
+<span class="cm">// T ohne die Typen von U</span>
+<span class="cm">// Exclude&lt;"a"|"b", "a"&gt; = "b"</span>
+
+<span class="ty">Extract</span>&lt;<span class="ty">T</span>, <span class="ty">U</span>&gt;
+<span class="cm">// Schnittmenge von T und U</span>
+
+<span class="ty">NonNullable</span>&lt;<span class="ty">T</span>&gt;
+<span class="cm">// null und undefined entfernen</span>
+
+<span class="ty">Parameters</span>&lt;<span class="ty">F</span>&gt;
+<span class="cm">// Parameter-Tuple der Funktion</span>
+
+<span class="ty">ReturnType</span>&lt;<span class="ty">F</span>&gt;
+<span class="cm">// Rückgabetyp der Funktion</span>
+
+<span class="ty">ConstructorParameters</span>&lt;<span class="ty">C</span>&gt;
+<span class="cm">// Ctor-Parameter</span></pre>
+      </div>
+      <div>
+        <div class="section-label">String &amp; Template</div>
+<pre><span class="ty">Uppercase</span>&lt;<span class="ty">S</span>&gt;
+<span class="ty">Lowercase</span>&lt;<span class="ty">S</span>&gt;
+<span class="ty">Capitalize</span>&lt;<span class="ty">S</span>&gt;
+<span class="ty">Uncapitalize</span>&lt;<span class="ty">S</span>&gt;
+
+<span class="cm">// Template Literal Utility</span>
+<span class="kw">type</span> <span class="ty">Getter</span>&lt;<span class="ty">T</span> <span class="kw">extends</span> <span class="ty">string</span>&gt; =
+  <span class="op">`get${Capitalize&lt;T&gt;}`</span>;
+
+<span class="ty">InstanceType</span>&lt;<span class="ty">C</span>&gt;
+<span class="cm">// Instanztyp des Konstruktors</span>
+
+<span class="ty">ThisType</span>&lt;<span class="ty">T</span>&gt;
+<span class="cm">// this-Typ in Objekten</span>
+
+<span class="ty">Awaited</span>&lt;<span class="ty">T</span>&gt;
+<span class="cm">// Unwrap Promise</span>
+<span class="cm">// Awaited&lt;Promise&lt;string&gt;&gt; = string</span></pre>
+      </div>
+      <div>
+        <div class="section-label">Beispiele</div>
+<pre><span class="kw">interface</span> <span class="ty">User</span> {
+  id: <span class="ty">number</span>; name: <span class="ty">string</span>;
+  email?: <span class="ty">string</span>;
+}
+
+<span class="cm">// Update DTO</span>
+<span class="kw">type</span> <span class="ty">UpdateUser</span> =
+  <span class="ty">Partial</span>&lt;<span class="ty">Omit</span>&lt;<span class="ty">User</span>, <span class="st">"id"</span>&gt;&gt;;
+
+<span class="cm">// Lookup Type</span>
+<span class="kw">type</span> <span class="ty">UserName</span> = <span class="ty">User</span>[<span class="st">"name"</span>]; <span class="cm">// string</span>
+
+<span class="cm">// Mapped Type</span>
+<span class="kw">type</span> <span class="ty">Mutable</span>&lt;<span class="ty">T</span>&gt; = {
+  -<span class="kw">readonly</span> [<span class="ty">P</span> <span class="kw">in keyof</span> <span class="ty">T</span>]: <span class="ty">T</span>[<span class="ty">P</span>]
+};
+<span class="cm">// -? entfernt optional:</span>
+<span class="kw">type</span> <span class="ty">Concrete</span>&lt;<span class="ty">T</span>&gt; = {
+  [<span class="ty">P</span> <span class="kw">in keyof</span> <span class="ty">T</span>]-?: <span class="ty">T</span>[<span class="ty">P</span>]
+};</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- KLASSEN -->
+<div class="card c-blue col-2">
+  <div class="card-header"><div class="card-icon">◇</div><span class="card-title">Classes</span></div>
+  <div class="card-body">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div>
+<pre><span class="kw">class</span> <span class="ty">Service</span> {
+  <span class="cm">// Access Modifier im Ctor (Shorthand)</span>
+  <span class="kw">constructor</span>(
+    <span class="kw">private readonly</span> url: <span class="ty">string</span>,
+    <span class="kw">protected</span> name: <span class="ty">string</span>,
+    <span class="kw">public</span> version = <span class="nm">1</span>
+  ) {}
+
+  <span class="cm">// Private Field (ES#)</span>
+  #secret = <span class="st">"hidden"</span>;
+
+  <span class="cm">// Abstract Method</span>
+  <span class="kw">abstract</span> <span class="fn">run</span>(): <span class="ty">void</span>;
+
+  <span class="cm">// Static</span>
+  <span class="kw">static</span> instance: <span class="ty">Service</span>;
+  <span class="kw">static</span> <span class="fn">create</span>(): <span class="ty">Service</span> { ... }
+
+  <span class="cm">// Getter / Setter</span>
+  <span class="kw">get</span> <span class="fn">fullUrl</span>(): <span class="ty">string</span> {
+    <span class="kw">return</span> <span class="op">`${<span class="kw">this</span>.url}/v${<span class="kw">this</span>.version}`</span>;
+  }
+}</pre>
+      </div>
+      <div>
+<pre><span class="cm">// Implement interface</span>
+<span class="kw">class</span> <span class="ty">Dog</span> <span class="kw">implements</span> <span class="ty">IAnimal</span> {
+  <span class="fn">speak</span>(): <span class="ty">string</span> { <span class="kw">return</span> <span class="st">"Wau"</span>; }
+}
+
+<span class="cm">// Abstract Class</span>
+<span class="kw">abstract class</span> <span class="ty">Shape</span> {
+  <span class="kw">abstract</span> <span class="fn">area</span>(): <span class="ty">number</span>;
+  <span class="fn">describe</span>() { <span class="kw">return</span> <span class="op">`Area: ${<span class="kw">this</span>.<span class="fn">area</span>()}`</span>; }
+}
+
+<span class="cm">// Mixins</span>
+<span class="kw">type</span> <span class="ty">Constructor</span>&lt;<span class="ty">T</span> = {}&gt; = <span class="kw">new</span>(...a: <span class="ty">any</span>[]) => <span class="ty">T</span>;
+
+<span class="kw">function</span> <span class="ty">Serializable</span>&lt;<span class="ty">TBase</span> <span class="kw">extends</span> <span class="ty">Constructor</span>&gt;(Base: <span class="ty">TBase</span>) {
+  <span class="kw">return class extends</span> Base {
+    <span class="fn">serialize</span>() { <span class="kw">return</span> <span class="ty">JSON</span>.<span class="fn">stringify</span>(<span class="kw">this</span>); }
+  };
+}
+
+<span class="cm">// Overload Signatures</span>
+<span class="kw">function</span> <span class="fn">process</span>(x: <span class="ty">string</span>): <span class="ty">string</span>;
+<span class="kw">function</span> <span class="fn">process</span>(x: <span class="ty">number</span>): <span class="ty">number</span>;
+<span class="kw">function</span> <span class="fn">process</span>(x: <span class="ty">any</span>): <span class="ty">any</span> { <span class="kw">return</span> x; }</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TYPE NARROWING -->
+<div class="card c-purple">
+  <div class="card-header"><div class="card-icon">⊳</div><span class="card-title">Type Narrowing</span></div>
+  <div class="card-body">
+<pre><span class="cm">// typeof guard</span>
+<span class="kw">if</span> (<span class="kw">typeof</span> x === <span class="st">"string"</span>) { }
+
+<span class="cm">// instanceof guard</span>
+<span class="kw">if</span> (x <span class="kw">instanceof</span> <span class="ty">Date</span>) { }
+
+<span class="cm">// in Guard (Property Check)</span>
+<span class="kw">if</span> (<span class="st">"name"</span> <span class="kw">in</span> obj) { }
+
+<span class="cm">// Truthiness Narrowing</span>
+<span class="kw">if</span> (x) { <span class="cm">/* not null/undef */</span> }
+
+<span class="cm">// Equality Narrowing</span>
+<span class="kw">if</span> (x === <span class="kw">null</span>) { }
+
+<span class="cm">// Type Predicate (User-Defined Guard)</span>
+<span class="kw">function</span> <span class="fn">isString</span>(x: <span class="ty">unknown</span>):
+    x <span class="kw">is string</span> {
+  <span class="kw">return typeof</span> x === <span class="st">"string"</span>;
+}
+
+<span class="cm">// Discriminated Union</span>
+<span class="kw">type</span> <span class="ty">Shape</span> =
+  | { kind: <span class="st">"circle"</span>;  r: <span class="ty">number</span> }
+  | { kind: <span class="st">"square"</span>;  s: <span class="ty">number</span> };
+<span class="kw">switch</span>(shape.kind) {
+  <span class="kw">case</span> <span class="st">"circle"</span>: shape.r; <span class="kw">break</span>;
+  <span class="kw">case</span> <span class="st">"square"</span>: shape.s; <span class="kw">break</span>;
+}</pre>
+  </div>
+</div>
+
+<!-- DECORATORS -->
+<div class="card c-green">
+  <div class="card-header"><div class="card-icon">@</div><span class="card-title">Decorators (TS 5.x)</span></div>
+  <div class="card-body">
+<pre><span class="cm">// Classes-Decorator</span>
+<span class="kw">function</span> <span class="fn">sealed</span>(target: <span class="kw">typeof</span> <span class="ty">MyClass</span>) {
+  <span class="ty">Object</span>.<span class="fn">seal</span>(target);
+}
+<span class="op">@sealed</span>
+<span class="kw">class</span> <span class="ty">MyClass</span> { }
+
+<span class="cm">// Method decorator</span>
+<span class="kw">function</span> <span class="fn">log</span>(target: <span class="ty">any</span>, ctx: <span class="ty">ClassMethodDecoratorContext</span>) {
+  <span class="kw">return function</span>(...args: <span class="ty">any</span>[]) {
+    <span class="ty">console</span>.<span class="fn">log</span>(<span class="op">`Calling ${String(ctx.name)}`</span>);
+    <span class="kw">return</span> (<span class="kw">this</span> <span class="kw">as</span> <span class="ty">any</span>)[ctx.name](...args);
+  };
+}
+
+<span class="cm">// Property Decorator</span>
+<span class="kw">function</span> <span class="fn">readonly</span>(t: <span class="ty">any</span>, ctx: <span class="ty">ClassFieldDecoratorContext</span>) {
+  <span class="kw">return</span> () => { <span class="ty">Object</span>.<span class="fn">freeze</span>(t); };
+}
+
+<span class="cm">// Usage</span>
+<span class="kw">class</span> <span class="ty">Greeter</span> {
+  <span class="op">@log</span>
+  <span class="fn">greet</span>(name: <span class="ty">string</span>) { <span class="kw">return</span> name; }
+}</pre>
+  </div>
+</div>
+
+<!-- ENUMS -->
+<div class="card c-orange">
+  <div class="card-header"><div class="card-icon">≅</div><span class="card-title">Enums &amp; Namespaces</span></div>
+  <div class="card-body">
+<pre><span class="cm">// Numeric Enum</span>
+<span class="kw">enum</span> <span class="ty">Direction</span> { Up, Down, Left, Right }
+<span class="ty">Direction</span>.Up    <span class="cm">// 0</span>
+<span class="ty">Direction</span>[<span class="nm">0</span>]   <span class="cm">// "Up" (reverse mapping)</span>
+
+<span class="cm">// String enum</span>
+<span class="kw">enum</span> <span class="ty">Status</span> {
+  Active  = <span class="st">"ACTIVE"</span>,
+  Pending = <span class="st">"PENDING"</span>,
+  Closed  = <span class="st">"CLOSED"</span>
+}
+
+<span class="cm">// Const Enum (inlined, kein JS-Code)</span>
+<span class="kw">const enum</span> <span class="ty">Flags</span> { Read=<span class="nm">1</span>, Write=<span class="nm">2</span> }
+
+<span class="cm">// Prefer union type:</span>
+<span class="kw">type</span> <span class="ty">Dir</span> = <span class="st">"up"</span> | <span class="st">"down"</span> | <span class="st">"left"</span>;
+
+<span class="cm">// Namespace</span>
+<span class="kw">namespace</span> <span class="ty">Validation</span> {
+  <span class="kw">export interface</span> <span class="ty">StringValidator</span> {
+    <span class="fn">isAcceptable</span>(s: <span class="ty">string</span>): <span class="ty">boolean</span>;
+  }
+  <span class="kw">export const</span> regex = /<span class="op">\d+</span>/;
+}</pre>
+  </div>
+</div>
+
+<!-- ADVANCED TYPES -->
+<div class="card c-blue col-3">
+  <div class="card-header"><div class="card-icon">✦</div><span class="card-title">Advanced Types: Mapped, Conditional, Template Literals &amp; Modules</span></div>
+  <div class="card-body">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+      <div>
+        <div class="section-label">Mapped Types</div>
+<pre><span class="cm">// Alle Properties optional</span>
+<span class="kw">type</span> <span class="ty">Optional</span>&lt;<span class="ty">T</span>&gt; = {
+  [<span class="ty">P</span> <span class="kw">in keyof</span> <span class="ty">T</span>]?: <span class="ty">T</span>[<span class="ty">P</span>]
+};
+
+<span class="cm">// Properties filtern via as</span>
+<span class="kw">type</span> <span class="ty">OnlyStrings</span>&lt;<span class="ty">T</span>&gt; = {
+  [<span class="ty">K</span> <span class="kw">in keyof</span> <span class="ty">T</span> <span class="kw">as</span>
+    <span class="ty">T</span>[<span class="ty">K</span>] <span class="kw">extends</span> <span class="ty">string</span> ? <span class="ty">K</span> : <span class="kw">never</span>]: <span class="ty">string</span>
+};
+
+<span class="cm">// Getter für alle Props</span>
+<span class="kw">type</span> <span class="ty">Getters</span>&lt;<span class="ty">T</span>&gt; = {
+  [<span class="ty">K</span> <span class="kw">in keyof</span> <span class="ty">T</span> <span class="kw">as</span>
+    <span class="op">`get${Capitalize&lt;string &amp; K&gt;}`</span>
+  ]: () => <span class="ty">T</span>[<span class="ty">K</span>]
+};</pre>
+      </div>
+      <div>
+        <div class="section-label">Conditional &amp; Infer</div>
+<pre><span class="cm">// Flatten array</span>
+<span class="kw">type</span> <span class="ty">Flat</span>&lt;<span class="ty">T</span>&gt; =
+  <span class="ty">T</span> <span class="kw">extends</span> (<span class="kw">infer</span> <span class="ty">U</span>)[] ? <span class="ty">U</span> : <span class="ty">T</span>;
+
+<span class="cm">// Promise unwrap</span>
+<span class="kw">type</span> <span class="ty">Unpack</span>&lt;<span class="ty">T</span>&gt; =
+  <span class="ty">T</span> <span class="kw">extends</span> <span class="ty">Promise</span>&lt;<span class="kw">infer</span> <span class="ty">V</span>&gt; ? <span class="ty">V</span> : <span class="ty">T</span>;
+
+<span class="cm">// Deep Partial</span>
+<span class="kw">type</span> <span class="ty">DeepPartial</span>&lt;<span class="ty">T</span>&gt; = {
+  [<span class="ty">P</span> <span class="kw">in keyof</span> <span class="ty">T</span>]?:
+    <span class="ty">T</span>[<span class="ty">P</span>] <span class="kw">extends</span> <span class="ty">object</span>
+      ? <span class="ty">DeepPartial</span>&lt;<span class="ty">T</span>[<span class="ty">P</span>]&gt;
+      : <span class="ty">T</span>[<span class="ty">P</span>]
+};
+
+<span class="cm">// IsNever</span>
+<span class="kw">type</span> <span class="ty">IsNever</span>&lt;<span class="ty">T</span>&gt; =
+  [<span class="ty">T</span>] <span class="kw">extends</span> [<span class="kw">never</span>] ? <span class="kw">true</span> : <span class="kw">false</span>;</pre>
+      </div>
+      <div>
+        <div class="section-label">Module &amp; Declarations</div>
+<pre><span class="cm">// tsconfig.json options</span>
+{
+  <span class="st">"strict"</span>: <span class="kw">true</span>,
+  <span class="st">"noImplicitAny"</span>: <span class="kw">true</span>,
+  <span class="st">"strictNullChecks"</span>: <span class="kw">true</span>,
+  <span class="st">"target"</span>: <span class="st">"ES2022"</span>,
+  <span class="st">"module"</span>: <span class="st">"NodeNext"</span>
+}
+
+<span class="cm">// Ambient Declarations (.d.ts)</span>
+<span class="kw">declare</span> <span class="kw">const</span> API_URL: <span class="ty">string</span>;
+<span class="kw">declare function</span> <span class="fn">fetch</span>(url: <span class="ty">string</span>): <span class="ty">any</span>;
+<span class="kw">declare module</span> <span class="st">"*.svg"</span> {
+  <span class="kw">const</span> content: <span class="ty">string</span>;
+  <span class="kw">export default</span> content;
+}
+<span class="kw">declare global</span> {
+  <span class="kw">interface</span> <span class="ty">Window</span> {
+    myLib: <span class="ty">MyLib</span>;
+  }
+}</pre>
+      </div>
+      <div>
+        <div class="section-label">Assertion &amp; Satisfies</div>
+<pre><span class="cm">// Type Assertion</span>
+<span class="kw">const</span> x = val <span class="kw">as</span> <span class="ty">string</span>;
+<span class="kw">const</span> x = &lt;<span class="ty">string</span>&gt;val;
+<span class="kw">const</span> x = val <span class="kw">as unknown as</span> <span class="ty">string</span>;
+
+<span class="cm">// Non-null Assertion</span>
+el!.addEventListener(<span class="st">"click"</span>, fn);
+
+<span class="cm">// satisfies (TS 4.9)</span>
+<span class="kw">const</span> config = {
+  port: <span class="nm">8080</span>,
+  host: <span class="st">"localhost"</span>
+} <span class="kw">satisfies</span> <span class="ty">Config</span>;
+<span class="cm">// preserves exact type!</span>
+
+<span class="cm">// const assertion</span>
+<span class="kw">const</span> arr = [<span class="nm">1</span>, <span class="nm">2</span>] <span class="kw">as const</span>;
+<span class="cm">// readonly [1, 2]</span>
+
+<span class="cm">// Assertion Functions</span>
+<span class="kw">function</span> <span class="fn">assert</span>(v: <span class="kw">unknown</span>):
+  <span class="kw">asserts</span> v {
+  <span class="kw">if</span> (!v) <span class="kw">throw new</span> <span class="ty">Error</span>();
+}</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div></div>
+<footer>TypeScript 5.x Cheat Sheet</footer>
+</body></html>
