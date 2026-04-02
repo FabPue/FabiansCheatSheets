@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -70,12 +70,12 @@
 <body>
 <header>
   <div class="logo">C</div>
-  <div><h1>C Language Cheat Sheet</h1><p>C11/C17 — Vollständige Referenz: Typen, Pointer, Speicher, Structs, I/O & mehr</p></div>
+  <div><h1>C Language Cheat Sheet</h1><p>C11/C17 — Complete reference: Types, Pointers, Storage, Structs, I/O & more</p></div>
   <div class="tag-row"><span class="tag">C11</span><span class="tag">C17</span><span class="tag">Pointer</span><span class="tag">Memory</span><span class="tag">Structs</span><span class="tag">stdlib</span></div>
 </header>
 <div class="page"><div class="grid">
 
-<!-- DATENTYPEN -->
+<!-- Datatypes -->
 <div class="card c-amber">
   <div class="card-header"><div class="card-icon">T</div><span class="card-title">Data Types &amp; Sizes</span></div>
   <div class="card-body">
@@ -83,15 +83,15 @@
       <tr><td>char</td><td>1 Byte, -128…127 / 0…255</td></tr>
       <tr><td>unsigned char</td><td>0…255</td></tr>
       <tr><td>short</td><td>2 Bytes, ±32 767</td></tr>
-      <tr><td>int</td><td>4 Bytes, ±2 147 Mio.</td></tr>
-      <tr><td>unsigned int</td><td>4 Bytes, 0…4 294 Mio.</td></tr>
-      <tr><td>long</td><td>4 od. 8 Bytes</td></tr>
+      <tr><td>int</td><td>4 Bytes, ±2 147 million</td></tr>
+      <tr><td>unsigned int</td><td>4 Bytes, 0…4 294 million</td></tr>
+      <tr><td>long</td><td>4 or 8 Bytes</td></tr>
       <tr><td>long long</td><td>8 Bytes, ±9.2×10¹⁸</td></tr>
-      <tr><td>float</td><td>4 Bytes, ~7 Stellen</td></tr>
-      <tr><td>double</td><td>8 Bytes, ~15 Stellen</td></tr>
+      <tr><td>float</td><td>4 Bytes, ~7 Digits</td></tr>
+      <tr><td>double</td><td>8 Bytes, ~15 Digits</td></tr>
       <tr><td>long double</td><td>10/16 Bytes</td></tr>
-      <tr><td>_Bool</td><td>0 oder 1</td></tr>
-      <tr><td>void</td><td>Kein Typ / generischer Ptr</td></tr>
+      <tr><td>_Bool</td><td>0 or 1</td></tr>
+      <tr><td>void</td><td>No type / generic ptr</td></tr>
     </table>
 <pre><span class="cm">// Exact widths (stdint.h)</span>
 <span class="ty">int8_t</span>   <span class="ty">int16_t</span>  <span class="ty">int32_t</span>  <span class="ty">int64_t</span>
@@ -104,7 +104,7 @@
   </div>
 </div>
 
-<!-- VARIABLEN & DEKLARATION -->
+<!-- VARIABLES & DECLARATION -->
 <div class="card c-green">
   <div class="card-header"><div class="card-icon">V</div><span class="card-title">Variables &amp; Qualifiers</span></div>
   <div class="card-body">
@@ -113,7 +113,7 @@
 <span class="ty">int</span> y = <span class="nm">42</span>;
 <span class="ty">int</span> a, b, c;    <span class="cm">// multiple</span>
 <span class="ty">int</span> arr[<span class="nm">5</span>] = {<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>,<span class="nm">4</span>,<span class="nm">5</span>};
-<span class="ty">char</span> s[] = <span class="st">"Hallo"</span>;
+<span class="ty">char</span> s[] = <span class="st">"Hello"</span>;
 <span class="ty">double</span> pi = <span class="nm">3.14159</span>;
 
 <span class="cm">// Qualifiers</span>
@@ -136,7 +136,7 @@
   </div>
 </div>
 
-<!-- OPERATOREN -->
+<!-- Operators -->
 <div class="card c-red">
   <div class="card-header"><div class="card-icon">±</div><span class="card-title">Operators &amp; Precedence</span></div>
   <div class="card-body">
@@ -163,31 +163,31 @@
 
 <span class="cm">// Other</span>
 ? :        <span class="cm">// Ternary</span>
-,          <span class="cm">// Komma-Operator</span>
+,          <span class="cm">// comma operator</span>
 <span class="kw">sizeof</span>(x)  <span class="cm">// Size</span>
 &amp;x         <span class="cm">// address of x</span>
-*ptr       <span class="cm">// Dereferenzierung</span>
+*ptr       <span class="cm">// dereference</span>
 arr[i]     <span class="cm">// Index</span>
 s.m        <span class="cm">// Struct-Member</span>
 p->m       <span class="cm">// Ptr->Member</span>
-(<span class="ty">Typ</span>)x    <span class="cm">// Cast</span>
+(<span class="ty">type</span>)x    <span class="cm">// Cast</span>
 
-<span class="cm">// Präzedenz: () [] -> . höchste</span>
-<span class="cm">// dann: unär ++ -- ! ~ cast *  &amp;</span>
-<span class="cm">// dann: * / %  dann: + -  dann: &lt;&lt; &gt;&gt;</span>
-<span class="cm">// dann: &lt; &gt; &lt;= &gt;=  dann: == !=</span>
-<span class="cm">// dann: &amp;  ^  |  &amp;&amp;  ||  ?:  =  ,</span></pre>
+<span class="cm">// Precedent: () [] -> . highest</span>
+<span class="cm">// then: unary ++ -- ! ~ cast *  &amp;</span>
+<span class="cm">// then: * / %  than: + -  then: &lt;&lt; &gt;&gt;</span>
+<span class="cm">// then: &lt; &gt; &lt;= &gt;=  then: == !=</span>
+<span class="cm">// then: &amp;  ^  |  &amp;&amp;  ||  ?:  =  ,</span></pre>
   </div>
 </div>
 
 <!-- POINTER -->
 <div class="card c-amber col-2">
-  <div class="card-header"><div class="card-icon">*</div><span class="card-title">Pointer &amp; Adressen</span></div>
+  <div class="card-header"><div class="card-icon">*</div><span class="card-title">Pointer &amp; Address</span></div>
   <div class="card-body">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
       <div>
 <pre><span class="cm">// Pointer declaration</span>
-<span class="ty">int</span> *ptr;           <span class="cm">// Pointer auf int</span>
+<span class="ty">int</span> *ptr;           <span class="cm">// Pointer to int</span>
 <span class="ty">int</span> *p = <span class="kw">NULL</span>;     <span class="cm">// Null pointer</span>
 <span class="ty">char</span> *s = <span class="st">"Hi"</span>;    <span class="cm">// String pointer</span>
 <span class="kw">void</span> *vp;           <span class="cm">// generic pointer</span>
@@ -199,7 +199,7 @@ p->m       <span class="cm">// Ptr->Member</span>
 <span class="fn">printf</span>(<span class="st">"%d\n"</span>, *p); <span class="cm">// 100</span>
 
 <span class="cm">// Pointer arithmetic</span>
-p++;                <span class="cm">// next int address</span>
+p++;<span class="cm">// next int address</span>
 p += <span class="nm">3</span>;
 *(p + <span class="nm">1</span>)           <span class="cm">// next element</span>
 
@@ -236,7 +236,7 @@ p1 - p2; <span class="cm">// ptrdiff_t</span></pre>
   </div>
 </div>
 
-<!-- SPEICHERVERWALTUNG -->
+<!-- STORAGEMANAGEMENT -->
 <div class="card c-red">
   <div class="card-header"><div class="card-icon">⊕</div><span class="card-title">Memory (stdlib.h)</span></div>
   <div class="card-body">
@@ -270,7 +270,7 @@ arr = (<span class="ty">int</span>*)<span class="fn">realloc</span>(arr, <span c
   <div class="card-header"><div class="card-icon">"</div><span class="card-title">Strings (string.h)</span></div>
   <div class="card-body">
 <pre><span class="cm">// String is null-terminated char array</span>
-<span class="ty">char</span> s[] = <span class="st">"Hallo"</span>;   <span class="cm">// {'H','a','l','l','o','\0'}</span>
+<span class="ty">char</span> s[] = <span class="st">"Hello"</span>;   <span class="cm">// {'H','e','l','l','o','\0'}</span>
 <span class="ty">char</span> s[<span class="nm">10</span>];
 s[<span class="nm">0</span>] = <span class="st">'H'</span>; s[<span class="nm">1</span>] = <span class="st">'\0'</span>;
 
@@ -294,7 +294,7 @@ s[<span class="nm">0</span>] = <span class="st">'H'</span>; s[<span class="nm">1
   </div>
 </div>
 
-<!-- KONTROLLFLUSS -->
+<!-- CONTROLFLOW -->
 <div class="card c-green">
   <div class="card-header"><div class="card-icon">⇀</div><span class="card-title">Control Flow &amp; Loops</span></div>
   <div class="card-body">
@@ -334,9 +334,9 @@ cleanup:
   </div>
 </div>
 
-<!-- FUNKTIONEN -->
+<!-- FUNCTIONS -->
 <div class="card c-purple">
-  <div class="card-header"><div class="card-icon">ƒ</div><span class="card-title">Funktionen</span></div>
+  <div class="card-header"><div class="card-icon">ƒ</div><span class="card-title">Functions</span></div>
   <div class="card-body">
 <pre><span class="cm">// Declaration (prototype)</span>
 <span class="ty">int</span> <span class="fn">add</span>(<span class="ty">int</span> a, <span class="ty">int</span> b);
@@ -348,7 +348,7 @@ cleanup:
 
 <span class="cm">// void function</span>
 <span class="kw">void</span> <span class="fn">greet</span>(<span class="kw">const</span> <span class="ty">char</span> *name) {
-  <span class="fn">printf</span>(<span class="st">"Hallo %s!\n"</span>, name);
+  <span class="fn">printf</span>(<span class="st">"Hello %s!\n"</span>, name);
 }
 
 <span class="cm">// Call by value</span>
@@ -460,10 +460,10 @@ d.f = <span class="nm">3.14</span>; <span class="cm">// overwrites i!</span>
 %s        <span class="cm">// string</span>
 %c        <span class="cm">// char</span>
 %p        <span class="cm">// Pointer</span>
-%x / %X   <span class="cm">// hex (klein/groß)</span>
+%x / %X   <span class="cm">// hex (small/big)</span>
 %o        <span class="cm">// oktal</span>
 %zu       <span class="cm">// size_t</span>
-%%        <span class="cm">// Prozentzeichen</span>
+%%        <span class="cm">// Percentsign</span>
 
 <span class="cm">// Input</span>
 <span class="fn">scanf</span>(<span class="st">"%d"</span>, &amp;n);
@@ -483,41 +483,41 @@ d.f = <span class="nm">3.14</span>; <span class="cm">// overwrites i!</span>
 
 <span class="cm">// Modes</span>
 <span class="st">"r"</span>   <span class="cm">// Read</span>
-<span class="st">"w"</span>   <span class="cm">// Write (überschreiben)</span>
+<span class="st">"w"</span>   <span class="cm">// Write (overwrite)</span>
 <span class="st">"a"</span>   <span class="cm">// Append</span>
-<span class="st">"r+"</span>  <span class="cm">// Read und Schreiben</span>
-<span class="st">"rb"</span>  <span class="cm">// Binär lesen</span>
-<span class="st">"wb"</span>  <span class="cm">// Binär schreiben</span>
+<span class="st">"r+"</span>  <span class="cm">// Read and Write</span>
+<span class="st">"rb"</span>  <span class="cm">// Binary Read</span>
+<span class="st">"wb"</span>  <span class="cm">// Binary Write</span>
 
 <span class="cm">// Read</span>
 <span class="ty">char</span> buf[<span class="nm">256</span>];
 <span class="kw">while</span> (<span class="fn">fgets</span>(buf, <span class="kw">sizeof</span>(buf), f)) { }
 <span class="ty">int</span> c = <span class="fn">fgetc</span>(f);   <span class="cm">// read character</span>
 <span class="fn">fscanf</span>(f, <span class="st">"%d"</span>, &amp;n); <span class="cm">// formatted</span>
-<span class="fn">fread</span>(buf, sz, n, f); <span class="cm">// binär</span>
+<span class="fn">fread</span>(buf, sz, n, f); <span class="cm">// binary</span>
 
 <span class="cm">// Write</span>
 <span class="fn">fprintf</span>(f, <span class="st">"%d\n"</span>, n);
 <span class="fn">fputs</span>(<span class="st">"text"</span>, f);
 <span class="fn">fputc</span>(<span class="st">'A'</span>, f);
-<span class="fn">fwrite</span>(buf, sz, n, f); <span class="cm">// binär</span>
+<span class="fn">fwrite</span>(buf, sz, n, f); <span class="cm">// binary</span>
 
 <span class="cm">// Position</span>
-<span class="fn">fseek</span>(f, <span class="nm">0</span>, SEEK_SET); <span class="cm">// Anfang</span>
-<span class="fn">fseek</span>(f, <span class="nm">0</span>, SEEK_END); <span class="cm">// Ende</span>
+<span class="fn">fseek</span>(f, <span class="nm">0</span>, SEEK_SET); <span class="cm">// Begining</span>
+<span class="fn">fseek</span>(f, <span class="nm">0</span>, SEEK_END); <span class="cm">// End</span>
 <span class="fn">ftell</span>(f);               <span class="cm">// current position</span>
 <span class="fn">rewind</span>(f);
 <span class="fn">feof</span>(f);  <span class="fn">ferror</span>(f);</pre>
   </div>
 </div>
 
-<!-- PRÄPROZESSOR -->
+<!-- PREPROCESSOR -->
 <div class="card c-purple">
-  <div class="card-header"><div class="card-icon">#</div><span class="card-title">Präprozessor</span></div>
+  <div class="card-header"><div class="card-icon">#</div><span class="card-title">Preprocessor</span></div>
   <div class="card-body">
 <pre><span class="cm">// Include</span>
-<span class="kw">#include</span> &lt;<span class="ty">stdio.h</span>&gt;    <span class="cm">// Systembibliothek</span>
-<span class="kw">#include</span> <span class="st">"myfile.h"</span>   <span class="cm">// lokale Datei</span>
+<span class="kw">#include</span> &lt;<span class="ty">stdio.h</span>&gt;    <span class="cm">// Systemlibary</span>
+<span class="kw">#include</span> <span class="st">"myfile.h"</span>   <span class="cm">// local File</span>
 
 <span class="cm">// Macro definition</span>
 <span class="kw">#define</span> PI      <span class="nm">3.14159</span>
@@ -541,16 +541,16 @@ d.f = <span class="nm">3.14</span>; <span class="cm">// overwrites i!</span>
 <span class="kw">#endif</span>
 
 <span class="cm">// Predefined macros</span>
-__FILE__   <span class="cm">// Dateiname</span>
-__LINE__   <span class="cm">// Zeilennummer</span>
+__FILE__   <span class="cm">// Filename</span>
+__LINE__   <span class="cm">// Linenumber</span>
 __DATE__   <span class="cm">// Compile date</span>
 __TIME__   <span class="cm">// Compile time</span>
 __func__   <span class="cm">// Function name (C99)</span>
 __STDC__   <span class="cm">// Standard C</span>
 
 <span class="kw">#pragma once</span>  <span class="cm">// header guard</span>
-<span class="kw">#error</span> <span class="st">"Fehlermeldung"</span>
-<span class="kw">#warning</span> <span class="st">"Warnung"</span></pre>
+<span class="kw">#error</span> <span class="st">"Errormessage"</span>
+<span class="kw">#warning</span> <span class="st">"Warning"</span></pre>
   </div>
 </div>
 
@@ -565,7 +565,7 @@ __STDC__   <span class="cm">// Standard C</span>
 arr[<span class="nm">0</span>] = <span class="nm">10</span>;
 <span class="fn">printf</span>(<span class="st">"%d\n"</span>, arr[<span class="nm">2</span>]);
 
-<span class="cm">// Size ermitteln</span>
+<span class="cm">// Size determine</span>
 <span class="ty">int</span> n = <span class="kw">sizeof</span>(arr) / <span class="kw">sizeof</span>(arr[<span class="nm">0</span>]);
 
 <span class="cm">// 2D array</span>
@@ -583,7 +583,7 @@ mat[<span class="nm">1</span>][<span class="nm">2</span>] = <span class="nm">42<
   </div>
 </div>
 
-<!-- WICHTIGE STDLIB -->
+<!-- IMPORTANT STDLIB -->
 <div class="card c-green col-2">
   <div class="card-header"><div class="card-icon">📚</div><span class="card-title">Key Standard Libraries</span></div>
   <div class="card-body">
@@ -592,15 +592,15 @@ mat[<span class="nm">1</span>][<span class="nm">2</span>] = <span class="nm">42<
 <pre><span class="cm">// stdlib.h</span>
 <span class="fn">malloc</span> / <span class="fn">calloc</span> / <span class="fn">realloc</span> / <span class="fn">free</span>
 <span class="fn">exit</span>(<span class="nm">0</span>)  <span class="fn">abort</span>()
-<span class="fn">atoi</span>(<span class="st">"42"</span>)    <span class="cm">// String zu int</span>
-<span class="fn">atof</span>(<span class="st">"3.14"</span>) <span class="cm">// String zu double</span>
-<span class="fn">strtol</span> / <span class="fn">strtod</span> <span class="cm">// safere Varianten</span>
+<span class="fn">atoi</span>(<span class="st">"42"</span>)    <span class="cm">// String to int</span>
+<span class="fn">atof</span>(<span class="st">"3.14"</span>) <span class="cm">// String to double</span>
+<span class="fn">strtol</span> / <span class="fn">strtod</span> <span class="cm">// safer variants</span>
 <span class="fn">rand</span>() / <span class="fn">srand</span>(<span class="fn">time</span>(<span class="kw">NULL</span>))
 <span class="fn">abs</span>(n) / <span class="fn">labs</span>(n) / <span class="fn">llabs</span>(n)
 <span class="fn">qsort</span>(arr, n, <span class="kw">sizeof</span>(<span class="ty">int</span>), <span class="fn">cmp</span>)
 <span class="fn">bsearch</span>(key, arr, n, sz, <span class="fn">cmp</span>)
 
-<span class="cm">// math.h (linken mit -lm)</span>
+<span class="cm">// math.h (link with -lm)</span>
 <span class="fn">sqrt</span>(x)  <span class="fn">pow</span>(x,y)  <span class="fn">log</span>(x)
 <span class="fn">sin</span>(x)  <span class="fn">cos</span>(x)  <span class="fn">tan</span>(x)
 <span class="fn">floor</span>(x)  <span class="fn">ceil</span>(x)  <span class="fn">round</span>(x)
@@ -609,7 +609,7 @@ mat[<span class="nm">1</span>][<span class="nm">2</span>] = <span class="nm">42<
       <div>
 <pre><span class="cm">// string.h</span>
 <span class="fn">memcpy</span>(dst, src, n)
-<span class="fn">memmove</span>(dst, src, n)  <span class="cm">// überlappend sicher</span>
+<span class="fn">memmove</span>(dst, src, n)  <span class="cm">// overlapping save</span>
 <span class="fn">memset</span>(ptr, 0, n)
 <span class="fn">memcmp</span>(p1, p2, n)
 
@@ -638,8 +638,8 @@ mat[<span class="nm">1</span>][<span class="nm">2</span>] = <span class="nm">42<
   <div class="card-body">
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
       <div>
-        <div class="section-label">C11 Neue Features</div>
-<pre><span class="cm">// _Generic (Typ-Selektion)</span>
+        <div class="section-label">C11 New Features</div>
+<pre><span class="cm">// _Generic (type selection)</span>
 <span class="kw">#define</span> <span class="fn">print</span>(x) <span class="kw">_Generic</span>((x), \
   <span class="ty">int</span>:    <span class="fn">printf</span>(<span class="st">"%d\n"</span>, x), \
   <span class="ty">double</span>: <span class="fn">printf</span>(<span class="st">"%f\n"</span>, x), \
@@ -692,7 +692,7 @@ mat[<span class="nm">1</span>][<span class="nm">2</span>] = <span class="nm">42<
   <span class="kw">return</span> n;
 }
 
-<span class="cm">// Traversieren</span>
+<span class="cm">// Traverse</span>
 <span class="ty">Node</span> *cur = head;
 <span class="kw">while</span> (cur) {
   <span class="fn">printf</span>(<span class="st">"%d "</span>, cur->data);
@@ -722,7 +722,7 @@ errno = <span class="nm">0</span>;
 <span class="cm">// perror – uses errno automatically</span>
 <span class="fn">perror</span>(<span class="st">"fopen"</span>);
 
-<span class="cm">// Common errno values</span>
+<span class="cm">// Common error values</span>
 ENOENT  <span class="cm">// No such file</span>
 EACCES  <span class="cm">// Permission denied</span>
 ENOMEM  <span class="cm">// Out of memory</span>

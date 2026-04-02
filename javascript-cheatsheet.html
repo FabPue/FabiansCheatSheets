@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -76,7 +76,7 @@
 </header>
 <div class="page"><div class="grid">
 
-<!-- VARIABLEN -->
+<!-- VARIABLES -->
 <div class="card c-yellow">
   <div class="card-header"><div class="card-icon">V</div><span class="card-title">Variables &amp; Types</span></div>
   <div class="card-body">
@@ -84,7 +84,7 @@
 <span class="kw">let</span>   y = <span class="nm">2</span>;  <span class="cm">// block-scoped</span>
 <span class="kw">const</span> z = <span class="nm">3</span>;  <span class="cm">// block-scoped, immutable binding</span>
 
-<span class="cm">// 8 Primitive Typen</span>
+<span class="cm">// 8 primitive types</span>
 <span class="kw">typeof</span> <span class="nm">42</span>          <span class="cm">// "number"</span>
 <span class="kw">typeof</span> <span class="nm">42n</span>         <span class="cm">// "bigint"</span>
 <span class="kw">typeof</span> <span class="st">"hi"</span>        <span class="cm">// "string"</span>
@@ -96,41 +96,41 @@
 <span class="kw">typeof</span> []          <span class="cm">// "object"</span>
 <span class="kw">typeof</span> <span class="fn">function</span>(){} <span class="cm">// "function"</span>
 
-<span class="cm">// Typ-Prüfung</span>
+<span class="cm">// Type check</span>
 <span class="ty">Array</span>.<span class="fn">isArray</span>([])  <span class="cm">// true</span>
 x <span class="kw">instanceof</span> <span class="ty">Date</span> <span class="cm">// true/false</span></pre>
   </div>
 </div>
 
-<!-- OPERATOREN -->
+<!-- OPERATORS -->
 <div class="card c-red">
-  <div class="card-header"><div class="card-icon">±</div><span class="card-title">Operatoren</span></div>
+  <div class="card-header"><div class="card-icon">±</div><span class="card-title">Operators</span></div>
   <div class="card-body">
-<pre><span class="cm">// Arithmetisch</span>
-+  -  *  /  %  **   <span class="cm">// ** = Potenz</span>
+<pre><span class="cm">// Arithmetic</span>
++  -  *  /  %  **   <span class="cm">// ** = power</span>
 ++x  x++  --x  x--
 
-<span class="cm">// Vergleich</span>
-==   !=   <span class="cm">// lose (type coercion)</span>
-===  !==  <span class="cm">// streng (empfohlen!)</span>
+<span class="cm">// Comparison</span>
+==   !=   <span class="cm">// loose (type coercion)</span>
+===  !==  <span class="cm">// strict (recommended!)</span>
 &lt;   &gt;   &lt;=   &gt;=
 
-<span class="cm">// Logisch</span>
+<span class="cm">// Logical</span>
 &amp;&amp;   ||   !
 ??   <span class="cm">// Nullish Coalescing: a ?? b</span>
 ?.   <span class="cm">// Optional Chaining: obj?.prop</span>
 ??=  &amp;&amp;=  ||=  <span class="cm">// Logical Assignment</span>
 
-<span class="cm">// Bitweise</span>
+<span class="cm">// Bitwise</span>
 &amp;  |  ^  ~  &lt;&lt;  &gt;&gt;  &gt;&gt;&gt;
 
-<span class="cm">// Ternär &amp; Sonstige</span>
+<span class="cm">// Ternary &amp; Others</span>
 cond ? a : b
 <span class="kw">delete</span> obj.key
 <span class="kw">in</span>         <span class="cm">// "key" in obj</span>
 <span class="kw">instanceof</span>
-<span class="kw">void</span> <span class="nm">0</span>     <span class="cm">// gibt undefined zurück</span>
-<span class="kw">typeof</span> x   <span class="cm">// Typ als String</span>
+<span class="kw">void</span> <span class="nm">0</span>     <span class="cm">// returns undefined</span>
+<span class="kw">typeof</span> x   <span class="cm">// type as string</span>
 
 <span class="cm">// Spread / Rest</span>
 [...arr1, ...arr2]
@@ -143,11 +143,11 @@ cond ? a : b
 <div class="card c-blue">
   <div class="card-header"><div class="card-icon">"</div><span class="card-title">Strings</span></div>
   <div class="card-body">
-<pre><span class="kw">const</span> s = <span class="st">'Hallo'</span>;         <span class="cm">// single quotes</span>
-<span class="kw">const</span> s = <span class="st">"Welt"</span>;          <span class="cm">// double quotes</span>
+<pre><span class="kw">const</span> s = <span class="st">'Hello'</span>;         <span class="cm">// single quotes</span>
+<span class="kw">const</span> s = <span class="st">"World"</span>;          <span class="cm">// double quotes</span>
 <span class="kw">const</span> s = <span class="op">`Hi ${name}!`</span>;  <span class="cm">// template literal</span>
-<span class="kw">const</span> s = <span class="op">`Zeile 1
-Zeile 2`</span>;                   <span class="cm">// multiline</span>
+<span class="kw">const</span> s = <span class="op">`Line 1
+Line 2`</span>;                   <span class="cm">// multiline</span>
 
 s.<span class="fn">length</span>
 s.<span class="fn">toUpperCase</span>() / <span class="fn">toLowerCase</span>()
@@ -186,9 +186,9 @@ s.<span class="fn">at</span>(-<span class="nm">1</span>)   <span class="cm">// l
 
 <span class="cm">// Add / Remove</span>
 a.<span class="fn">push</span>(<span class="nm">4</span>)       <span class="cm">// end</span>
-a.<span class="fn">pop</span>()         <span class="cm">// end entfernen</span>
+a.<span class="fn">pop</span>()         <span class="cm">// remove end</span>
 a.<span class="fn">unshift</span>(<span class="nm">0</span>)   <span class="cm">// start</span>
-a.<span class="fn">shift</span>()       <span class="cm">// start entfernen</span>
+a.<span class="fn">shift</span>()       <span class="cm">// remove start</span>
 a.<span class="fn">splice</span>(<span class="nm">1</span>,<span class="nm">2</span>)  <span class="cm">// idx, count</span>
 a.<span class="fn">splice</span>(<span class="nm">1</span>,<span class="nm">0</span>,<span class="st">'x'</span>) <span class="cm">// insert</span>
 
@@ -205,7 +205,7 @@ a.<span class="fn">map</span>(x => x*<span class="nm">2</span>)
 a.<span class="fn">filter</span>(x => x><span class="nm">1</span>)
 a.<span class="fn">reduce</span>((acc,x) => acc+x, <span class="nm">0</span>)
 a.<span class="fn">reduceRight</span>(...)
-a.<span class="fn">flat</span>(<span class="nm">2</span>)   <span class="cm">// Tiefe 2</span>
+a.<span class="fn">flat</span>(<span class="nm">2</span>)   <span class="cm">// depth 2</span>
 a.<span class="fn">flatMap</span>(x => [x, x*<span class="nm">2</span>])
 a.<span class="fn">slice</span>(<span class="nm">1</span>, <span class="nm">3</span>)
 a.<span class="fn">concat</span>(b, c)
@@ -284,7 +284,7 @@ obj[<span class="st">"name"</span>]       <span class="cm">// bracket notation</
 
 <!-- FUNCTIONS -->
 <div class="card c-yellow">
-  <div class="card-header"><div class="card-icon">ƒ</div><span class="card-title">Funktionen</span></div>
+  <div class="card-header"><div class="card-icon">ƒ</div><span class="card-title">Functions</span></div>
   <div class="card-body">
 <pre><span class="cm">// Declaration (hoisted)</span>
 <span class="kw">function</span> <span class="fn">add</span>(a, b) { <span class="kw">return</span> a + b; }
@@ -298,12 +298,12 @@ obj[<span class="st">"name"</span>]       <span class="cm">// bracket notation</
 <span class="kw">const</span> log = () => <span class="ty">console</span>.<span class="fn">log</span>(<span class="st">"hi"</span>);
 
 <span class="cm">// Default Parameter</span>
-<span class="kw">function</span> <span class="fn">greet</span>(name = <span class="st">"Welt"</span>) { }
+<span class="kw">function</span> <span class="fn">greet</span>(name = <span class="st">"World"</span>) { }
 
 <span class="cm">// Rest Parameter</span>
 <span class="kw">function</span> <span class="fn">sum</span>(...nums) { <span class="kw">return</span> nums.<span class="fn">reduce</span>((a,b)=>a+b); }
 
-<span class="cm">// Destructuring in Parametern</span>
+<span class="cm">// Destructuring in parameters</span>
 <span class="kw">function</span> <span class="fn">show</span>({ name, age = <span class="nm">18</span> }) { }
 <span class="kw">function</span> <span class="fn">first</span>([a, b]) { }
 
@@ -330,7 +330,7 @@ obj[<span class="st">"name"</span>]       <span class="cm">// bracket notation</
   <span class="kw">get</span> <span class="fn">name</span>() { <span class="kw">return</span> <span class="kw">this</span>.#name; }
   <span class="kw">set</span> <span class="fn">name</span>(v) { <span class="kw">this</span>.#name = v; }
 
-  <span class="fn">speak</span>() { <span class="kw">return</span> <span class="op">`${<span class="kw">this</span>.#name} spricht`</span>; }
+  <span class="fn">speak</span>() { <span class="kw">return</span> <span class="op">`${<span class="kw">this</span>.#name} says`</span>; }
   <span class="kw">static</span> <span class="fn">create</span>(n) { <span class="kw">return new</span> <span class="ty">Animal</span>(n); }
 }
 
@@ -340,7 +340,7 @@ obj[<span class="st">"name"</span>]       <span class="cm">// bracket notation</
     <span class="kw">super</span>(name);
     <span class="kw">this</span>.#breed = breed;
   }
-  <span class="fn">speak</span>() { <span class="kw">return super</span>.<span class="fn">speak</span>() + <span class="st">" Wau!"</span>; }
+  <span class="fn">speak</span>() { <span class="kw">return super</span>.<span class="fn">speak</span>() + <span class="st">" Woof!"</span>; }
 }
 
 <span class="kw">const</span> d = <span class="kw">new</span> <span class="ty">Dog</span>(<span class="st">"Rex"</span>, <span class="st">"Labrador"</span>);</pre>
@@ -363,7 +363,7 @@ obj[<span class="st">"name"</span>]       <span class="cm">// bracket notation</
 <span class="cm">// for</span>
 <span class="kw">for</span> (<span class="kw">let</span> i=<span class="nm">0</span>; i&lt;<span class="nm">10</span>; i++) { }
 
-<span class="cm">// for...of (Werte)</span>
+<span class="cm">// for...of (values)</span>
 <span class="kw">for</span> (<span class="kw">const</span> item <span class="kw">of</span> array) { }
 <span class="kw">for</span> (<span class="kw">const</span> [i, v] <span class="kw">of</span> arr.<span class="fn">entries</span>()) { }
 
@@ -452,7 +452,7 @@ p.<span class="fn">then</span>(data => <span class="ty">console</span>.<span cla
 el.<span class="fn">closest</span>(<span class="st">".parent"</span>)
 el.<span class="fn">matches</span>(<span class="st">".active"</span>)
 
-<span class="cm">// Create &amp; Einfügen</span>
+<span class="cm">// Create &amp; Insert</span>
 <span class="kw">const</span> d = <span class="ty">document</span>.<span class="fn">createElement</span>(<span class="st">"div"</span>);
 <span class="ty">document</span>.<span class="fn">createTextNode</span>(<span class="st">"text"</span>)
 parent.<span class="fn">appendChild</span>(child)
@@ -541,7 +541,7 @@ mod.default();  mod.namedExport();</pre>
 <div class="card c-green">
   <div class="card-header"><div class="card-icon">⊞</div><span class="card-title">Map, Set, WeakMap, WeakSet</span></div>
   <div class="card-body">
-<pre><span class="cm">// Map — geordnete Key-Value Paare</span>
+<pre><span class="cm">// Map — ordered key-value pairs</span>
 <span class="kw">const</span> m = <span class="kw">new</span> <span class="ty">Map</span>();
 m.<span class="fn">set</span>(<span class="st">"key"</span>, <span class="nm">42</span>);
 m.<span class="fn">get</span>(<span class="st">"key"</span>);         <span class="cm">// 42</span>
@@ -551,14 +551,14 @@ m.size;
 <span class="kw">for</span> (<span class="kw">const</span> [k,v] <span class="kw">of</span> m) { }
 <span class="ty">Map</span>.<span class="fn">groupBy</span>(arr, x => x.type) <span class="cm">// ES2024</span>
 
-<span class="cm">// Set — einzigartige Werte</span>
+<span class="cm">// Set — unique values</span>
 <span class="kw">const</span> s = <span class="kw">new</span> <span class="ty">Set</span>([<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>,<span class="nm">2</span>]);
 s.<span class="fn">add</span>(<span class="nm">4</span>);  s.<span class="fn">has</span>(<span class="nm">2</span>);  s.<span class="fn">delete</span>(<span class="nm">2</span>);
 s.size;
 [...s]            <span class="cm">// to array</span>
 <span class="kw">const</span> unique = [...<span class="kw">new</span> <span class="ty">Set</span>(arr)];
 
-<span class="cm">// WeakMap / WeakSet — keine strong refs</span>
+<span class="cm">// WeakMap / WeakSet — no strong refs</span>
 <span class="kw">const</span> wm = <span class="kw">new</span> <span class="ty">WeakMap</span>();
 wm.<span class="fn">set</span>(obj, data);
 <span class="kw">const</span> ws = <span class="kw">new</span> <span class="ty">WeakSet</span>();
@@ -635,7 +635,7 @@ gen.<span class="fn">next</span>();  <span class="cm">// { value: 0, done: false
 <div class="card c-green">
   <div class="card-header"><div class="card-icon">⊛</div><span class="card-title">Symbol, Proxy &amp; Reflect</span></div>
   <div class="card-body">
-<pre><span class="cm">// Symbol — einzigartiger Keys</span>
+<pre><span class="cm">// Symbol — unique keys</span>
 <span class="kw">const</span> id = <span class="ty">Symbol</span>(<span class="st">"id"</span>);
 <span class="kw">const</span> obj = { [id]: <span class="nm">123</span> };
 <span class="ty">Symbol</span>.for(<span class="st">"shared"</span>)   <span class="cm">// global registry</span>
@@ -662,7 +662,7 @@ gen.<span class="fn">next</span>();  <span class="cm">// { value: 0, done: false
 
 <!-- ERROR & CLOSURES -->
 <div class="card c-yellow col-3">
-  <div class="card-header"><div class="card-icon">✦</div><span class="card-title">Closures, Scoping, Error, JSON &amp; Nützliches</span></div>
+  <div class="card-header"><div class="card-icon">✦</div><span class="card-title">Closures, Scoping, Error, JSON &amp; Utilities</span></div>
   <div class="card-body">
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
       <div>
@@ -722,7 +722,7 @@ e.stack
 <span class="fn">decodeURIComponent</span>(str)</pre>
       </div>
       <div>
-        <div class="section-label">Nützliche APIs</div>
+        <div class="section-label">Useful APIs</div>
 <pre><span class="cm">// console</span>
 <span class="ty">console</span>.<span class="fn">log</span> / <span class="fn">warn</span> / <span class="fn">error</span>
 <span class="ty">console</span>.<span class="fn">table</span>(arr)
