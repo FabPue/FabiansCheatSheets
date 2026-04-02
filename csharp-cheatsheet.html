@@ -752,8 +752,8 @@ btn.Clicked += (s, e) => { <span class="cm">/* ... */</span> };</pre>
   </div>
 </div>
 
-<div class="card c-green col-3">
-  <div class="card-header"><div class="card-icon">✦</div><span class="card-title">Modern C# Features (9–12)</span></div>
+  <div class="card c-green col-3">
+   <div class="card-header"><div class="card-icon">✦</div><span class="card-title">Modern C# Features (9–14)</span></div>
   <div class="card-body">
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
       <div>
@@ -783,8 +783,7 @@ btn.Clicked += (s, e) => { <span class="cm">/* ... */</span> };</pre>
 
 <span class="cm">// Required members (C# 11)</span>
 <span class="kw">public required string</span> Name { <span class="kw">get</span>; <span class="kw">set</span>; }</pre>
-      </div>
-      <div>
+      </div><div>
         <div class="section-label">C# 12 — Primary Constructors</div>
 <pre><span class="cm">// Primary constructor</span>
 <span class="kw">class</span> <span class="ty">Service</span>(<span class="ty">ILogger</span> logger) {
@@ -797,12 +796,34 @@ btn.Clicked += (s, e) => { <span class="cm">/* ... */</span> };</pre>
 <span class="ty">List</span>&lt;<span class="kw">int</span>&gt; l = [<span class="nm">1</span>, <span class="nm">2</span>, ..<span class="fn">More</span>()];
 
 <span class="cm">// Type aliases</span>
-<span class="kw">using</span> <span class="ty">Coord</span> = (<span class="kw">int</span> X, <span class="kw">int</span> Y);</pre>
-      </div>
-    </div>
-  </div>
-</div>
+<span class="kw">using</span> <span class="ty">Coord</span> = (<span class="kw">int</span> X, <span class="kw">int</span> Y);
 
-</div></div>
-<footer>C# 12 &amp; .NET 8 Cheat Sheet — Fabian's Cheat Sheets</footer>
-</body></html>
+<span class="cm">// Overload resolution improvements (C# 14)</span>
+<span class="cm">// Better type inference for params collections</span>
+<span class="ty">IEnumerable</span>&lt;<span class="kw">int</span>&gt; best = [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>];</pre>
+       <div>
+         <div class="section-label">C# 13–14 — Params Collections & Overloads</div>
+<pre><span class="cm">// Params collections (C# 13)</span>
+<span class="kw">void</span> <span class="fn">Print</span>(<span class="kw">params</span> <span class="ty">ReadOnlySpan</span>&lt;<span class="ty">string</span>&gt; args) { }
+<span class="fn">Print</span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>);
+
+<span class="cm">// Inferred delegate types (C# 13)</span>
+<span class="kw">var</span> f = () => <span class="nm">42</span>;  <span class="cm">// Func&lt;int&gt;</span>
+
+<span class="cm">// Overload resolution (C# 14)</span>
+<span class="cm">// Better type inference for params</span>
+<span class="kw">void</span> <span class="fn">M</span>(<span class="kw">params</span> <span class="kw">int</span>[] xs) { }
+<span class="kw">void</span> <span class="fn">M</span>(<span class="kw">params</span> <span class="ty">ReadOnlySpan</span>&lt;<span class="kw">int</span>&gt; xs) { }
+
+<span class="cm">// Partial method hiding (C# 14)</span>
+<span class="kw">partial</span> <span class="ty">Base</span> => <span class="st">"virtual members"</span>;</pre>
+       </div>
+     </div>
+   </div>
+ </div>
+ 
+ </div></div>
+ <footer>C# 14 &amp; .NET 9 Cheat Sheet — Fabian's Cheat Sheets</footer>
+</div>
+</body>
+</html>
