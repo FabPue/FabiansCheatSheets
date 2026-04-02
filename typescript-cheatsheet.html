@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -70,7 +70,7 @@
 <body>
 <header>
   <div class="logo">TS</div>
-  <div><h1>TypeScript Cheat Sheet</h1><p>TypeScript 5.x — Typsystem, Generics, Utility Types, Decorators & mehr</p></div>
+  <div><h1>TypeScript Cheat Sheet</h1><p>TypeScript 5.x — Type System, Generics, Utility Types, Decorators & more</p></div>
   <div class="tag-row"><span class="tag">TS 5.x</span><span class="tag">Strict Mode</span><span class="tag">Generics</span><span class="tag">Decorators</span><span class="tag">Utility Types</span></div>
 </header>
 <div class="page"><div class="grid">
@@ -89,10 +89,10 @@
 <span class="kw">let</span> nil:  <span class="ty">null</span>    = <span class="kw">null</span>;
 
 <span class="cm">// Special</span>
-<span class="kw">let</span> a:  <span class="ty">any</span>;      <span class="cm">// deaktiviert Checks</span>
+<span class="kw">let</span> a:  <span class="ty">any</span>;      <span class="cm">// disables checks</span>
 <span class="kw">let</span> uk: <span class="ty">unknown</span>;  <span class="cm">// safe any</span>
-<span class="kw">let</span> v:  <span class="ty">void</span>;     <span class="cm">// kein Rückgabewert</span>
-<span class="kw">let</span> nv: <span class="ty">never</span>;    <span class="cm">// unerreichbarer Code</span>
+<span class="kw">let</span> v:  <span class="ty">void</span>;     <span class="cm">// no return value</span>
+<span class="kw">let</span> nv: <span class="ty">never</span>;    <span class="cm">// unreachable code</span>
 <span class="kw">let</span> obj: <span class="ty">object</span>;  <span class="cm">// non-primitive</span>
 
 <span class="cm">// Object type</span>
@@ -213,7 +213,7 @@
   <span class="kw">return</span> obj[key];
 }
 
-<span class="cm">// Default Typ</span>
+<span class="cm">// Default type</span>
 <span class="kw">type</span> <span class="ty">List</span>&lt;<span class="ty">T</span> = <span class="ty">string</span>&gt; = <span class="ty">T</span>[];
 
 <span class="cm">// Conditional Type</span>
@@ -230,11 +230,11 @@
 
 <!-- UTILITY TYPES -->
 <div class="card c-orange col-3">
-  <div class="card-header"><div class="card-icon">⚙</div><span class="card-title">Utility Types — Vollständige Übersicht</span></div>
+  <div class="card-header"><div class="card-icon">⚙</div><span class="card-title">Utility Types — Complete Overview</span></div>
   <div class="card-body">
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
       <div>
-        <div class="section-label">Objekt-Transformation</div>
+        <div class="section-label">Object Transformation</div>
 <pre><span class="ty">Partial</span>&lt;<span class="ty">T</span>&gt;
 <span class="cm">// all properties optional</span>
 
@@ -248,28 +248,28 @@
 <span class="cm">// {[P in K]: V}</span>
 
 <span class="ty">Pick</span>&lt;<span class="ty">T</span>, <span class="st">"a"</span>|<span class="st">"b"</span>&gt;
-<span class="cm">// nur a und b behalten</span>
+<span class="cm">// keep only a and b</span>
 
 <span class="ty">Omit</span>&lt;<span class="ty">T</span>, <span class="st">"a"</span>|<span class="st">"b"</span>&gt;
-<span class="cm">// a und b entfernen</span></pre>
+<span class="cm">// remove a and b</span></pre>
       </div>
       <div>
-        <div class="section-label">Mengen &amp; Typen</div>
+        <div class="section-label">Sets &amp; Types</div>
 <pre><span class="ty">Exclude</span>&lt;<span class="ty">T</span>, <span class="ty">U</span>&gt;
-<span class="cm">// T ohne die Typen von U</span>
+<span class="cm">// T without the types from U</span>
 <span class="cm">// Exclude&lt;"a"|"b", "a"&gt; = "b"</span>
 
 <span class="ty">Extract</span>&lt;<span class="ty">T</span>, <span class="ty">U</span>&gt;
-<span class="cm">// Schnittmenge von T und U</span>
+<span class="cm">// intersection of T and U</span>
 
 <span class="ty">NonNullable</span>&lt;<span class="ty">T</span>&gt;
-<span class="cm">// null und undefined entfernen</span>
+<span class="cm">// remove null and undefined</span>
 
 <span class="ty">Parameters</span>&lt;<span class="ty">F</span>&gt;
-<span class="cm">// Parameter-Tuple der Funktion</span>
+<span class="cm">// parameter tuple of the function</span>
 
 <span class="ty">ReturnType</span>&lt;<span class="ty">F</span>&gt;
-<span class="cm">// Rückgabetyp der Funktion</span>
+<span class="cm">// return type of the function</span>
 
 <span class="ty">ConstructorParameters</span>&lt;<span class="ty">C</span>&gt;
 <span class="cm">// Ctor-Parameter</span></pre>
@@ -286,17 +286,17 @@
   <span class="op">`get${Capitalize&lt;T&gt;}`</span>;
 
 <span class="ty">InstanceType</span>&lt;<span class="ty">C</span>&gt;
-<span class="cm">// Instanztyp des Konstruktors</span>
+<span class="cm">// instance type of the constructor</span>
 
 <span class="ty">ThisType</span>&lt;<span class="ty">T</span>&gt;
-<span class="cm">// this-Typ in Objekten</span>
+<span class="cm">// this type in objects</span>
 
 <span class="ty">Awaited</span>&lt;<span class="ty">T</span>&gt;
 <span class="cm">// Unwrap Promise</span>
 <span class="cm">// Awaited&lt;Promise&lt;string&gt;&gt; = string</span></pre>
       </div>
       <div>
-        <div class="section-label">Beispiele</div>
+        <div class="section-label">Examples</div>
 <pre><span class="kw">interface</span> <span class="ty">User</span> {
   id: <span class="ty">number</span>; name: <span class="ty">string</span>;
   email?: <span class="ty">string</span>;
@@ -313,7 +313,7 @@
 <span class="kw">type</span> <span class="ty">Mutable</span>&lt;<span class="ty">T</span>&gt; = {
   -<span class="kw">readonly</span> [<span class="ty">P</span> <span class="kw">in keyof</span> <span class="ty">T</span>]: <span class="ty">T</span>[<span class="ty">P</span>]
 };
-<span class="cm">// -? entfernt optional:</span>
+<span class="cm">// -? removes optional:</span>
 <span class="kw">type</span> <span class="ty">Concrete</span>&lt;<span class="ty">T</span>&gt; = {
   [<span class="ty">P</span> <span class="kw">in keyof</span> <span class="ty">T</span>]-?: <span class="ty">T</span>[<span class="ty">P</span>]
 };</pre>
@@ -466,7 +466,7 @@
   Closed  = <span class="st">"CLOSED"</span>
 }
 
-<span class="cm">// Const Enum (inlined, kein JS-Code)</span>
+<span class="cm">// Const Enum (inlined, no JS code)</span>
 <span class="kw">const enum</span> <span class="ty">Flags</span> { Read=<span class="nm">1</span>, Write=<span class="nm">2</span> }
 
 <span class="cm">// Prefer union type:</span>
@@ -489,18 +489,18 @@
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
       <div>
         <div class="section-label">Mapped Types</div>
-<pre><span class="cm">// Alle Properties optional</span>
+<pre><span class="cm">// All properties optional</span>
 <span class="kw">type</span> <span class="ty">Optional</span>&lt;<span class="ty">T</span>&gt; = {
   [<span class="ty">P</span> <span class="kw">in keyof</span> <span class="ty">T</span>]?: <span class="ty">T</span>[<span class="ty">P</span>]
 };
 
-<span class="cm">// Properties filtern via as</span>
+<span class="cm">// Filter properties via as</span>
 <span class="kw">type</span> <span class="ty">OnlyStrings</span>&lt;<span class="ty">T</span>&gt; = {
   [<span class="ty">K</span> <span class="kw">in keyof</span> <span class="ty">T</span> <span class="kw">as</span>
     <span class="ty">T</span>[<span class="ty">K</span>] <span class="kw">extends</span> <span class="ty">string</span> ? <span class="ty">K</span> : <span class="kw">never</span>]: <span class="ty">string</span>
 };
 
-<span class="cm">// Getter für alle Props</span>
+<span class="cm">// Getters for all props</span>
 <span class="kw">type</span> <span class="ty">Getters</span>&lt;<span class="ty">T</span>&gt; = {
   [<span class="ty">K</span> <span class="kw">in keyof</span> <span class="ty">T</span> <span class="kw">as</span>
     <span class="op">`get${Capitalize&lt;string &amp; K&gt;}`</span>

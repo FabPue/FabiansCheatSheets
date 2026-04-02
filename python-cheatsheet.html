@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -70,7 +70,7 @@
 <body>
 <header>
   <div class="logo">Py</div>
-  <div><h1>Python Cheat Sheet</h1><p>Python 3.12 — Vollständige Referenz: Syntax, Typen, OOP, Functional, async & mehr</p></div>
+  <div><h1>Python Cheat Sheet</h1><p>Python 3.12 — Complete Reference: Syntax, Types, OOP, Functional, async & more</p></div>
   <div class="tag-row"><span class="tag">Python 3.12</span><span class="tag">OOP</span><span class="tag">Functional</span><span class="tag">async/await</span><span class="tag">Type Hints</span></div>
 </header>
 <div class="page"><div class="grid">
@@ -249,8 +249,8 @@ p.x  p.y</pre>
 <pre>s = {<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>}
 s = <span class="fn">set</span>([<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">2</span>,<span class="nm">3</span>])  <span class="cm"># {1,2,3}</span>
 s.<span class="fn">add</span>(<span class="nm">4</span>)
-s.<span class="fn">remove</span>(<span class="nm">2</span>)    <span class="cm"># KeyError wenn fehlt</span>
-s.<span class="fn">discard</span>(<span class="nm">2</span>)   <span class="cm"># kein Error</span>
+s.<span class="fn">remove</span>(<span class="nm">2</span>)    <span class="cm"># KeyError if missing</span>
+s.<span class="fn">discard</span>(<span class="nm">2</span>)   <span class="cm"># no error</span>
 s.<span class="fn">pop</span>()
 <span class="nm">2</span> <span class="kw">in</span> s
 <span class="cm"># Set operations</span>
@@ -308,7 +308,7 @@ y = <span class="st">"pos"</span> <span class="kw">if</span> x &gt; <span class=
   </div>
 </div>
 
-<!-- SCHLEIFEN -->
+<!-- LOOPS -->
 <div class="card c-teal">
   <div class="card-header"><div class="card-icon">↻</div><span class="card-title">Loops</span></div>
   <div class="card-body">
@@ -329,7 +329,7 @@ y = <span class="st">"pos"</span> <span class="kw">if</span> x &gt; <span class=
 <span class="kw">for</span> x <span class="kw">in</span> lst:
     <span class="kw">if</span> found: <span class="kw">break</span>
 <span class="kw">else</span>:
-    <span class="fn">print</span>(<span class="st">"nicht gefunden"</span>)
+    <span class="fn">print</span>(<span class="st">"not found"</span>)
 
 <span class="cm"># Control</span>
 <span class="kw">break</span>     <span class="cm"># exit loop</span>
@@ -338,7 +338,7 @@ y = <span class="st">"pos"</span> <span class="kw">if</span> x &gt; <span class=
   </div>
 </div>
 
-<!-- FUNKTIONEN -->
+<!-- FUNCTIONS -->
 <div class="card c-yellow col-2">
   <div class="card-header"><div class="card-icon">ƒ</div><span class="card-title">Functions</span></div>
   <div class="card-body">
@@ -347,21 +347,21 @@ y = <span class="st">"pos"</span> <span class="kw">if</span> x &gt; <span class=
 <pre><span class="cm"># Basic function</span>
 <span class="kw">def</span> <span class="fn">greet</span>(name: <span class="ty">str</span>) -> <span class="ty">str</span>:
     <span class="st">"""Docstring."""</span>
-    <span class="kw">return</span> <span class="kw">f</span><span class="st">"Hallo {name}"</span>
+    <span class="kw">return</span> <span class="kw">f</span><span class="st">"Hello {name}"</span>
 
 <span class="cm"># Default parameter</span>
 <span class="kw">def</span> <span class="fn">say</span>(msg=<span class="st">"Hi"</span>, n=<span class="nm">1</span>):
     <span class="fn">print</span>(msg * n)
 
-<span class="cm"># *args und **kwargs</span>
+<span class="cm"># *args and **kwargs</span>
 <span class="kw">def</span> <span class="fn">func</span>(*args, **kwargs):
     <span class="fn">print</span>(args)    <span class="cm"># tuple</span>
     <span class="fn">print</span>(kwargs)  <span class="cm"># dict</span>
 
-<span class="cm"># Keyword-only (nach *)</span>
+<span class="cm"># Keyword-only (after *)</span>
 <span class="kw">def</span> <span class="fn">kw</span>(*, name, age=<span class="nm">18</span>): ...
 
-<span class="cm"># Positional-only (vor /)</span>
+<span class="cm"># Positional-only (before /)</span>
 <span class="kw">def</span> <span class="fn">pos</span>(x, y, /): ...</pre>
       </div>
       <div>
@@ -394,7 +394,7 @@ lo, hi = <span class="fn">minmax</span>([<span class="nm">3</span>,<span class="
   </div>
 </div>
 
-<!-- KLASSEN -->
+<!-- CLASSES -->
 <div class="card c-purple col-2">
   <div class="card-header"><div class="card-icon">◇</div><span class="card-title">Classes &amp; OOP</span></div>
   <div class="card-body">
@@ -472,13 +472,13 @@ __call__  __hash__</pre>
 <span class="kw">except</span> <span class="ty">ZeroDivisionError</span> <span class="kw">as</span> e:
     <span class="fn">print</span>(e)
 <span class="kw">except</span> (<span class="ty">TypeError</span>, <span class="ty">ValueError</span>):
-    <span class="fn">print</span>(<span class="st">"Typfehler"</span>)
+    <span class="fn">print</span>(<span class="st">"type error"</span>)
 <span class="kw">except</span> <span class="ty">Exception</span>:
     <span class="kw">raise</span>  <span class="cm"># re-raise</span>
 <span class="kw">else</span>:
-    <span class="fn">print</span>(<span class="st">"kein Fehler"</span>)
+    <span class="fn">print</span>(<span class="st">"no error"</span>)
 <span class="kw">finally</span>:
-    <span class="fn">print</span>(<span class="st">"immer"</span>)
+    <span class="fn">print</span>(<span class="st">"always"</span>)
 
 <span class="cm"># raise</span>
 <span class="kw">raise</span> <span class="ty">ValueError</span>(<span class="st">"msg"</span>)
@@ -659,8 +659,8 @@ c.<span class="fn">most_common</span>(<span class="nm">3</span>)  <span class="c
 <span class="kw">f</span><span class="st">"{x:.2f}"</span>      <span class="cm"># "3.14"</span>
 <span class="kw">f</span><span class="st">"{x:10.2f}"</span>    <span class="cm"># " 3.14"</span>
 <span class="kw">f</span><span class="st">"{1000:,}"</span>     <span class="cm"># "1,000"</span>
-<span class="kw">f</span><span class="st">"{n:08b}"</span>      <span class="cm"># binär 8-Stellen</span>
-<span class="kw">f</span><span class="st">"{n:#x}"</span>       <span class="cm"># hex mit 0x</span>
+<span class="kw">f</span><span class="st">"{n:08b}"</span>      <span class="cm"># binary, 8 digits</span>
+<span class="kw">f</span><span class="st">"{n:#x}"</span>       <span class="cm"># hex with 0x</span>
 <span class="kw">f</span><span class="st">"{x!r}"</span>        <span class="cm"># repr()</span>
 <span class="kw">f</span><span class="st">"{x=}"</span>         <span class="cm"># "x=3.14159"</span>
 
