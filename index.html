@@ -275,6 +275,8 @@
   .card-py    { --card-color: #63b3f7; --card-glow: radial-gradient(ellipse at top, rgba(99,179,247,0.08), transparent 70%); --card-shadow: rgba(99,179,247,0.2); }
   .card-ts    { --card-color: #3b82f6; --card-glow: radial-gradient(ellipse at top, rgba(59,130,246,0.08), transparent 70%); --card-shadow: rgba(59,130,246,0.2); }
   .card-c     { --card-color: #f7a063; --card-glow: radial-gradient(ellipse at top, rgba(247,160,99,0.08), transparent 70%); --card-shadow: rgba(247,160,99,0.2); }
+  .card-sql   { --card-color: #f29111; --card-glow: radial-gradient(ellipse at top, rgba(242,145,17,0.08), transparent 70%); --card-shadow: rgba(242,145,17,0.2); }
+  .card-html  { --card-color: #e44d26; --card-glow: radial-gradient(ellipse at top, rgba(228,77,38,0.08), transparent 70%); --card-shadow: rgba(228,77,38,0.2); }
 
   /* SVG Icon container */
   .lang-icon {
@@ -651,6 +653,47 @@
           <span class="topic-tag">memory</span>
           <span class="topic-tag">structs</span>
           <span class="topic-tag">stdlib</span>
+        </div>
+        <div class="open-hint">→ Open Cheat Sheet</div>
+      </div>
+
+      <!-- SQL -->
+      <div class="lang-card card-sql" onclick="openSheet('sql-cheatsheet.html','SQL Cheat Sheet')">
+        <div class="lang-icon">
+          <svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+            <path fill="#f29111" d="M64 8c-30.9 0-56 10.7-56 24v64c0 13.3 25.1 24 56 24s56-10.7 56-24V32c0-13.3-25.1-24-56-24z"/>
+            <ellipse fill="#ffd54f" cx="64" cy="32" rx="56" ry="24"/>
+            <path fill="#fff" d="M50 58h8v20h12V58h8L64 42 50 58z" opacity="0.5"/>
+          </svg>
+        </div>
+        <div class="lang-name">SQL</div>
+        <div class="lang-version">MySQL · PostgreSQL</div>
+        <div class="lang-topics">
+          <span class="topic-tag">queries</span>
+          <span class="topic-tag">joins</span>
+          <span class="topic-tag">indexes</span>
+          <span class="topic-tag">transactions</span>
+        </div>
+        <div class="open-hint">→ Open Cheat Sheet</div>
+      </div>
+
+      <!-- HTML -->
+      <div class="lang-card card-html" onclick="openSheet('html-cheatsheet.html','HTML Cheat Sheet')">
+        <div class="lang-icon">
+          <svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+            <path fill="#E44D26" d="M19.037 113.876L9.032 1.661h109.936l-10.016 112.198-45.019 12.48z"/>
+            <path fill="#F16529" d="M64 116.8l36.378-10.086 8.559-95.878H64z"/>
+            <path fill="#EBEBEB" d="M64 52.455H45.788L44.53 38.361H64V24.599H29.489l.33 3.692 3.382 37.927H64zm0 35.743l-.061.017-15.327-4.14-.979-10.975H33.816l1.928 21.609 28.193 7.826.063-.017z"/>
+            <path fill="#fff" d="M63.952 52.455v13.763h16.947l-1.597 17.849-15.35 4.143v14.319l28.215-7.82.207-2.325 3.234-36.233.335-3.696h-3.708zm0-27.856v13.762h33.244l.276-3.092.628-6.978.329-3.692z"/>
+          </svg>
+        </div>
+        <div class="lang-name">HTML</div>
+        <div class="lang-version">HTML5 · Semantic</div>
+        <div class="lang-topics">
+          <span class="topic-tag">elements</span>
+          <span class="topic-tag">forms</span>
+          <span class="topic-tag">semantic</span>
+          <span class="topic-tag">attributes</span>
         </div>
         <div class="open-hint">→ Open Cheat Sheet</div>
       </div>

@@ -1,0 +1,2123 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML Cheat Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0e17;
+    --surface: #16141f;
+    --surface2: #1e1b2e;
+    --border: #2b2840;
+    --accent: #f7c948;
+    --accent2: #ff6b6b;
+    --accent3: #6bcfff;
+    --accent4: #a8ff78;
+    --accent5: #c084fc;
+    --text: #e8e6f0;
+    --muted: #6b6884;
+    --kw: #c792ea;
+    --type: #82aaff;
+    --string: #c3e88d;
+    --num: #f78c6c;
+    --comment: #4a5568;
+    --fn: #82aaff;
+    --op: #89ddff;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'JetBrains Mono', monospace; background: var(--bg); color: var(--text); line-height: 1.6; font-size: 13px; }
+  header { background: var(--surface); border-bottom: 2px solid var(--accent); padding: 24px 40px; display: flex; align-items: center; gap: 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 40px rgba(247,201,72,0.1); }
+  .logo { width: 50px; height: 50px; background: var(--accent2); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 14px; color: #111; flex-shrink: 0; }
+  header h1 { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; color: #fff; }
+  header p { color: var(--muted); font-size: 11px; margin-top: 2px; }
+  .tag-row { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 3px 10px; font-size: 11px; color: var(--muted); }
+  .page { padding: 28px 40px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .col-2 { grid-column: span 2; }
+  .col-3 { grid-column: span 3; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: border-color 0.2s; }
+  .card:hover { border-color: var(--accent); }
+  .card-header { padding: 9px 14px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); background: var(--surface2); }
+  .card-icon { width: 20px; height: 20px; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+  .card-title { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+  .card-body { padding: 12px 14px; }
+  pre { background: #0a0910; border-radius: 7px; padding: 10px 12px; overflow-x: auto; font-size: 11.5px; line-height: 1.7; margin-bottom: 8px; border: 1px solid #1c1928; }
+  pre:last-child { margin-bottom: 0; }
+  .kw { color: var(--kw); } .ty { color: var(--type); } .st { color: var(--string); } .nm { color: var(--num); } .cm { color: var(--comment); } .fn { color: var(--fn); } .op { color: var(--op); } .at { color: var(--accent); } .tag-c { color: var(--accent2); }
+  .kv-table { width: 100%; border-collapse: collapse; font-size: 11.5px; margin-bottom: 6px; }
+  .kv-table td { padding: 4px 7px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .kv-table tr:last-child td { border-bottom: none; }
+  .kv-table td:first-child { color: var(--type); white-space: nowrap; font-weight: 500; width: 40%; }
+  .kv-table td:last-child { color: var(--muted); }
+  .sep { border: none; border-top: 1px solid var(--border); margin: 8px 0; }
+  .section-label { font-family: 'Syne', sans-serif; font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); margin: 10px 0 5px; }
+  .section-label:first-child { margin-top: 0; }
+  .c-yellow .card-icon { background: rgba(247,201,72,0.2); color: var(--accent); }
+  .c-red    .card-icon { background: rgba(255,107,107,0.2); color: var(--accent2); }
+  .c-blue   .card-icon { background: rgba(107,207,255,0.2); color: var(--accent3); }
+  .c-green  .card-icon { background: rgba(168,255,120,0.2); color: var(--accent4); }
+  .c-purple .card-icon { background: rgba(192,132,252,0.2); color: var(--accent5); }
+  .c-yellow .card-title { color: var(--accent); }
+  .c-red    .card-title { color: var(--accent2); }
+  .c-blue   .card-title { color: var(--accent3); }
+  .c-green  .card-title { color: var(--accent4); }
+  .c-purple .card-title { color: var(--accent5); }
+  footer { text-align: center; padding: 20px; color: var(--muted); font-size: 11px; border-top: 1px solid var(--border); margin-top: 20px; }
+
+  /* ===== MODAL SYSTEM ===== */
+  .card { cursor: pointer; }
+  .card-header { position: relative; transition: background 0.15s; }
+  .card-header::after { content: '⤢'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 13px; color: var(--muted); opacity: 0; transition: opacity 0.2s; pointer-events: none; }
+  .card:hover .card-header::after { opacity: 1; }
+  .card:hover .card-header { background: #221f35; }
+  #m-ov { position: fixed; inset: 0; background: rgba(5,4,14,0.93); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 9000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+  #m-ov.open { opacity: 1; pointer-events: all; }
+  #m-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; width: min(1160px, 96vw); max-height: 90vh; display: flex; flex-direction: column; transform: scale(0.95) translateY(30px); transition: transform 0.38s cubic-bezier(0.34,1.4,0.64,1); box-shadow: 0 40px 120px rgba(0,0,0,0.8); overflow: hidden; }
+  #m-ov.open #m-panel { transform: none; }
+  #m-head { padding: 18px 24px; display: flex; align-items: center; gap: 14px; border-bottom: 1px solid var(--border); background: var(--surface2); flex-shrink: 0; }
+  #m-badge { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; flex-shrink: 0; font-family: 'Syne', sans-serif; }
+  #m-title { font-family: 'Syne', sans-serif; font-size: 19px; font-weight: 800; color: #fff; }
+  #m-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  #m-close { margin-left: auto; width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--border); background: transparent; color: var(--muted); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0; }
+  #m-close:hover { background: var(--accent2); color: #fff; border-color: var(--accent2); }
+  #m-tabs { display: flex; border-bottom: 1px solid var(--border); background: var(--surface2); flex-shrink: 0; padding: 0 24px; gap: 2px; }
+  .m-tab { background: none; border: none; border-bottom: 2px solid transparent; color: var(--muted); font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 10px 18px; cursor: pointer; transition: all 0.15s; margin-bottom: -1px; }
+  .m-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .m-tab:hover:not(.active) { color: var(--text); }
+  #m-body { flex: 1; overflow-y: auto; padding: 24px; scroll-behavior: smooth; }
+  #m-body::-webkit-scrollbar { width: 6px; } #m-body::-webkit-scrollbar-track { background: var(--surface); } #m-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  .m-pane { display: none; animation: mfade 0.22s ease; }
+  .m-pane.active { display: block; }
+  @keyframes mfade { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+  /* Demo shared styles */
+  .d-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .d-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .d-box { background: #0a0910; border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+  .d-label { font-family: 'Syne', sans-serif; font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); margin-bottom: 10px; }
+  .d-preview { background: #fff; color: #111; border-radius: 8px; padding: 14px; min-height: 70px; font-family: sans-serif; font-size: 13px; line-height: 1.5; }
+  .d-btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 5px 11px; cursor: pointer; transition: all 0.15s; margin: 2px; display: inline-flex; align-items: center; gap: 4px; }
+  .d-btn:hover { background: var(--accent); color: #111; border-color: var(--accent); }
+  .d-btn.on { background: var(--accent4); color: #111; border-color: var(--accent4); }
+  .d-input { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 12px; padding: 7px 10px; width: 100%; outline: none; box-sizing: border-box; }
+  .d-input:focus { border-color: var(--accent3); box-shadow: 0 0 0 3px rgba(107,207,255,0.1); }
+  .d-select { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 12px; padding: 6px 10px; outline: none; cursor: pointer; }
+  .d-code { background: #0a0910; border: 1px solid #1c1928; border-radius: 6px; padding: 10px 12px; font-size: 11px; line-height: 1.7; white-space: pre; overflow-x: auto; color: var(--text); font-family: 'JetBrains Mono', monospace; }
+  .d-tip { background: rgba(107,207,255,0.07); border: 1px solid rgba(107,207,255,0.2); border-radius: 8px; padding: 10px 14px; font-size: 12px; color: var(--text); margin: 7px 0; }
+  .d-tip strong { color: var(--accent3); }
+  .d-warn { background: rgba(255,107,107,0.07); border: 1px solid rgba(255,107,107,0.2); border-radius: 8px; padding: 10px 14px; font-size: 12px; color: var(--text); margin: 7px 0; }
+  .d-warn strong { color: var(--accent2); }
+  .d-ok { background: rgba(168,255,120,0.07); border: 1px solid rgba(168,255,120,0.2); border-radius: 8px; padding: 10px 14px; font-size: 12px; color: var(--text); margin: 7px 0; }
+  .d-ok strong { color: var(--accent4); }
+  .d-section { margin-bottom: 20px; }
+  .d-stitle { font-family: 'Syne', sans-serif; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); margin-bottom: 8px; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+  .d-info { background: var(--surface2); border: 1px solid var(--accent3); border-radius: 8px; padding: 12px 14px; font-size: 12px; color: var(--text); transition: all 0.25s; min-height: 48px; }
+  .d-info strong { color: var(--accent3); font-family: 'Syne', sans-serif; }
+  /* DOM tree */
+  .dom-lbl { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 6px; cursor: pointer; transition: all 0.15s; border: 1px solid transparent; font-size: 12px; user-select: none; }
+  .dom-lbl:hover { background: var(--surface2); border-color: var(--border); }
+  .dom-lbl.hl { background: rgba(247,201,72,0.12); border-color: var(--accent); }
+  .dom-lbl .dt { color: var(--accent2); font-weight: 600; } .dom-lbl .da { color: var(--accent); font-size: 10px; } .dom-lbl .dc { color: var(--muted); font-size: 10px; }
+  .dom-ch { padding-left: 16px; border-left: 1px dashed var(--border); margin-left: 14px; margin-top: 2px; }
+  /* Wireframe */
+  .wf { border-radius: 8px; overflow: hidden; font-family: sans-serif; display: flex; flex-direction: column; min-height: 230px; border: 1px solid #ccc; }
+  .wf-hd { background: #bfdbfe; padding: 8px 12px; font-weight: 700; font-size: 11px; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 6px; }
+  .wf-nv { background: #fde68a; padding: 5px 12px; display: flex; gap: 12px; cursor: pointer; transition: all 0.15s; font-size: 10px; }
+  .wf-flex { display: flex; flex: 1; }
+  .wf-mn { background: #d1fae5; padding: 10px; flex: 1; cursor: pointer; transition: all 0.15s; font-size: 10px; }
+  .wf-art { background: rgba(255,255,255,0.7); margin: 4px; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 9px; transition: all 0.15s; }
+  .wf-sec { background: rgba(99,102,241,0.1); margin: 4px; padding: 6px; border-radius: 3px; cursor: pointer; font-size: 9px; transition: all 0.15s; }
+  .wf-as { background: #fce7f3; padding: 8px; width: 90px; cursor: pointer; transition: all 0.15s; font-size: 9px; }
+  .wf-ft { background: #fecaca; padding: 7px 12px; text-align: center; cursor: pointer; transition: all 0.15s; font-size: 10px; }
+  .wf-sel { outline: 3px solid #6366f1; outline-offset: 1px; }
+  .wf-zone:hover { filter: brightness(0.9); }
+  /* Entity table */
+  .etbl { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .etbl th { background: var(--surface2); padding: 6px 10px; text-align: left; color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border); font-family: 'Syne', sans-serif; }
+  .etbl td { padding: 5px 10px; border-bottom: 1px solid #1a1828; vertical-align: middle; }
+  .etbl tr:last-child td { border-bottom: none; }
+  .etbl tr:hover td { background: var(--surface2); }
+  .e-cp { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; color: var(--muted); padding: 2px 8px; font-size: 10px; cursor: pointer; transition: all 0.15s; font-family: 'JetBrains Mono', monospace; }
+  .e-cp:hover { background: var(--accent); color: #111; border-color: var(--accent); }
+  /* OG card */
+  .og-card { background: #fff; border-radius: 12px; overflow: hidden; font-family: sans-serif; max-width: 380px; box-shadow: 0 8px 30px rgba(0,0,0,0.4); }
+  .og-img { height: 160px; display: flex; align-items: center; justify-content: center; font-size: 48px; background: linear-gradient(135deg, #667eea, #764ba2); }
+  .og-body { padding: 12px 14px; }
+  .og-site { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+  .og-title { font-size: 15px; font-weight: 700; color: #111; margin: 4px 0 3px; line-height: 1.3; }
+  .og-desc { font-size: 12px; color: #555; line-height: 1.4; }
+  /* canvas tools */
+  .ctool { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
+  .c-col { width: 26px; height: 26px; border-radius: 50%; border: 3px solid transparent; cursor: pointer; transition: border-color 0.15s; flex-shrink: 0; }
+  .c-col.sel { border-color: #fff; }
+  /* validation demo */
+  .vfield { margin-bottom: 12px; }
+  .vfield label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-family: 'Syne', sans-serif; display: block; margin-bottom: 4px; }
+  .vfield input { width: 100%; padding: 7px 10px; border-radius: 6px; border: 2px solid var(--border); background: var(--surface2); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 12px; box-sizing: border-box; outline: none; transition: border-color 0.2s; }
+  .vfield input:valid:not(:placeholder-shown) { border-color: var(--accent4); }
+  .vfield input:invalid:not(:placeholder-shown) { border-color: var(--accent2); }
+  .vfield .hint { font-size: 10px; color: var(--muted); margin-top: 3px; }
+  /* tab order demo */
+  .tabel { padding: 8px 14px; border: 2px solid var(--border); border-radius: 6px; background: var(--surface); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 12px; cursor: pointer; transition: all 0.2s; outline: none; display: inline-flex; align-items: center; gap: 6px; margin: 4px; }
+  .tabel:focus { border-color: var(--accent3); box-shadow: 0 0 0 4px rgba(107,207,255,0.2); transform: scale(1.05); }
+  .tab-badge { width: 18px; height: 18px; background: var(--accent3); color: #111; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; }
+  /* live form demo */
+  .lf-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+  .lf-item { background: var(--surface2); border-radius: 8px; padding: 10px; flex: 1; min-width: 140px; }
+  .lf-item label { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-family: 'Syne', sans-serif; display: block; margin-bottom: 5px; }
+  .lf-item input, .lf-item select, .lf-item textarea { width: 100%; padding: 6px 8px; border-radius: 5px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 11px; box-sizing: border-box; outline: none; }
+  .lf-item input:focus, .lf-item select:focus { border-color: var(--accent3); }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">HTML</div>
+  <div><h1>HTML Cheat Sheet</h1><p>HTML5 — Complete Reference: Structure, Semantics, Forms, Media, Accessibility &amp; more</p></div>
+  <div class="tag-row"><span class="tag">HTML5</span><span class="tag">Semantic</span><span class="tag">Forms</span><span class="tag">Media</span><span class="tag">Accessibility</span><span class="tag">Meta</span></div>
+</header>
+<div class="page"><div class="grid">
+
+<!-- DOCUMENT STRUCTURE -->
+<div class="card c-yellow col-2">
+  <div class="card-header"><div class="card-icon">≡</div><span class="card-title">Document Structure</span></div>
+  <div class="card-body">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div>
+<pre><span class="cm">&lt;!-- Basic HTML5 Boilerplate --&gt;</span>
+<span class="op">&lt;!DOCTYPE html&gt;</span>
+<span class="tag-c">&lt;html</span> <span class="at">lang</span>=<span class="st">"en"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;head&gt;</span>
+  <span class="tag-c">&lt;meta</span> <span class="at">charset</span>=<span class="st">"UTF-8"</span><span class="tag-c">&gt;</span>
+  <span class="tag-c">&lt;meta</span> <span class="at">name</span>=<span class="st">"viewport"</span>
+    <span class="at">content</span>=<span class="st">"width=device-width,
+    initial-scale=1.0"</span><span class="tag-c">&gt;</span>
+  <span class="tag-c">&lt;title&gt;</span>Page Title<span class="tag-c">&lt;/title&gt;</span>
+  <span class="tag-c">&lt;link</span> <span class="at">rel</span>=<span class="st">"stylesheet"</span> <span class="at">href</span>=<span class="st">"style.css"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;/head&gt;</span>
+<span class="tag-c">&lt;body&gt;</span>
+  <span class="cm">&lt;!-- content --&gt;</span>
+  <span class="tag-c">&lt;script</span> <span class="at">src</span>=<span class="st">"app.js"</span><span class="tag-c">&gt;&lt;/script&gt;</span>
+<span class="tag-c">&lt;/body&gt;</span>
+<span class="tag-c">&lt;/html&gt;</span></pre>
+      </div>
+      <div>
+<pre><span class="cm">&lt;!-- Head Elements --&gt;</span>
+<span class="tag-c">&lt;meta</span> <span class="at">charset</span>=<span class="st">"UTF-8"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;meta</span> <span class="at">name</span>=<span class="st">"description"</span> <span class="at">content</span>=<span class="st">"..."</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;meta</span> <span class="at">name</span>=<span class="st">"keywords"</span> <span class="at">content</span>=<span class="st">"..."</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;meta</span> <span class="at">name</span>=<span class="st">"author"</span> <span class="at">content</span>=<span class="st">"Name"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;meta</span> <span class="at">name</span>=<span class="st">"robots"</span> <span class="at">content</span>=<span class="st">"index,follow"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;link</span> <span class="at">rel</span>=<span class="st">"icon"</span> <span class="at">href</span>=<span class="st">"favicon.ico"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;link</span> <span class="at">rel</span>=<span class="st">"canonical"</span> <span class="at">href</span>=<span class="st">"https://..."</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;base</span> <span class="at">href</span>=<span class="st">"https://example.com/"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;style&gt;</span><span class="cm">/* inline CSS */</span><span class="tag-c">&lt;/style&gt;</span>
+<span class="tag-c">&lt;script</span> <span class="at">defer</span> <span class="at">src</span>=<span class="st">"app.js"</span><span class="tag-c">&gt;&lt;/script&gt;</span>
+<span class="tag-c">&lt;script</span> <span class="at">async</span> <span class="at">src</span>=<span class="st">"tracker.js"</span><span class="tag-c">&gt;&lt;/script&gt;</span>
+<span class="tag-c">&lt;noscript&gt;</span>Enable JS please<span class="tag-c">&lt;/noscript&gt;</span></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SEMANTIC LAYOUT -->
+<div class="card c-red">
+  <div class="card-header"><div class="card-icon">⬚</div><span class="card-title">Semantic Layout</span></div>
+  <div class="card-body">
+<pre><span class="tag-c">&lt;header&gt;</span>   <span class="cm">site/section header</span>
+<span class="tag-c">&lt;nav&gt;</span>      <span class="cm">navigation links</span>
+<span class="tag-c">&lt;main&gt;</span>     <span class="cm">main content (once per page)</span>
+<span class="tag-c">&lt;article&gt;</span>  <span class="cm">self-contained content</span>
+<span class="tag-c">&lt;section&gt;</span>  <span class="cm">thematic grouping</span>
+<span class="tag-c">&lt;aside&gt;</span>    <span class="cm">sidebar / tangential content</span>
+<span class="tag-c">&lt;footer&gt;</span>   <span class="cm">page/section footer</span>
+<span class="tag-c">&lt;figure&gt;</span>   <span class="cm">illustration / diagram</span>
+<span class="tag-c">&lt;figcaption&gt;</span> <span class="cm">caption for figure</span>
+<span class="tag-c">&lt;details&gt;</span>  <span class="cm">disclosure widget</span>
+<span class="tag-c">&lt;summary&gt;</span>  <span class="cm">visible label of details</span>
+<span class="tag-c">&lt;dialog&gt;</span>   <span class="cm">modal/non-modal dialog</span>
+<span class="tag-c">&lt;template&gt;</span> <span class="cm">inert HTML template</span>
+<span class="tag-c">&lt;slot&gt;</span>     <span class="cm">web-component placeholder</span>
+<span class="tag-c">&lt;div&gt;</span>      <span class="cm">generic block container</span>
+<span class="tag-c">&lt;span&gt;</span>     <span class="cm">generic inline container</span></pre>
+  </div>
+</div>
+
+<!-- TEXT & HEADINGS -->
+<div class="card c-blue">
+  <div class="card-header"><div class="card-icon">T</div><span class="card-title">Text &amp; Headings</span></div>
+  <div class="card-body">
+<pre><span class="tag-c">&lt;h1&gt;</span> &lt;h2&gt; &lt;h3&gt; &lt;h4&gt; &lt;h5&gt; &lt;h6&gt;
+<span class="tag-c">&lt;p&gt;</span>             <span class="cm">paragraph</span>
+<span class="tag-c">&lt;br&gt;</span>            <span class="cm">line break</span>
+<span class="tag-c">&lt;hr&gt;</span>            <span class="cm">thematic break</span>
+<span class="tag-c">&lt;strong&gt;</span>        <span class="cm">important (bold)</span>
+<span class="tag-c">&lt;em&gt;</span>            <span class="cm">emphasis (italic)</span>
+<span class="tag-c">&lt;b&gt;</span>             <span class="cm">bold (no importance)</span>
+<span class="tag-c">&lt;i&gt;</span>             <span class="cm">italic (no emphasis)</span>
+<span class="tag-c">&lt;u&gt;</span>             <span class="cm">underline</span>
+<span class="tag-c">&lt;s&gt;</span>             <span class="cm">strikethrough</span>
+<span class="tag-c">&lt;mark&gt;</span>          <span class="cm">highlighted text</span>
+<span class="tag-c">&lt;small&gt;</span>         <span class="cm">fine print</span>
+<span class="tag-c">&lt;sub&gt;</span> <span class="tag-c">&lt;sup&gt;</span>     <span class="cm">subscript/superscript</span>
+<span class="tag-c">&lt;abbr</span> <span class="at">title</span>=<span class="st">"..."</span><span class="tag-c">&gt;</span>  <span class="cm">abbreviation</span>
+<span class="tag-c">&lt;cite&gt;</span>          <span class="cm">citation</span>
+<span class="tag-c">&lt;code&gt;</span>          <span class="cm">inline code</span>
+<span class="tag-c">&lt;pre&gt;</span>           <span class="cm">preformatted text</span>
+<span class="tag-c">&lt;kbd&gt;</span>           <span class="cm">keyboard input</span>
+<span class="tag-c">&lt;var&gt;</span>           <span class="cm">variable</span>
+<span class="tag-c">&lt;samp&gt;</span>          <span class="cm">sample output</span>
+<span class="tag-c">&lt;q&gt;</span>             <span class="cm">inline quotation</span>
+<span class="tag-c">&lt;blockquote&gt;</span>    <span class="cm">block quotation</span>
+<span class="tag-c">&lt;address&gt;</span>       <span class="cm">contact information</span>
+<span class="tag-c">&lt;time</span> <span class="at">datetime</span>=<span class="st">"2024-01-01"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;data</span> <span class="at">value</span>=<span class="st">"42"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;wbr&gt;</span>           <span class="cm">word-break opportunity</span></pre>
+  </div>
+</div>
+
+<!-- LINKS & NAVIGATION -->
+<div class="card c-green">
+  <div class="card-header"><div class="card-icon">🔗</div><span class="card-title">Links &amp; Navigation</span></div>
+  <div class="card-body">
+<pre><span class="cm">&lt;!-- Anchor --&gt;</span>
+<span class="tag-c">&lt;a</span> <span class="at">href</span>=<span class="st">"https://example.com"</span><span class="tag-c">&gt;</span>Link<span class="tag-c">&lt;/a&gt;</span>
+<span class="tag-c">&lt;a</span> <span class="at">href</span>=<span class="st">"page.html"</span><span class="tag-c">&gt;</span>Relative<span class="tag-c">&lt;/a&gt;</span>
+<span class="tag-c">&lt;a</span> <span class="at">href</span>=<span class="st">"#section"</span><span class="tag-c">&gt;</span>Same-page<span class="tag-c">&lt;/a&gt;</span>
+<span class="tag-c">&lt;a</span> <span class="at">href</span>=<span class="st">"mailto:a@b.com"</span><span class="tag-c">&gt;</span>Email<span class="tag-c">&lt;/a&gt;</span>
+<span class="tag-c">&lt;a</span> <span class="at">href</span>=<span class="st">"tel:+1234567890"</span><span class="tag-c">&gt;</span>Call<span class="tag-c">&lt;/a&gt;</span>
+
+<span class="cm">&lt;!-- target --&gt;</span>
+<span class="at">target</span>=<span class="st">"_blank"</span>   <span class="cm">// new tab</span>
+<span class="at">target</span>=<span class="st">"_self"</span>    <span class="cm">// same tab (default)</span>
+<span class="at">target</span>=<span class="st">"_parent"</span>  <span class="cm">// parent frame</span>
+<span class="at">target</span>=<span class="st">"_top"</span>     <span class="cm">// full window</span>
+
+<span class="cm">&lt;!-- Security for _blank --&gt;</span>
+<span class="at">rel</span>=<span class="st">"noopener noreferrer"</span>
+
+<span class="cm">&lt;!-- Download link --&gt;</span>
+<span class="tag-c">&lt;a</span> <span class="at">href</span>=<span class="st">"file.pdf"</span> <span class="at">download</span><span class="tag-c">&gt;</span>PDF<span class="tag-c">&lt;/a&gt;</span>
+
+<span class="cm">&lt;!-- Anchor target --&gt;</span>
+<span class="tag-c">&lt;h2</span> <span class="at">id</span>=<span class="st">"section"</span><span class="tag-c">&gt;</span>Title<span class="tag-c">&lt;/h2&gt;</span></pre>
+  </div>
+</div>
+
+<!-- LISTS -->
+<div class="card c-purple">
+  <div class="card-header"><div class="card-icon">≣</div><span class="card-title">Lists</span></div>
+  <div class="card-body">
+<pre><span class="cm">&lt;!-- Unordered --&gt;</span>
+<span class="tag-c">&lt;ul&gt;</span>
+  <span class="tag-c">&lt;li&gt;</span>Item 1<span class="tag-c">&lt;/li&gt;</span>
+  <span class="tag-c">&lt;li&gt;</span>Item 2<span class="tag-c">&lt;/li&gt;</span>
+<span class="tag-c">&lt;/ul&gt;</span>
+
+<span class="cm">&lt;!-- Ordered --&gt;</span>
+<span class="tag-c">&lt;ol</span> <span class="at">start</span>=<span class="st">"3"</span> <span class="at">reversed</span><span class="tag-c">&gt;</span>
+  <span class="tag-c">&lt;li</span> <span class="at">value</span>=<span class="st">"5"</span><span class="tag-c">&gt;</span>Step 5<span class="tag-c">&lt;/li&gt;</span>
+  <span class="tag-c">&lt;li&gt;</span>Step 6<span class="tag-c">&lt;/li&gt;</span>
+<span class="tag-c">&lt;/ol&gt;</span>
+
+<span class="cm">&lt;!-- ol type --&gt;</span>
+<span class="at">type</span>=<span class="st">"1"</span> <span class="st">"A"</span> <span class="st">"a"</span> <span class="st">"I"</span> <span class="st">"i"</span>
+
+<span class="cm">&lt;!-- Description list --&gt;</span>
+<span class="tag-c">&lt;dl&gt;</span>
+  <span class="tag-c">&lt;dt&gt;</span>HTML<span class="tag-c">&lt;/dt&gt;</span>
+  <span class="tag-c">&lt;dd&gt;</span>HyperText Markup Language<span class="tag-c">&lt;/dd&gt;</span>
+<span class="tag-c">&lt;/dl&gt;</span>
+
+<span class="cm">&lt;!-- Nested lists --&gt;</span>
+<span class="tag-c">&lt;ul&gt;</span>
+  <span class="tag-c">&lt;li&gt;</span>Parent
+    <span class="tag-c">&lt;ul&gt;&lt;li&gt;</span>Child<span class="tag-c">&lt;/li&gt;&lt;/ul&gt;</span>
+  <span class="tag-c">&lt;/li&gt;</span>
+<span class="tag-c">&lt;/ul&gt;</span></pre>
+  </div>
+</div>
+
+<!-- IMAGES & MEDIA -->
+<div class="card c-yellow col-2">
+  <div class="card-header"><div class="card-icon">🖼</div><span class="card-title">Images &amp; Media</span></div>
+  <div class="card-body">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div>
+<pre><span class="cm">&lt;!-- Image --&gt;</span>
+<span class="tag-c">&lt;img</span> <span class="at">src</span>=<span class="st">"img.jpg"</span>
+     <span class="at">alt</span>=<span class="st">"description"</span>
+     <span class="at">width</span>=<span class="st">"400"</span> <span class="at">height</span>=<span class="st">"300"</span>
+     <span class="at">loading</span>=<span class="st">"lazy"</span>
+     <span class="at">decoding</span>=<span class="st">"async"</span><span class="tag-c">&gt;</span>
+
+<span class="cm">&lt;!-- Responsive image --&gt;</span>
+<span class="tag-c">&lt;img</span> <span class="at">src</span>=<span class="st">"small.jpg"</span>
+     <span class="at">srcset</span>=<span class="st">"sm.jpg 480w,
+             md.jpg 800w,
+             lg.jpg 1200w"</span>
+     <span class="at">sizes</span>=<span class="st">"(max-width:600px)
+            480px, 800px"</span>
+     <span class="at">alt</span>=<span class="st">"responsive"</span><span class="tag-c">&gt;</span>
+
+<span class="cm">&lt;!-- Picture element --&gt;</span>
+<span class="tag-c">&lt;picture&gt;</span>
+  <span class="tag-c">&lt;source</span> <span class="at">media</span>=<span class="st">"(min-width:800px)"</span>
+          <span class="at">srcset</span>=<span class="st">"large.webp"</span>
+          <span class="at">type</span>=<span class="st">"image/webp"</span><span class="tag-c">&gt;</span>
+  <span class="tag-c">&lt;img</span> <span class="at">src</span>=<span class="st">"fallback.jpg"</span> <span class="at">alt</span>=<span class="st">"img"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;/picture&gt;</span></pre>
+      </div>
+      <div>
+<pre><span class="cm">&lt;!-- Video --&gt;</span>
+<span class="tag-c">&lt;video</span> <span class="at">controls</span> <span class="at">autoplay</span> <span class="at">muted</span>
+       <span class="at">loop</span> <span class="at">width</span>=<span class="st">"640"</span>
+       <span class="at">poster</span>=<span class="st">"thumb.jpg"</span><span class="tag-c">&gt;</span>
+  <span class="tag-c">&lt;source</span> <span class="at">src</span>=<span class="st">"vid.mp4"</span>
+          <span class="at">type</span>=<span class="st">"video/mp4"</span><span class="tag-c">&gt;</span>
+  <span class="tag-c">&lt;source</span> <span class="at">src</span>=<span class="st">"vid.webm"</span>
+          <span class="at">type</span>=<span class="st">"video/webm"</span><span class="tag-c">&gt;</span>
+  <span class="tag-c">&lt;track</span> <span class="at">kind</span>=<span class="st">"subtitles"</span>
+         <span class="at">src</span>=<span class="st">"sub.vtt"</span>
+         <span class="at">srclang</span>=<span class="st">"en"</span>
+         <span class="at">label</span>=<span class="st">"English"</span> <span class="at">default</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;/video&gt;</span>
+
+<span class="cm">&lt;!-- Audio --&gt;</span>
+<span class="tag-c">&lt;audio</span> <span class="at">controls</span> <span class="at">preload</span>=<span class="st">"metadata"</span><span class="tag-c">&gt;</span>
+  <span class="tag-c">&lt;source</span> <span class="at">src</span>=<span class="st">"audio.mp3"</span>
+          <span class="at">type</span>=<span class="st">"audio/mpeg"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;/audio&gt;</span>
+
+<span class="cm">&lt;!-- Embed / iFrame --&gt;</span>
+<span class="tag-c">&lt;iframe</span> <span class="at">src</span>=<span class="st">"https://..."</span>
+        <span class="at">width</span>=<span class="st">"600"</span> <span class="at">height</span>=<span class="st">"400"</span>
+        <span class="at">title</span>=<span class="st">"Embedded"</span>
+        <span class="at">loading</span>=<span class="st">"lazy"</span>
+        <span class="at">sandbox</span>=<span class="st">"allow-scripts"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;/iframe&gt;</span></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TABLES -->
+<div class="card c-red">
+  <div class="card-header"><div class="card-icon">⊞</div><span class="card-title">Tables</span></div>
+  <div class="card-body">
+<pre><span class="tag-c">&lt;table&gt;</span>
+  <span class="tag-c">&lt;caption&gt;</span>Table Title<span class="tag-c">&lt;/caption&gt;</span>
+  <span class="tag-c">&lt;colgroup&gt;</span>
+    <span class="tag-c">&lt;col</span> <span class="at">span</span>=<span class="st">"2"</span> <span class="at">class</span>=<span class="st">"highlight"</span><span class="tag-c">&gt;</span>
+  <span class="tag-c">&lt;/colgroup&gt;</span>
+  <span class="tag-c">&lt;thead&gt;</span>
+    <span class="tag-c">&lt;tr&gt;</span>
+      <span class="tag-c">&lt;th</span> <span class="at">scope</span>=<span class="st">"col"</span><span class="tag-c">&gt;</span>Name<span class="tag-c">&lt;/th&gt;</span>
+      <span class="tag-c">&lt;th</span> <span class="at">scope</span>=<span class="st">"col"</span><span class="tag-c">&gt;</span>Age<span class="tag-c">&lt;/th&gt;</span>
+    <span class="tag-c">&lt;/tr&gt;</span>
+  <span class="tag-c">&lt;/thead&gt;</span>
+  <span class="tag-c">&lt;tbody&gt;</span>
+    <span class="tag-c">&lt;tr&gt;</span>
+      <span class="tag-c">&lt;td&gt;</span>Alice<span class="tag-c">&lt;/td&gt;&lt;td&gt;</span>30<span class="tag-c">&lt;/td&gt;</span>
+    <span class="tag-c">&lt;/tr&gt;</span>
+  <span class="tag-c">&lt;/tbody&gt;</span>
+  <span class="tag-c">&lt;tfoot&gt;</span>
+    <span class="tag-c">&lt;tr&gt;&lt;td</span> <span class="at">colspan</span>=<span class="st">"2"</span><span class="tag-c">&gt;</span>Total: 1<span class="tag-c">&lt;/td&gt;&lt;/tr&gt;</span>
+  <span class="tag-c">&lt;/tfoot&gt;</span>
+<span class="tag-c">&lt;/table&gt;</span>
+
+<span class="cm">&lt;!-- Span rows/cols --&gt;</span>
+<span class="tag-c">&lt;td</span> <span class="at">colspan</span>=<span class="st">"2"</span><span class="tag-c">&gt;</span>spans 2 cols<span class="tag-c">&lt;/td&gt;</span>
+<span class="tag-c">&lt;td</span> <span class="at">rowspan</span>=<span class="st">"3"</span><span class="tag-c">&gt;</span>spans 3 rows<span class="tag-c">&lt;/td&gt;</span></pre>
+  </div>
+</div>
+
+<!-- FORMS -->
+<div class="card c-blue col-2">
+  <div class="card-header"><div class="card-icon">✎</div><span class="card-title">Forms</span></div>
+  <div class="card-body">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div>
+<pre><span class="tag-c">&lt;form</span> <span class="at">action</span>=<span class="st">"/submit"</span>
+      <span class="at">method</span>=<span class="st">"post"</span>
+      <span class="at">enctype</span>=<span class="st">"multipart/form-data"</span>
+      <span class="at">novalidate</span><span class="tag-c">&gt;</span>
+
+<span class="cm">&lt;!-- Label --&gt;</span>
+<span class="tag-c">&lt;label</span> <span class="at">for</span>=<span class="st">"name"</span><span class="tag-c">&gt;</span>Name:<span class="tag-c">&lt;/label&gt;</span>
+
+<span class="cm">&lt;!-- Text inputs --&gt;</span>
+<span class="tag-c">&lt;input</span> <span class="at">type</span>=<span class="st">"text"</span>     <span class="at">id</span>=<span class="st">"name"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;input</span> <span class="at">type</span>=<span class="st">"email"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;input</span> <span class="at">type</span>=<span class="st">"password"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;input</span> <span class="at">type</span>=<span class="st">"search"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;input</span> <span class="at">type</span>=<span class="st">"url"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;input</span> <span class="at">type</span>=<span class="st">"tel"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;input</span> <span class="at">type</span>=<span class="st">"number"</span>
+       <span class="at">min</span>=<span class="st">"0"</span> <span class="at">max</span>=<span class="st">"100"</span> <span class="at">step</span>=<span class="st">"1"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;input</span> <span class="at">type</span>=<span class="st">"range"</span>
+       <span class="at">min</span>=<span class="st">"0"</span> <span class="at">max</span>=<span class="st">"10"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;input</span> <span class="at">type</span>=<span class="st">"date"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;input</span> <span class="at">type</span>=<span class="st">"time"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;input</span> <span class="at">type</span>=<span class="st">"datetime-local"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;input</span> <span class="at">type</span>=<span class="st">"month"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;input</span> <span class="at">type</span>=<span class="st">"week"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;input</span> <span class="at">type</span>=<span class="st">"color"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;input</span> <span class="at">type</span>=<span class="st">"file"</span>
+       <span class="at">accept</span>=<span class="st">".pdf,.jpg"</span> <span class="at">multiple</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;input</span> <span class="at">type</span>=<span class="st">"hidden"</span>
+       <span class="at">name</span>=<span class="st">"csrf"</span> <span class="at">value</span>=<span class="st">"token"</span><span class="tag-c">&gt;</span></pre>
+      </div>
+      <div>
+<pre><span class="cm">&lt;!-- Checkbox / Radio --&gt;</span>
+<span class="tag-c">&lt;input</span> <span class="at">type</span>=<span class="st">"checkbox"</span>
+       <span class="at">name</span>=<span class="st">"opt"</span> <span class="at">checked</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;input</span> <span class="at">type</span>=<span class="st">"radio"</span>
+       <span class="at">name</span>=<span class="st">"gender"</span> <span class="at">value</span>=<span class="st">"m"</span><span class="tag-c">&gt;</span>
+
+<span class="cm">&lt;!-- Textarea --&gt;</span>
+<span class="tag-c">&lt;textarea</span> <span class="at">rows</span>=<span class="st">"4"</span>
+           <span class="at">cols</span>=<span class="st">"40"</span>
+           <span class="at">placeholder</span>=<span class="st">"..."</span><span class="tag-c">&gt;&lt;/textarea&gt;</span>
+
+<span class="cm">&lt;!-- Select --&gt;</span>
+<span class="tag-c">&lt;select</span> <span class="at">name</span>=<span class="st">"city"</span> <span class="at">multiple</span><span class="tag-c">&gt;</span>
+  <span class="tag-c">&lt;optgroup</span> <span class="at">label</span>=<span class="st">"Germany"</span><span class="tag-c">&gt;</span>
+    <span class="tag-c">&lt;option</span> <span class="at">value</span>=<span class="st">"berlin"</span><span class="tag-c">&gt;</span>Berlin<span class="tag-c">&lt;/option&gt;</span>
+  <span class="tag-c">&lt;/optgroup&gt;</span>
+<span class="tag-c">&lt;/select&gt;</span>
+
+<span class="cm">&lt;!-- Datalist autocomplete --&gt;</span>
+<span class="tag-c">&lt;input</span> <span class="at">list</span>=<span class="st">"browsers"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;datalist</span> <span class="at">id</span>=<span class="st">"browsers"</span><span class="tag-c">&gt;</span>
+  <span class="tag-c">&lt;option</span> <span class="at">value</span>=<span class="st">"Chrome"</span><span class="tag-c">&gt;</span>
+  <span class="tag-c">&lt;option</span> <span class="at">value</span>=<span class="st">"Firefox"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;/datalist&gt;</span>
+
+<span class="cm">&lt;!-- Buttons --&gt;</span>
+<span class="tag-c">&lt;button</span> <span class="at">type</span>=<span class="st">"submit"</span><span class="tag-c">&gt;</span>Submit<span class="tag-c">&lt;/button&gt;</span>
+<span class="tag-c">&lt;button</span> <span class="at">type</span>=<span class="st">"reset"</span><span class="tag-c">&gt;</span>Reset<span class="tag-c">&lt;/button&gt;</span>
+<span class="tag-c">&lt;button</span> <span class="at">type</span>=<span class="st">"button"</span><span class="tag-c">&gt;</span>JS-Button<span class="tag-c">&lt;/button&gt;</span>
+<span class="tag-c">&lt;input</span> <span class="at">type</span>=<span class="st">"submit"</span> <span class="at">value</span>=<span class="st">"Send"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;input</span> <span class="at">type</span>=<span class="st">"image"</span> <span class="at">src</span>=<span class="st">"btn.png"</span><span class="tag-c">&gt;</span></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FORM ATTRIBUTES -->
+<div class="card c-green">
+  <div class="card-header"><div class="card-icon">@</div><span class="card-title">Form Attributes &amp; Validation</span></div>
+  <div class="card-body">
+<pre><span class="cm">&lt;!-- Common input attrs --&gt;</span>
+<span class="at">name</span>=<span class="st">"fieldName"</span>       <span class="cm">form key</span>
+<span class="at">id</span>=<span class="st">"fieldId"</span>          <span class="cm">unique id</span>
+<span class="at">value</span>=<span class="st">"default"</span>       <span class="cm">default value</span>
+<span class="at">placeholder</span>=<span class="st">"hint"</span>   <span class="cm">ghost text</span>
+<span class="at">required</span>              <span class="cm">must be filled</span>
+<span class="at">disabled</span>              <span class="cm">not interactive</span>
+<span class="at">readonly</span>              <span class="cm">not editable</span>
+<span class="at">autofocus</span>             <span class="cm">auto-focus</span>
+<span class="at">autocomplete</span>=<span class="st">"off"</span>
+<span class="at">tabindex</span>=<span class="st">"1"</span>
+<span class="at">form</span>=<span class="st">"formId"</span>         <span class="cm">link to form</span>
+
+<span class="cm">&lt;!-- Validation attrs --&gt;</span>
+<span class="at">minlength</span>=<span class="st">"3"</span>
+<span class="at">maxlength</span>=<span class="st">"50"</span>
+<span class="at">min</span>=<span class="st">"0"</span> <span class="at">max</span>=<span class="st">"100"</span>
+<span class="at">pattern</span>=<span class="st">"[A-Za-z]{3}"</span>
+<span class="at">multiple</span>              <span class="cm">multiple values</span>
+
+<span class="cm">&lt;!-- Fieldset / Legend --&gt;</span>
+<span class="tag-c">&lt;fieldset&gt;</span>
+  <span class="tag-c">&lt;legend&gt;</span>Group<span class="tag-c">&lt;/legend&gt;</span>
+  <span class="tag-c">&lt;input</span> <span class="at">type</span>=<span class="st">"text"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;/fieldset&gt;</span>
+
+<span class="cm">&lt;!-- Progress / Meter --&gt;</span>
+<span class="tag-c">&lt;progress</span> <span class="at">value</span>=<span class="st">"70"</span> <span class="at">max</span>=<span class="st">"100"</span><span class="tag-c">&gt;&lt;/progress&gt;</span>
+<span class="tag-c">&lt;meter</span> <span class="at">value</span>=<span class="st">"0.6"</span> <span class="at">min</span>=<span class="st">"0"</span> <span class="at">max</span>=<span class="st">"1"</span>
+       <span class="at">low</span>=<span class="st">"0.2"</span> <span class="at">high</span>=<span class="st">"0.8"</span>
+       <span class="at">optimum</span>=<span class="st">"0.9"</span><span class="tag-c">&gt;&lt;/meter&gt;</span>
+<span class="tag-c">&lt;output</span> <span class="at">for</span>=<span class="st">"range"</span><span class="tag-c">&gt;</span>50<span class="tag-c">&lt;/output&gt;</span></pre>
+  </div>
+</div>
+
+<!-- GLOBAL ATTRIBUTES -->
+<div class="card c-purple">
+  <div class="card-header"><div class="card-icon">⚙</div><span class="card-title">Global Attributes</span></div>
+  <div class="card-body">
+<pre><span class="at">id</span>=<span class="st">"unique"</span>
+<span class="at">class</span>=<span class="st">"a b c"</span>
+<span class="at">style</span>=<span class="st">"color:red"</span>
+<span class="at">title</span>=<span class="st">"tooltip text"</span>
+<span class="at">lang</span>=<span class="st">"de"</span>
+<span class="at">dir</span>=<span class="st">"ltr"</span> | <span class="st">"rtl"</span> | <span class="st">"auto"</span>
+<span class="at">hidden</span>
+<span class="at">tabindex</span>=<span class="st">"0"</span>
+<span class="at">draggable</span>=<span class="st">"true"</span>
+<span class="at">contenteditable</span>=<span class="st">"true"</span>
+<span class="at">spellcheck</span>=<span class="st">"true"</span>
+<span class="at">translate</span>=<span class="st">"yes"</span> | <span class="st">"no"</span>
+
+<span class="cm">&lt;!-- Data attributes --&gt;</span>
+<span class="at">data-user-id</span>=<span class="st">"42"</span>
+<span class="at">data-role</span>=<span class="st">"admin"</span>
+<span class="cm">// JS: el.dataset.userId</span>
+
+<span class="cm">&lt;!-- ARIA (accessibility) --&gt;</span>
+<span class="at">role</span>=<span class="st">"button"</span>
+<span class="at">aria-label</span>=<span class="st">"Close"</span>
+<span class="at">aria-hidden</span>=<span class="st">"true"</span>
+<span class="at">aria-expanded</span>=<span class="st">"false"</span>
+<span class="at">aria-live</span>=<span class="st">"polite"</span>
+<span class="at">aria-required</span>=<span class="st">"true"</span>
+<span class="at">aria-describedby</span>=<span class="st">"hint"</span>
+<span class="at">aria-controls</span>=<span class="st">"panel"</span></pre>
+  </div>
+</div>
+
+<!-- META & SEO & OG -->
+<div class="card c-yellow col-3">
+  <div class="card-header"><div class="card-icon">🔍</div><span class="card-title">Meta, SEO, Open Graph &amp; Structured Data</span></div>
+  <div class="card-body">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+      <div>
+        <div class="section-label">SEO Meta</div>
+<pre><span class="tag-c">&lt;title&gt;</span>Page – Site<span class="tag-c">&lt;/title&gt;</span>
+<span class="tag-c">&lt;meta</span> <span class="at">name</span>=<span class="st">"description"</span>
+  <span class="at">content</span>=<span class="st">"Page summary
+  max 160 chars"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;meta</span> <span class="at">name</span>=<span class="st">"robots"</span>
+  <span class="at">content</span>=<span class="st">"index,follow"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;link</span> <span class="at">rel</span>=<span class="st">"canonical"</span>
+  <span class="at">href</span>=<span class="st">"https://..."</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;link</span> <span class="at">rel</span>=<span class="st">"alternate"</span>
+  <span class="at">hreflang</span>=<span class="st">"de"</span>
+  <span class="at">href</span>=<span class="st">"https://.../de"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;meta</span> <span class="at">name</span>=<span class="st">"theme-color"</span>
+  <span class="at">content</span>=<span class="st">"#0f0e17"</span><span class="tag-c">&gt;</span></pre>
+      </div>
+      <div>
+        <div class="section-label">Open Graph</div>
+<pre><span class="tag-c">&lt;meta</span> <span class="at">property</span>=<span class="st">"og:title"</span>
+  <span class="at">content</span>=<span class="st">"Title"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;meta</span> <span class="at">property</span>=<span class="st">"og:description"</span>
+  <span class="at">content</span>=<span class="st">"Desc"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;meta</span> <span class="at">property</span>=<span class="st">"og:image"</span>
+  <span class="at">content</span>=<span class="st">"https://.../img.jpg"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;meta</span> <span class="at">property</span>=<span class="st">"og:url"</span>
+  <span class="at">content</span>=<span class="st">"https://..."</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;meta</span> <span class="at">property</span>=<span class="st">"og:type"</span>
+  <span class="at">content</span>=<span class="st">"website"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;meta</span> <span class="at">name</span>=<span class="st">"twitter:card"</span>
+  <span class="at">content</span>=<span class="st">"summary_large_image"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;meta</span> <span class="at">name</span>=<span class="st">"twitter:site"</span>
+  <span class="at">content</span>=<span class="st">"@handle"</span><span class="tag-c">&gt;</span></pre>
+      </div>
+      <div>
+        <div class="section-label">Viewport &amp; PWA</div>
+<pre><span class="tag-c">&lt;meta</span> <span class="at">name</span>=<span class="st">"viewport"</span>
+  <span class="at">content</span>=<span class="st">"width=device-width,
+  initial-scale=1.0,
+  maximum-scale=5.0"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;link</span> <span class="at">rel</span>=<span class="st">"manifest"</span>
+  <span class="at">href</span>=<span class="st">"/manifest.json"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;link</span> <span class="at">rel</span>=<span class="st">"apple-touch-icon"</span>
+  <span class="at">href</span>=<span class="st">"/icon.png"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;meta</span> <span class="at">name</span>=<span class="st">"mobile-web-app-capable"</span>
+  <span class="at">content</span>=<span class="st">"yes"</span><span class="tag-c">&gt;</span>
+
+<span class="cm">&lt;!-- Preload / Prefetch --&gt;</span>
+<span class="tag-c">&lt;link</span> <span class="at">rel</span>=<span class="st">"preload"</span>
+  <span class="at">href</span>=<span class="st">"font.woff2"</span>
+  <span class="at">as</span>=<span class="st">"font"</span> <span class="at">crossorigin</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;link</span> <span class="at">rel</span>=<span class="st">"prefetch"</span>
+  <span class="at">href</span>=<span class="st">"next-page.html"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;link</span> <span class="at">rel</span>=<span class="st">"preconnect"</span>
+  <span class="at">href</span>=<span class="st">"https://fonts.gstatic.com"</span><span class="tag-c">&gt;</span></pre>
+      </div>
+      <div>
+        <div class="section-label">Structured Data</div>
+<pre><span class="tag-c">&lt;script</span>
+  <span class="at">type</span>=<span class="st">"application/ld+json"</span><span class="tag-c">&gt;</span>
+{
+  <span class="st">"@context"</span>:
+    <span class="st">"https://schema.org"</span>,
+  <span class="st">"@type"</span>: <span class="st">"WebPage"</span>,
+  <span class="st">"name"</span>: <span class="st">"My Page"</span>,
+  <span class="st">"description"</span>: <span class="st">"..."</span>,
+  <span class="st">"author"</span>: {
+    <span class="st">"@type"</span>: <span class="st">"Person"</span>,
+    <span class="st">"name"</span>: <span class="st">"Fabian"</span>
+  }
+}
+<span class="tag-c">&lt;/script&gt;</span>
+
+<span class="cm">&lt;!-- Microdata --&gt;</span>
+<span class="tag-c">&lt;div</span>
+ <span class="at">itemscope</span>
+ <span class="at">itemtype</span>=<span class="st">"https://schema.org/Person"</span><span class="tag-c">&gt;</span>
+  <span class="tag-c">&lt;span</span> <span class="at">itemprop</span>=<span class="st">"name"</span><span class="tag-c">&gt;</span>Fabian<span class="tag-c">&lt;/span&gt;</span>
+<span class="tag-c">&lt;/div&gt;</span></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ACCESSIBILITY -->
+<div class="card c-blue col-2">
+  <div class="card-header"><div class="card-icon">♿</div><span class="card-title">Accessibility (ARIA &amp; Best Practices)</span></div>
+  <div class="card-body">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div>
+<pre><span class="cm">&lt;!-- ARIA Roles --&gt;</span>
+<span class="at">role</span>=<span class="st">"banner"</span>       <span class="cm">→ &lt;header&gt;</span>
+<span class="at">role</span>=<span class="st">"navigation"</span>  <span class="cm">→ &lt;nav&gt;</span>
+<span class="at">role</span>=<span class="st">"main"</span>        <span class="cm">→ &lt;main&gt;</span>
+<span class="at">role</span>=<span class="st">"complementary"</span> <span class="cm">→ &lt;aside&gt;</span>
+<span class="at">role</span>=<span class="st">"contentinfo"</span> <span class="cm">→ &lt;footer&gt;</span>
+<span class="at">role</span>=<span class="st">"button"</span>
+<span class="at">role</span>=<span class="st">"dialog"</span>
+<span class="at">role</span>=<span class="st">"alert"</span>
+<span class="at">role</span>=<span class="st">"alertdialog"</span>
+<span class="at">role</span>=<span class="st">"tab"</span> <span class="at">role</span>=<span class="st">"tabpanel"</span>
+<span class="at">role</span>=<span class="st">"listbox"</span> <span class="at">role</span>=<span class="st">"option"</span>
+<span class="at">role</span>=<span class="st">"progressbar"</span>
+<span class="at">role</span>=<span class="st">"tooltip"</span>
+<span class="at">role</span>=<span class="st">"status"</span>
+<span class="at">role</span>=<span class="st">"search"</span></pre>
+      </div>
+      <div>
+<pre><span class="cm">&lt;!-- ARIA States &amp; Properties --&gt;</span>
+<span class="at">aria-label</span>=<span class="st">"Close dialog"</span>
+<span class="at">aria-labelledby</span>=<span class="st">"headingId"</span>
+<span class="at">aria-describedby</span>=<span class="st">"hintId"</span>
+<span class="at">aria-hidden</span>=<span class="st">"true"</span>
+<span class="at">aria-expanded</span>=<span class="st">"true|false"</span>
+<span class="at">aria-selected</span>=<span class="st">"true|false"</span>
+<span class="at">aria-checked</span>=<span class="st">"true|false|mixed"</span>
+<span class="at">aria-disabled</span>=<span class="st">"true"</span>
+<span class="at">aria-required</span>=<span class="st">"true"</span>
+<span class="at">aria-invalid</span>=<span class="st">"true"</span>
+<span class="at">aria-live</span>=<span class="st">"polite|assertive"</span>
+<span class="at">aria-atomic</span>=<span class="st">"true"</span>
+<span class="at">aria-controls</span>=<span class="st">"panelId"</span>
+<span class="at">aria-owns</span>=<span class="st">"childId"</span>
+
+<span class="cm">&lt;!-- Skip navigation --&gt;</span>
+<span class="tag-c">&lt;a</span> <span class="at">href</span>=<span class="st">"#main"</span>
+   <span class="at">class</span>=<span class="st">"skip-link"</span><span class="tag-c">&gt;</span>Skip to content<span class="tag-c">&lt;/a&gt;</span></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SPECIAL ELEMENTS & CANVAS / SVG -->
+<div class="card c-purple">
+  <div class="card-header"><div class="card-icon">◈</div><span class="card-title">Canvas &amp; SVG &amp; Graphics</span></div>
+  <div class="card-body">
+<pre><span class="cm">&lt;!-- Canvas (scripted graphics) --&gt;</span>
+<span class="tag-c">&lt;canvas</span> <span class="at">id</span>=<span class="st">"c"</span>
+        <span class="at">width</span>=<span class="st">"500"</span>
+        <span class="at">height</span>=<span class="st">"300"</span><span class="tag-c">&gt;</span>
+  Fallback text
+<span class="tag-c">&lt;/canvas&gt;</span>
+<span class="cm">// JS:</span>
+<span class="kw">const</span> ctx = <span class="fn">document</span>
+  .<span class="fn">getElementById</span>(<span class="st">'c'</span>)
+  .<span class="fn">getContext</span>(<span class="st">'2d'</span>);
+ctx.<span class="fn">fillRect</span>(<span class="nm">0</span>,<span class="nm">0</span>,<span class="nm">100</span>,<span class="nm">100</span>);
+
+<span class="cm">&lt;!-- Inline SVG --&gt;</span>
+<span class="tag-c">&lt;svg</span> <span class="at">xmlns</span>=<span class="st">"http://www.w3.org/2000/svg"</span>
+     <span class="at">width</span>=<span class="st">"100"</span> <span class="at">height</span>=<span class="st">"100"</span>
+     <span class="at">viewBox</span>=<span class="st">"0 0 100 100"</span><span class="tag-c">&gt;</span>
+  <span class="tag-c">&lt;circle</span> <span class="at">cx</span>=<span class="st">"50"</span> <span class="at">cy</span>=<span class="st">"50"</span>
+          <span class="at">r</span>=<span class="st">"40"</span> <span class="at">fill</span>=<span class="st">"blue"</span><span class="tag-c">&gt;&lt;/circle&gt;</span>
+  <span class="tag-c">&lt;rect</span> <span class="at">x</span>=<span class="st">"10"</span> <span class="at">y</span>=<span class="st">"10"</span>
+        <span class="at">width</span>=<span class="st">"80"</span> <span class="at">height</span>=<span class="st">"80"</span>
+        <span class="at">fill</span>=<span class="st">"none"</span>
+        <span class="at">stroke</span>=<span class="st">"red"</span><span class="tag-c">&gt;&lt;/rect&gt;</span>
+  <span class="tag-c">&lt;line</span> <span class="at">x1</span>=<span class="st">"0"</span> <span class="at">y1</span>=<span class="st">"0"</span>
+        <span class="at">x2</span>=<span class="st">"100"</span> <span class="at">y2</span>=<span class="st">"100"</span>
+        <span class="at">stroke</span>=<span class="st">"green"</span><span class="tag-c">&gt;&lt;/line&gt;</span>
+  <span class="tag-c">&lt;path</span> <span class="at">d</span>=<span class="st">"M10 80 C 40 10, 65 10, 95 80"</span>
+        <span class="at">stroke</span>=<span class="st">"black"</span>
+        <span class="at">fill</span>=<span class="st">"transparent"</span><span class="tag-c">&gt;&lt;/path&gt;</span>
+  <span class="tag-c">&lt;text</span> <span class="at">x</span>=<span class="st">"20"</span> <span class="at">y</span>=<span class="st">"50"</span><span class="tag-c">&gt;</span>Hello SVG<span class="tag-c">&lt;/text&gt;</span>
+<span class="tag-c">&lt;/svg&gt;</span></pre>
+  </div>
+</div>
+
+<!-- HTML ENTITIES -->
+<div class="card c-yellow">
+  <div class="card-header"><div class="card-icon">&amp;</div><span class="card-title">HTML Entities &amp; Special Chars</span></div>
+  <div class="card-body">
+    <table class="kv-table">
+      <tr><td>&amp;amp;</td><td>&amp; — Ampersand</td></tr>
+      <tr><td>&amp;lt; &amp;gt;</td><td>&lt; &gt; — Less/Greater</td></tr>
+      <tr><td>&amp;quot;</td><td>" — Quotation mark</td></tr>
+      <tr><td>&amp;apos;</td><td>' — Apostrophe</td></tr>
+      <tr><td>&amp;nbsp;</td><td>Non-breaking space</td></tr>
+      <tr><td>&amp;copy;</td><td>© Copyright</td></tr>
+      <tr><td>&amp;reg;</td><td>® Registered</td></tr>
+      <tr><td>&amp;trade;</td><td>™ Trademark</td></tr>
+      <tr><td>&amp;euro;</td><td>€ Euro</td></tr>
+      <tr><td>&amp;pound;</td><td>£ Pound</td></tr>
+      <tr><td>&amp;mdash;</td><td>— Em dash</td></tr>
+      <tr><td>&amp;ndash;</td><td>– En dash</td></tr>
+      <tr><td>&amp;hellip;</td><td>… Ellipsis</td></tr>
+      <tr><td>&amp;#x1F600;</td><td>😀 Emoji (hex)</td></tr>
+      <tr><td>&amp;#128512;</td><td>😀 Emoji (dec)</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- INTERACTIVE & MISC ELEMENTS -->
+<div class="card c-red col-2">
+  <div class="card-header"><div class="card-icon">✦</div><span class="card-title">Interactive, Script &amp; Miscellaneous Elements</span></div>
+  <div class="card-body">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div>
+<pre><span class="cm">&lt;!-- Details / Summary --&gt;</span>
+<span class="tag-c">&lt;details</span> <span class="at">open</span><span class="tag-c">&gt;</span>
+  <span class="tag-c">&lt;summary&gt;</span>Click to expand<span class="tag-c">&lt;/summary&gt;</span>
+  <span class="tag-c">&lt;p&gt;</span>Hidden content here.<span class="tag-c">&lt;/p&gt;</span>
+<span class="tag-c">&lt;/details&gt;</span>
+
+<span class="cm">&lt;!-- Dialog --&gt;</span>
+<span class="tag-c">&lt;dialog</span> <span class="at">id</span>=<span class="st">"myDialog"</span><span class="tag-c">&gt;</span>
+  <span class="tag-c">&lt;p&gt;</span>Modal content<span class="tag-c">&lt;/p&gt;</span>
+  <span class="tag-c">&lt;button</span>
+    <span class="at">onclick</span>=<span class="st">"this.closest('dialog')
+      .close()"</span><span class="tag-c">&gt;</span>Close<span class="tag-c">&lt;/button&gt;</span>
+<span class="tag-c">&lt;/dialog&gt;</span>
+<span class="cm">// JS:</span>
+<span class="fn">document</span>.<span class="fn">getElementById</span>(<span class="st">'myDialog'</span>)
+  .<span class="fn">showModal</span>();
+
+<span class="cm">&lt;!-- Template --&gt;</span>
+<span class="tag-c">&lt;template</span> <span class="at">id</span>=<span class="st">"tmpl"</span><span class="tag-c">&gt;</span>
+  <span class="tag-c">&lt;li</span> <span class="at">class</span>=<span class="st">"item"</span><span class="tag-c">&gt;&lt;/li&gt;</span>
+<span class="tag-c">&lt;/template&gt;</span>
+<span class="cm">// JS:</span>
+<span class="kw">const</span> t = <span class="fn">document</span>
+  .<span class="fn">getElementById</span>(<span class="st">'tmpl'</span>).content;
+<span class="kw">const</span> clone = t.<span class="fn">cloneNode</span>(<span class="kw">true</span>);</pre>
+      </div>
+      <div>
+<pre><span class="cm">&lt;!-- Script loading --&gt;</span>
+<span class="tag-c">&lt;script</span> <span class="at">src</span>=<span class="st">"app.js"</span><span class="tag-c">&gt;&lt;/script&gt;</span>
+<span class="cm">&lt;!-- defer: after DOM --&gt;</span>
+<span class="tag-c">&lt;script</span> <span class="at">defer</span> <span class="at">src</span>=<span class="st">"app.js"</span><span class="tag-c">&gt;&lt;/script&gt;</span>
+<span class="cm">&lt;!-- async: parallel load --&gt;</span>
+<span class="tag-c">&lt;script</span> <span class="at">async</span> <span class="at">src</span>=<span class="st">"app.js"</span><span class="tag-c">&gt;&lt;/script&gt;</span>
+<span class="cm">&lt;!-- module --&gt;</span>
+<span class="tag-c">&lt;script</span> <span class="at">type</span>=<span class="st">"module"</span>
+        <span class="at">src</span>=<span class="st">"app.mjs"</span><span class="tag-c">&gt;&lt;/script&gt;</span>
+<span class="cm">&lt;!-- importmap --&gt;</span>
+<span class="tag-c">&lt;script</span> <span class="at">type</span>=<span class="st">"importmap"</span><span class="tag-c">&gt;</span>
+{
+  <span class="st">"imports"</span>: {
+    <span class="st">"lodash"</span>: <span class="st">"/lib/lodash.js"</span>
+  }
+}
+<span class="tag-c">&lt;/script&gt;</span>
+
+<span class="cm">&lt;!-- Misc --&gt;</span>
+<span class="tag-c">&lt;map</span> <span class="at">name</span>=<span class="st">"imgmap"</span><span class="tag-c">&gt;</span>
+  <span class="tag-c">&lt;area</span> <span class="at">shape</span>=<span class="st">"rect"</span>
+        <span class="at">coords</span>=<span class="st">"0,0,100,100"</span>
+        <span class="at">href</span>=<span class="st">"page.html"</span>
+        <span class="at">alt</span>=<span class="st">"zone"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;/map&gt;</span>
+<span class="tag-c">&lt;img</span> <span class="at">usemap</span>=<span class="st">"#imgmap"</span>
+     <span class="at">src</span>=<span class="st">"map.jpg"</span> <span class="at">alt</span>=<span class="st">"map"</span><span class="tag-c">&gt;</span>
+
+<span class="tag-c">&lt;object</span> <span class="at">data</span>=<span class="st">"file.pdf"</span>
+        <span class="at">type</span>=<span class="st">"application/pdf"</span>
+        <span class="at">width</span>=<span class="st">"600"</span> <span class="at">height</span>=<span class="st">"400"</span><span class="tag-c">&gt;</span>
+<span class="tag-c">&lt;/object&gt;</span></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div></div>
+<footer>HTML5 Cheat Sheet — Complete Reference</footer>
+
+<!-- ===== MODAL OVERLAY ===== -->
+<div id="m-ov" onclick="if(event.target===this)mClose()">
+  <div id="m-panel">
+    <div id="m-head">
+      <div id="m-badge"></div>
+      <div><div id="m-title"></div><div id="m-sub"></div></div>
+      <button id="m-close" onclick="mClose()">✕</button>
+    </div>
+    <div id="m-tabs">
+      <button class="m-tab active" data-tab="demo" onclick="mTab(this)">🎮 Live Demo</button>
+      <button class="m-tab" data-tab="ref" onclick="mTab(this)">📖 Reference</button>
+    </div>
+    <div id="m-body">
+      <div class="m-pane active" id="m-demo"></div>
+      <div class="m-pane" id="m-ref"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =====================================================================
+   MODAL SYSTEM — HTML Cheat Sheet
+   ===================================================================== */
+
+// ── Utility helpers ──────────────────────────────────────────────────
+function copyEl(id) {
+  const el = document.getElementById(id);
+  navigator.clipboard.writeText(el.innerText || el.textContent).then(() => {
+    const btn = el.parentElement.querySelector('.d-btn[onclick*="copyEl"]') ||
+                el.parentElement.querySelector('.d-btn[onclick*="copy"]');
+    if (btn) { const t = btn.textContent; btn.textContent = '✓ Copied!'; setTimeout(() => btn.textContent = t, 1500); }
+  });
+}
+function copyText(text) {
+  navigator.clipboard.writeText(text).then(() => {});
+}
+function domInfo(el, msg) {
+  document.querySelectorAll('.dom-lbl').forEach(x => x.classList.remove('hl'));
+  el.classList.add('hl');
+  const box = document.getElementById('dtree-info');
+  if (box) { box.innerHTML = '<strong>ℹ️ ' + el.querySelector('.dt').textContent + '</strong> — ' + msg; }
+}
+function buildBP() {
+  const title = document.getElementById('bpTitle').value || 'My Page';
+  const css = document.getElementById('bpCss').checked;
+  const js  = document.getElementById('bpJs').checked;
+  const seo = document.getElementById('bpSeo').checked;
+  const og  = document.getElementById('bpOg').checked;
+  let out = `<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>${title}</title>`;
+  if (seo) out += `\n  <meta name="description" content="">\n  <meta name="robots" content="index,follow">`;
+  if (og)  out += `\n  <meta property="og:title" content="${title}">\n  <meta property="og:description" content="">\n  <meta property="og:image" content="">\n  <meta property="og:url" content="">`;
+  if (css) out += `\n  <link rel="stylesheet" href="style.css">`;
+  out += `\n</head>\n<body>\n  <header></header>\n  <main></main>\n  <footer></footer>`;
+  if (js)  out += `\n  <script defer src="app.js"><\/script>`;
+  out += `\n</body>\n</html>`;
+  const el = document.getElementById('bpOut');
+  if (el) el.textContent = out;
+}
+// canvas drawing
+let drawing = false, curColor = '#6bcfff', curSize = 3;
+function initCanvas() {
+  const c = document.getElementById('draw-cv');
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#0a0910'; ctx.fillRect(0,0,c.width,c.height);
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  function getPos(e) {
+    const r = c.getBoundingClientRect();
+    const t = e.touches ? e.touches[0] : e;
+    return [t.clientX - r.left, t.clientY - r.top];
+  }
+  function start(e) { e.preventDefault(); drawing = true; const [x,y] = getPos(e); ctx.beginPath(); ctx.moveTo(x,y); }
+  function move(e) { e.preventDefault(); if(!drawing) return; const [x,y] = getPos(e); ctx.strokeStyle = curColor; ctx.lineWidth = curSize; ctx.lineTo(x,y); ctx.stroke(); }
+  function end() { drawing = false; }
+  c.addEventListener('mousedown', start); c.addEventListener('mousemove', move);
+  c.addEventListener('mouseup', end); c.addEventListener('mouseleave', end);
+  c.addEventListener('touchstart', start, {passive:false}); c.addEventListener('touchmove', move, {passive:false}); c.addEventListener('touchend', end);
+}
+function setCurColor(el, col) {
+  curColor = col;
+  document.querySelectorAll('.c-col').forEach(x => x.classList.remove('sel'));
+  el.classList.add('sel');
+}
+function setCurSize(s) { curSize = s; }
+function clearCanvas() {
+  const c = document.getElementById('draw-cv');
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#0a0910'; ctx.fillRect(0,0,c.width,c.height);
+}
+// entity search
+function filterEntities() {
+  const q = document.getElementById('ent-search').value.toLowerCase();
+  document.querySelectorAll('#ent-body tr').forEach(tr => {
+    tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+// OG preview
+function updateOG() {
+  const t = document.getElementById('og-title-in').value || 'My Awesome Page';
+  const d = document.getElementById('og-desc-in').value || 'A great description for social sharing.';
+  const u = document.getElementById('og-url-in').value || 'example.com';
+  document.getElementById('og-t').textContent = t;
+  document.getElementById('og-d').textContent = d;
+  document.getElementById('og-u').textContent = u;
+}
+// list builder
+function listAdd() {
+  const inp = document.getElementById('li-input');
+  const val = inp.value.trim() || 'New item';
+  const type = document.getElementById('li-type').value;
+  const ul = document.getElementById('li-list');
+  const li = document.createElement(type === 'dl' ? 'dt' : 'li');
+  li.textContent = val;
+  li.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:8px;padding:3px 0';
+  const rm = document.createElement('button');
+  rm.textContent = '×'; rm.className = 'd-btn';
+  rm.style.padding = '1px 8px'; rm.style.fontSize = '14px';
+  rm.onclick = () => li.remove();
+  li.appendChild(rm);
+  ul.appendChild(li);
+  inp.value = '';
+}
+function setListType(type) {
+  const old = document.getElementById('li-list');
+  const newEl = document.createElement(type === 'ol' ? 'ol' : type === 'dl' ? 'dl' : 'ul');
+  newEl.id = 'li-list';
+  newEl.style.cssText = 'margin-left:18px;color:#111;font-family:sans-serif;font-size:13px;line-height:1.8';
+  old.replaceWith(newEl);
+}
+// table builder
+function tableAdd(what) {
+  const tbl = document.getElementById('demo-table');
+  if (what === 'row') {
+    const tr = document.createElement('tr');
+    const cols = tbl.rows[0] ? tbl.rows[0].cells.length : 3;
+    for (let i=0;i<cols;i++) { const td = document.createElement('td'); td.contentEditable=true; td.textContent = 'Cell'; td.style.cssText='padding:6px 10px;border:1px solid #ccc'; tr.appendChild(td); }
+    tbl.appendChild(tr);
+  } else {
+    Array.from(tbl.rows).forEach(r => { const td = document.createElement(r.rowIndex===0?'th':'td'); td.contentEditable=true; td.textContent=r.rowIndex===0?'Header':'Cell'; td.style.cssText='padding:6px 10px;border:1px solid #ccc;'+(r.rowIndex===0?'background:#dbeafe;font-weight:bold':''); r.appendChild(td); });
+  }
+}
+// attr toggler
+function applyAttr(attr) {
+  const el = document.getElementById('attr-demo-el');
+  const btn = document.querySelector(`[data-attr="${attr}"]`);
+  if (!el || !btn) return;
+  if (attr === 'contenteditable') {
+    const cur = el.contentEditable === 'true';
+    el.contentEditable = cur ? 'false' : 'true';
+    el.style.outline = cur ? 'none' : '2px dashed var(--accent3)';
+    btn.classList.toggle('on', !cur);
+  } else if (attr === 'hidden') {
+    const cur = el.hasAttribute('hidden');
+    if (cur) { el.removeAttribute('hidden'); btn.classList.remove('on'); }
+    else { el.setAttribute('hidden',''); btn.classList.add('on'); }
+  } else if (attr === 'draggable') {
+    const cur = el.draggable;
+    el.draggable = !cur;
+    btn.classList.toggle('on', !cur);
+    el.style.cursor = !cur ? 'grab' : 'default';
+  } else if (attr === 'lang') {
+    const cur = el.lang === 'de';
+    el.lang = cur ? 'en' : 'de';
+    el.textContent = cur ? 'Hello, I am a div element!' : 'Hallo, ich bin ein div-Element!';
+    btn.classList.toggle('on', !cur);
+  }
+  updateDataOut();
+}
+function setDataAttr(k, v) {
+  const el = document.getElementById('attr-demo-el');
+  if (!el) return;
+  el.dataset[k] = v;
+  updateDataOut();
+}
+function updateDataOut() {
+  const el = document.getElementById('attr-demo-el');
+  const out = document.getElementById('attr-data-out');
+  if (!el || !out) return;
+  const attrs = [];
+  for (let i=0; i<el.attributes.length; i++) attrs.push(el.attributes[i].name + '="' + el.attributes[i].value + '"');
+  out.textContent = '<div ' + attrs.join('\n     ') + '>';
+}
+// text formatter
+function applyFmt(tag) {
+  const out = document.getElementById('fmt-out');
+  const input = document.getElementById('fmt-in').value || 'The quick brown fox jumps over the lazy dog.';
+  const selected = window.getSelection();
+  let html = `<${tag}>${input}</${tag}>`;
+  out.innerHTML = html;
+}
+function resetFmt() {
+  const out = document.getElementById('fmt-out');
+  const input = document.getElementById('fmt-in').value || 'The quick brown fox jumps over the lazy dog.';
+  out.innerHTML = input;
+}
+
+/* =====================================================================
+   MODAL DATA — one entry per card
+   ===================================================================== */
+const MODALS = {
+
+'Document Structure': {
+  icon:'≡', color:'var(--accent)', subtitle:'HTML5 Boilerplate, Head Elements & the DOM',
+  demo: `<div class="d-grid">
+  <div class="d-box">
+    <div class="d-label">Interactive DOM Tree — click nodes to explore</div>
+    <div style="line-height:2">
+      <div><span class="dom-lbl" onclick="domInfo(this,'Root element of every HTML page. The lang attribute improves accessibility and SEO.')"><span class="dt">&lt;html&gt;</span> <span class="da">lang="en"</span></span>
+        <div class="dom-ch">
+          <div><span class="dom-lbl" onclick="domInfo(this,'&lt;head&gt; holds metadata — invisible to users but essential for browsers and search engines.')"><span class="dt">&lt;head&gt;</span></span>
+            <div class="dom-ch">
+              <div><span class="dom-lbl" onclick="domInfo(this,'Declares character encoding to UTF-8. MUST be the very first tag — within 1024 bytes of document start!')"><span class="dt">&lt;meta&gt;</span> <span class="da">charset="UTF-8"</span></span></div>
+              <div><span class="dom-lbl" onclick="domInfo(this,'Viewport meta enables responsive design. Without it, mobile browsers display the desktop version at 30% zoom.')"><span class="dt">&lt;meta&gt;</span> <span class="da">name=&quot;viewport&quot;</span></span></div>
+              <div><span class="dom-lbl" onclick="domInfo(this,'&lt;title&gt; appears in the browser tab, bookmarks and Google search results. Keep it under 60 characters!')"><span class="dt">&lt;title&gt;</span></span></div>
+              <div><span class="dom-lbl" onclick="domInfo(this,'&lt;link rel=stylesheet&gt; loads your CSS file. Browser starts downloading it immediately and blocks render until done.')"><span class="dt">&lt;link&gt;</span> <span class="da">rel="stylesheet"</span></span></div>
+            </div>
+          </div>
+          <div><span class="dom-lbl" onclick="domInfo(this,'&lt;body&gt; contains everything the user sees. Only ONE &lt;body&gt; per document is allowed.')"><span class="dt">&lt;body&gt;</span></span>
+            <div class="dom-ch">
+              <div><span class="dom-lbl" onclick="domInfo(this,'&lt;header&gt; — logo, navigation, hero. Can also appear inside &lt;article&gt; or &lt;section&gt;.')"><span class="dt">&lt;header&gt;</span></span></div>
+              <div><span class="dom-lbl" onclick="domInfo(this,'&lt;main&gt; — the primary unique content of the page. Only ONE &lt;main&gt; allowed! Screen readers jump here.')"><span class="dt">&lt;main&gt;</span></span></div>
+              <div><span class="dom-lbl" onclick="domInfo(this,'&lt;footer&gt; — copyright, sitemap, links. Can appear inside &lt;article&gt; and &lt;section&gt; too.')"><span class="dt">&lt;footer&gt;</span></span></div>
+              <div><span class="dom-lbl" onclick="domInfo(this,'Place &lt;script&gt; at the end of body OR use defer in &lt;head&gt;. Both ensure DOM is ready before the script runs.')"><span class="dt">&lt;script&gt;</span> <span class="da">defer</span></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="dtree-info" class="d-info" style="margin-top:10px">👆 Click any node above to learn what it does</div>
+  </div>
+  <div class="d-box">
+    <div class="d-label">Boilerplate Generator</div>
+    <input id="bpTitle" class="d-input" value="My Page" oninput="buildBP()" placeholder="Page title" style="margin-bottom:8px">
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px;font-size:11.5px">
+      <label style="color:var(--text);cursor:pointer;display:flex;align-items:center;gap:4px"><input type="checkbox" id="bpCss" checked onchange="buildBP()"> CSS</label>
+      <label style="color:var(--text);cursor:pointer;display:flex;align-items:center;gap:4px"><input type="checkbox" id="bpJs" checked onchange="buildBP()"> JS</label>
+      <label style="color:var(--text);cursor:pointer;display:flex;align-items:center;gap:4px"><input type="checkbox" id="bpSeo" onchange="buildBP()"> SEO Meta</label>
+      <label style="color:var(--text);cursor:pointer;display:flex;align-items:center;gap:4px"><input type="checkbox" id="bpOg" onchange="buildBP()"> Open Graph</label>
+    </div>
+    <div style="position:relative">
+      <pre id="bpOut" class="d-code" style="max-height:260px;overflow-y:auto"></pre>
+      <button class="d-btn" onclick="copyEl('bpOut')" style="position:absolute;top:6px;right:6px">⎘ Copy</button>
+    </div>
+  </div>
+</div>`,
+  ref: `<div class="d-grid">
+  <div>
+    <div class="d-stitle">Script Loading Strategies</div>
+    <pre class="d-code">&lt;script src="app.js"&gt;           <span style="color:#4a5568">Blocks HTML parsing ❌</span>
+&lt;script <span style="color:#c792ea">defer</span> src="app.js"&gt;      <span style="color:#4a5568">Parallel load, after DOM ✅</span>
+&lt;script <span style="color:#c792ea">async</span> src="app.js"&gt;      <span style="color:#4a5568">Parallel load, ASAP ⚠️</span>
+&lt;script <span style="color:#c792ea">type="module"</span>&gt;            <span style="color:#4a5568">Auto-deferred + strict mode ✅</span></pre>
+    <div class="d-tip"><strong>💡</strong> Use <code>defer</code> for most scripts — they load in parallel and execute in order after DOM is parsed.</div>
+  </div>
+  <div>
+    <div class="d-stitle">Common Mistakes</div>
+    <div class="d-warn"><strong>⚠️</strong> <code>meta charset</code> must be within the first 1024 bytes of the document</div>
+    <div class="d-warn"><strong>⚠️</strong> Missing <code>viewport</code> meta = completely broken mobile layout</div>
+    <div class="d-warn"><strong>⚠️</strong> <code>&lt;!DOCTYPE html&gt;</code> missing = quirks mode in browsers</div>
+    <div class="d-ok"><strong>✅</strong> Validate at <a href="https://validator.w3.org" target="_blank" style="color:var(--accent3)">validator.w3.org</a> to catch subtle bugs</div>
+  </div>
+</div>`,
+  after() { buildBP(); }
+},
+
+'Semantic Layout': {
+  icon:'⬚', color:'var(--accent2)', subtitle:'Semantic HTML5 Elements & Page Structure',
+  demo: `<div class="d-grid">
+  <div class="d-box">
+    <div class="d-label">Clickable Wireframe — click each section</div>
+    <div class="wf">
+      <div class="wf-hd wf-zone wf-sel" onclick="wfSel(this,'&lt;header&gt;','Site-wide header — contains logo, navigation, hero. Can also appear inside &lt;article&gt; and &lt;section&gt;.')">🏠 &lt;header&gt;</div>
+      <div class="wf-nv wf-zone" onclick="wfSel(this,'&lt;nav&gt;','Navigation element — wraps the primary navigation links. Screen readers announce this as a landmark.')">🔗 &lt;nav&gt; — Home · About · Contact</div>
+      <div class="wf-flex">
+        <div class="wf-mn wf-zone" onclick="wfSel(this,'&lt;main&gt;','The dominant content unique to this page. Only ONE per document. Screen readers skip to it with a shortcut.')">
+          <div style="font-weight:700;font-size:10px;margin-bottom:4px">&lt;main&gt;</div>
+          <div class="wf-art wf-zone" onclick="event.stopPropagation();wfSel(this,'&lt;article&gt;','Self-contained content — a blog post, news story, forum post. Should make sense on its own if extracted.')">📄 &lt;article&gt; — Blog Post</div>
+          <div class="wf-sec wf-zone" onclick="event.stopPropagation();wfSel(this,'&lt;section&gt;','Thematic grouping of content with a heading. Use when content doesn\'t fit a more specific element.')">📦 &lt;section&gt; — Category</div>
+          <div class="wf-art wf-zone" onclick="event.stopPropagation();wfSel(this,'&lt;figure&gt; + &lt;figcaption&gt;','Self-contained media — image, diagram, code example. figcaption describes it. Linked to content but can be moved.')">🖼 &lt;figure&gt; + &lt;figcaption&gt;</div>
+        </div>
+        <div class="wf-as wf-zone" onclick="wfSel(this,'&lt;aside&gt;','Sidebar or tangential content — related links, ads, author bio. Indirectly related to surrounding content.')">📌<br>&lt;aside&gt;<br><br>Sidebar</div>
+      </div>
+      <div class="wf-ft wf-zone" onclick="wfSel(this,'&lt;footer&gt;','Closing content — copyright, links, contact. Can appear inside &lt;article&gt; too, not just at page level.')">© &lt;footer&gt;</div>
+    </div>
+  </div>
+  <div class="d-box">
+    <div class="d-label">Selected Element Info</div>
+    <div id="wf-info" class="d-info">👆 Click any section in the wireframe to learn about it</div>
+    <div class="d-label" style="margin-top:14px">Non-semantic vs Semantic</div>
+    <pre class="d-code" style="font-size:10.5px"><span style="color:#ff6b6b">❌ Non-semantic:</span>
+&lt;div id="header"&gt;...&lt;/div&gt;
+&lt;div id="nav"&gt;...&lt;/div&gt;
+&lt;div id="content"&gt;...&lt;/div&gt;
+
+<span style="color:#a8ff78">✅ Semantic:</span>
+&lt;header&gt;...&lt;/header&gt;
+&lt;nav&gt;...&lt;/nav&gt;
+&lt;main&gt;...&lt;/main&gt;</pre>
+    <div class="d-tip"><strong>💡</strong> Semantic HTML improves SEO, screen reader support, and code readability — at zero extra cost!</div>
+  </div>
+</div>`,
+  ref: `<div class="d-stitle">All Semantic Elements</div>
+<div class="d-grid-3">
+  ${[['header','Introductory content or nav'],['nav','Navigation links'],['main','Dominant page content (unique)'],['article','Self-contained content'],['section','Thematic grouping'],['aside','Tangential / sidebar'],['footer','Closing info'],['figure','Illustration / media'],['figcaption','Caption for figure'],['details','Disclosure widget'],['summary','Visible label of details'],['dialog','Modal or non-modal dialog'],['address','Contact information'],['time','Date/time with machine-readable datetime attr'],['mark','Highlighted/relevant text'],['template','Inert HTML template fragment']].map(([t,d]) => `<div class="d-box" style="padding:10px"><code style="color:var(--accent2)">&lt;${t}&gt;</code><div style="font-size:11px;color:var(--muted);margin-top:4px">${d}</div></div>`).join('')}
+</div>`,
+  after() {}
+},
+
+'Text & Headings': {
+  icon:'T', color:'var(--accent3)', subtitle:'Text Formatting, Headings & Inline Elements',
+  demo: `<div class="d-grid">
+  <div class="d-box">
+    <div class="d-label">Live Text Formatter — type and apply tags</div>
+    <textarea id="fmt-in" class="d-input" style="min-height:56px;resize:vertical;margin-bottom:10px" placeholder="Type your text here...">The quick brown fox jumps over the lazy dog.</textarea>
+    <div style="margin-bottom:10px;display:flex;flex-wrap:wrap;gap:4px">
+      ${[['strong','<b>Bold</b>'],['em','<i>Italic</i>'],['mark','Mark'],['s','<s>Strike</s>'],['u','<u>Under</u>'],['small','Small'],['code','&lt;code&gt;'],['kbd','Kbd'],['q','Quote'],['abbr','Abbr'],['sup','Sup'],['sub','Sub']].map(([t,l]) => `<button class="d-btn" onclick="applyFmt('${t}')">${l}</button>`).join('')}
+      <button class="d-btn" onclick="resetFmt()" style="margin-left:6px">↺ Reset</button>
+    </div>
+    <div class="d-label">Preview</div>
+    <div id="fmt-out" class="d-preview" style="min-height:60px">The quick brown fox jumps over the lazy dog.</div>
+  </div>
+  <div class="d-box">
+    <div class="d-label">Heading Hierarchy</div>
+    <div class="d-preview">
+      <h1 style="margin:0 0 4px;font-size:26px;border-bottom:2px solid #ddd;padding-bottom:4px">H1 — Page Title</h1>
+      <h2 style="margin:8px 0 4px;font-size:21px">H2 — Section</h2>
+      <h3 style="margin:6px 0 4px;font-size:17px">H3 — Subsection</h3>
+      <h4 style="margin:5px 0 3px;font-size:15px">H4 — Sub-subsection</h4>
+      <h5 style="margin:4px 0 3px;font-size:13px">H5 — Rarely used</h5>
+      <h6 style="margin:4px 0 2px;font-size:12px;color:#888">H6 — Rarely used</h6>
+      <p style="margin:8px 0 0;font-size:13px;color:#555">Regular paragraph text goes here. Use headings to create a logical document outline.</p>
+    </div>
+    <div class="d-warn" style="margin-top:10px"><strong>⚠️</strong> Don't skip heading levels (e.g. h1 → h3). Screen readers rely on the heading hierarchy for navigation.</div>
+  </div>
+</div>`,
+  ref: `<div class="d-grid">
+  <div>
+    <div class="d-stitle">Semantic vs Presentational</div>
+    <pre class="d-code"><span style="color:#a8ff78">✅ Semantic (meaning):</span>
+&lt;strong&gt; — importance
+&lt;em&gt;     — emphasis
+&lt;mark&gt;   — relevance / highlight
+&lt;del&gt;    — deleted content
+&lt;ins&gt;    — inserted content
+&lt;cite&gt;   — title of a work
+&lt;abbr&gt;   — abbreviation
+&lt;dfn&gt;    — definition
+&lt;time&gt;   — date/time
+
+<span style="color:#ff6b6b">⚠️ Presentational (no meaning):</span>
+&lt;b&gt;       — bold only
+&lt;i&gt;       — italic only
+&lt;u&gt;       — underline only
+&lt;s&gt;       — strikethrough only</pre>
+  </div>
+  <div>
+    <div class="d-stitle">Inline Code & Preformatted Text</div>
+    <div class="d-preview" style="font-size:12px">
+      <p>Use <code style="background:#f3f4f6;padding:1px 5px;border-radius:3px;font-size:11px">&lt;code&gt;</code> for inline code snippets.</p>
+      <p>Use <kbd style="background:#e5e7eb;padding:2px 6px;border-radius:3px;font-size:11px;border:1px solid #ccc">Ctrl</kbd> + <kbd style="background:#e5e7eb;padding:2px 6px;border-radius:3px;font-size:11px;border:1px solid #ccc">S</kbd> to save.</p>
+      <pre style="background:#f3f4f6;padding:8px;border-radius:4px;font-size:11px;margin-top:6px">Preserved
+  whitespace</pre>
+    </div>
+    <div class="d-tip" style="margin-top:10px"><strong>💡</strong> <code>&lt;time datetime="2024-12-25"&gt;Christmas&lt;/time&gt;</code> — the datetime attribute gives machines a parseable date while humans see friendly text.</div>
+  </div>
+</div>`,
+  after() {}
+},
+
+'Links & Navigation': {
+  icon:'🔗', color:'var(--accent4)', subtitle:'Anchor Tags, href Types & Link Attributes',
+  demo: `<div class="d-grid">
+  <div class="d-box">
+    <div class="d-label">Live Link Builder</div>
+    <div style="margin-bottom:8px">
+      <label style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Link Type</label>
+      <select class="d-select d-input" id="link-type" onchange="updateLinkDemo()" style="margin-top:4px">
+        <option value="url">External URL</option>
+        <option value="rel">Relative Path</option>
+        <option value="anchor">Same-page Anchor (#)</option>
+        <option value="mail">mailto:</option>
+        <option value="tel">tel:</option>
+        <option value="dl">Download</option>
+      </select>
+    </div>
+    <div id="link-preview" class="d-preview" style="min-height:80px;display:flex;align-items:center;gap:16px;flex-wrap:wrap"></div>
+    <pre id="link-code" class="d-code" style="margin-top:10px;font-size:11px"></pre>
+  </div>
+  <div class="d-box">
+    <div class="d-label">target Attribute Explained</div>
+    <div class="d-preview" style="padding:10px">
+      ${[['_self','Opens in same tab (default)','#222'],['_blank','Opens in new tab/window','#2563eb'],['_parent','Opens in parent frame','#7c3aed'],['_top','Opens in full body of window','#059669']].map(([v,d,c]) => `<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:12px"><span style="background:${c};color:#fff;border-radius:5px;padding:3px 10px;font-size:11px;white-space:nowrap">${v}</span><span style="color:#333">${d}</span></div>`).join('')}
+    </div>
+    <div class="d-warn" style="margin-top:10px"><strong>⚠️ Security:</strong> Always add <code>rel="noopener noreferrer"</code> when using <code>target="_blank"</code> to prevent tab-napping attacks!</div>
+  </div>
+</div>`,
+  ref: `<div class="d-stitle">All href Formats</div>
+<pre class="d-code"><span style="color:#c3e88d">"https://example.com"</span>       Absolute URL
+<span style="color:#c3e88d">"./page.html"</span>               Relative (same folder)
+<span style="color:#c3e88d">"../parent/page.html"</span>       Relative (parent folder)
+<span style="color:#c3e88d">"#section-id"</span>               Same-page anchor
+<span style="color:#c3e88d">"mailto:a@b.com"</span>            Opens email client
+<span style="color:#c3e88d">"mailto:a@b.com?subject=Hi&amp;body=Hello"</span>  With subject+body
+<span style="color:#c3e88d">"tel:+491234567890"</span>         Opens phone dialer
+<span style="color:#c3e88d">"sms:+491234567890"</span>         Opens SMS app
+<span style="color:#c3e88d">"file.pdf"</span> + download        Forces browser download</pre>
+<div class="d-stitle">rel Values</div>
+<pre class="d-code"><span style="color:#82aaff">noopener</span>    Prevents new page accessing window.opener
+<span style="color:#82aaff">noreferrer</span>  Hides referrer + implies noopener
+<span style="color:#82aaff">nofollow</span>    Tells search engines not to follow this link
+<span style="color:#82aaff">canonical</span>   Specifies preferred version of page
+<span style="color:#82aaff">author</span>      Links to author page
+<span style="color:#82aaff">license</span>     Links to license information</pre>`,
+  after() { updateLinkDemo(); }
+},
+
+'Lists': {
+  icon:'≣', color:'var(--accent5)', subtitle:'Ordered, Unordered & Description Lists',
+  demo: `<div class="d-grid">
+  <div class="d-box">
+    <div class="d-label">Interactive List Builder</div>
+    <div style="display:flex;gap:6px;margin-bottom:8px">
+      ${[['ul','&lt;ul&gt; Unordered'],['ol','&lt;ol&gt; Ordered'],['dl','&lt;dl&gt; Description']].map(([t,l]) => `<button class="d-btn" onclick="setListType('${t}');this.parentElement.querySelectorAll('.d-btn').forEach(b=>b.classList.remove('on'));this.classList.add('on')">${l}</button>`).join('')}
+    </div>
+    <div style="display:flex;gap:6px;margin-bottom:10px">
+      <input id="li-input" class="d-input" placeholder="New item text…" onkeydown="if(event.key==='Enter')listAdd()">
+      <button class="d-btn" onclick="listAdd()" style="white-space:nowrap">+ Add</button>
+    </div>
+    <div id="li-type" style="display:none">ul</div>
+    <div class="d-preview" style="min-height:120px">
+      <ul id="li-list" style="margin-left:18px;color:#111;font-family:sans-serif;font-size:13px;line-height:1.9">
+        <li style="display:flex;align-items:center;justify-content:space-between;gap:8px">Item 1 <button class="d-btn" onclick="this.parentElement.remove()" style="padding:1px 8px;font-size:14px">×</button></li>
+        <li style="display:flex;align-items:center;justify-content:space-between;gap:8px">Item 2 <button class="d-btn" onclick="this.parentElement.remove()" style="padding:1px 8px;font-size:14px">×</button></li>
+      </ul>
+    </div>
+  </div>
+  <div class="d-box">
+    <div class="d-label">Live Rendered Examples</div>
+    <div class="d-preview" style="font-family:sans-serif;font-size:12px">
+      <strong style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px">Unordered &lt;ul&gt;</strong>
+      <ul style="margin:4px 0 12px 16px">
+        <li>Coffee</li><li>Tea</li><li>Milk</li>
+      </ul>
+      <strong style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px">Ordered &lt;ol&gt; start="3"</strong>
+      <ol start="3" style="margin:4px 0 12px 16px">
+        <li>Step three</li><li>Step four</li>
+      </ol>
+      <strong style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px">Description &lt;dl&gt;</strong>
+      <dl style="margin:4px 0 0 0">
+        <dt style="font-weight:bold">HTML</dt><dd style="margin-left:14px;color:#555">HyperText Markup Language</dd>
+        <dt style="font-weight:bold">CSS</dt><dd style="margin-left:14px;color:#555">Cascading Style Sheets</dd>
+      </dl>
+    </div>
+  </div>
+</div>`,
+  ref: `<div class="d-grid">
+  <div>
+    <div class="d-stitle">list-style-type values (CSS)</div>
+    <div class="d-preview" style="font-family:sans-serif;font-size:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      ${[['disc','• disc (default)'],['circle','○ circle'],['square','▪ square'],['none','  none'],['decimal','1. decimal'],['lower-alpha','a. lower-alpha'],['upper-alpha','A. upper-alpha'],['lower-roman','i. lower-roman']].map(([s,l]) => `<div style="padding:4px 8px;background:#f3f4f6;border-radius:4px;font-size:11px"><code>${s}</code> → ${l}</div>`).join('')}
+    </div>
+  </div>
+  <div>
+    <div class="d-stitle">Nested Lists</div>
+    <div class="d-preview" style="font-family:sans-serif;font-size:12px">
+      <ul style="margin-left:16px">
+        <li>Frontend
+          <ul style="margin-left:14px">
+            <li>HTML</li>
+            <li>CSS</li>
+            <li>JavaScript
+              <ul style="margin-left:14px">
+                <li>React</li><li>Vue</li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li>Backend</li>
+      </ul>
+    </div>
+    <div class="d-tip"><strong>💡</strong> Nesting is unlimited but keep it to 3 levels max for readability.</div>
+  </div>
+</div>`,
+  after() {
+    const sel = document.getElementById('li-type');
+    document.querySelectorAll('#m-demo .d-btn').forEach((b,i) => { if(i===0) b.classList.add('on'); });
+    document.getElementById('li-type').dataset.val = 'ul';
+    window.setListType = function(t) {
+      document.getElementById('li-type').dataset.val = t;
+      const old = document.getElementById('li-list');
+      const ne = document.createElement(t === 'ol' ? 'ol' : t === 'dl' ? 'dl' : 'ul');
+      ne.id = 'li-list';
+      ne.style.cssText = 'margin-left:18px;color:#111;font-family:sans-serif;font-size:13px;line-height:1.9';
+      old.replaceWith(ne);
+    };
+  }
+},
+
+'Images & Media': {
+  icon:'🖼', color:'var(--accent)', subtitle:'img, picture, video, audio & iframe',
+  demo: `<div class="d-grid">
+  <div class="d-box">
+    <div class="d-label">Responsive Image Demo</div>
+    <div class="d-preview" style="padding:10px;text-align:center">
+      <img src="https://picsum.photos/seed/html/400/200" alt="Demo image" style="width:100%;height:auto;border-radius:6px;display:block" loading="lazy">
+      <div style="font-size:10px;color:#888;margin-top:6px">loading="lazy" — only loads when near viewport</div>
+    </div>
+    <div class="d-label" style="margin-top:12px">Picture element — art direction</div>
+    <pre class="d-code" style="font-size:10.5px">&lt;picture&gt;
+  &lt;source media="(min-width:800px)"
+          srcset="large.webp"
+          type="image/webp"&gt;
+  &lt;source media="(min-width:400px)"
+          srcset="medium.jpg"&gt;
+  &lt;img src="small.jpg" alt="..."&gt;
+&lt;/picture&gt;</pre>
+    <div class="d-tip"><strong>💡</strong> Browser picks the first matching <code>&lt;source&gt;</code> and falls back to <code>&lt;img&gt;</code>.</div>
+  </div>
+  <div class="d-box">
+    <div class="d-label">Video Player Demo</div>
+    <div class="d-preview" style="padding:10px">
+      <video controls muted loop style="width:100%;border-radius:6px" poster="https://picsum.photos/seed/vid/400/200">
+        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+        Your browser does not support video.
+      </video>
+      <div style="font-size:10px;color:#888;margin-top:6px">Attributes: controls, muted, loop, autoplay, poster</div>
+    </div>
+    <div class="d-label" style="margin-top:12px">iframe Sandbox</div>
+    <pre class="d-code" style="font-size:10.5px">&lt;iframe 
+  src="https://example.com"
+  title="Embedded page"
+  loading="lazy"
+  sandbox="allow-scripts
+           allow-same-origin"&gt;
+&lt;/iframe&gt;</pre>
+    <div class="d-warn"><strong>⚠️</strong> Always add <code>title</code> to iframes for accessibility!</div>
+  </div>
+</div>`,
+  ref: `<div class="d-stitle">img Attributes Reference</div>
+<pre class="d-code"><span style="color:#82aaff">src</span>      Required. Path to image file
+<span style="color:#82aaff">alt</span>      Required! Describes image for screen readers + broken img
+<span style="color:#82aaff">width/height</span>  Prevents layout shift (CLS) — always include!
+<span style="color:#82aaff">loading</span>  "lazy" (defer) | "eager" (immediate)
+<span style="color:#82aaff">decoding</span> "async" | "sync" | "auto"
+<span style="color:#82aaff">srcset</span>   Comma-separated image + width descriptor list
+<span style="color:#82aaff">sizes</span>    Media conditions → display size hints for srcset
+<span style="color:#82aaff">fetchpriority</span>  "high" for LCP images, "low" for below fold</pre>
+<div class="d-stitle">Modern Image Formats</div>
+<div class="d-grid" style="gap:8px">
+  ${[['JPEG','Photos, gradients. High compression.','#fbbf24'],['PNG','Transparency, logos. Lossless.','#60a5fa'],['WebP','Modern. Smaller than JPEG/PNG. ✅','#4ade80'],['AVIF','Even smaller than WebP. Best quality.','#a78bfa'],['SVG','Vectors. Scales infinitely.','#f87171']].map(([f,d,c]) => `<div style="background:var(--surface2);border-radius:8px;padding:10px;border-left:3px solid ${c}"><strong style="color:${c}">${f}</strong><div style="font-size:11px;color:var(--muted);margin-top:3px">${d}</div></div>`).join('')}
+</div>`,
+  after() {}
+},
+
+'Tables': {
+  icon:'⊞', color:'var(--accent2)', subtitle:'Table Structure, thead, tbody, tfoot & spanning',
+  demo: `<div class="d-grid">
+  <div class="d-box">
+    <div class="d-label">Interactive Table Builder</div>
+    <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
+      <button class="d-btn" onclick="tableAdd('row')">+ Add Row</button>
+      <button class="d-btn" onclick="tableAdd('col')">+ Add Column</button>
+      <button class="d-btn" onclick="document.getElementById('demo-table').innerHTML='<tr><th style=&quot;padding:6px 10px;border:1px solid #ccc;background:#dbeafe;font-weight:bold&quot;>Name</th><th style=&quot;padding:6px 10px;border:1px solid #ccc;background:#dbeafe;font-weight:bold&quot;>Age</th><th style=&quot;padding:6px 10px;border:1px solid #ccc;background:#dbeafe;font-weight:bold&quot;>City</th></tr><tr><td contenteditable style=&quot;padding:6px 10px;border:1px solid #ccc&quot;>Alice</td><td contenteditable style=&quot;padding:6px 10px;border:1px solid #ccc&quot;>30</td><td contenteditable style=&quot;padding:6px 10px;border:1px solid #ccc&quot;>Berlin</td></tr>'" onclick2="">↺ Reset</button>
+    </div>
+    <div class="d-preview" style="overflow-x:auto;padding:8px">
+      <table id="demo-table" style="border-collapse:collapse;font-family:sans-serif;font-size:12px;width:100%">
+        <tr>
+          <th style="padding:6px 10px;border:1px solid #ccc;background:#dbeafe;font-weight:bold">Name</th>
+          <th style="padding:6px 10px;border:1px solid #ccc;background:#dbeafe;font-weight:bold">Age</th>
+          <th style="padding:6px 10px;border:1px solid #ccc;background:#dbeafe;font-weight:bold">City</th>
+        </tr>
+        <tr>
+          <td contenteditable style="padding:6px 10px;border:1px solid #ccc">Alice</td>
+          <td contenteditable style="padding:6px 10px;border:1px solid #ccc">30</td>
+          <td contenteditable style="padding:6px 10px;border:1px solid #ccc">Berlin</td>
+        </tr>
+        <tr>
+          <td contenteditable style="padding:6px 10px;border:1px solid #ccc">Bob</td>
+          <td contenteditable style="padding:6px 10px;border:1px solid #ccc">25</td>
+          <td contenteditable style="padding:6px 10px;border:1px solid #ccc">Munich</td>
+        </tr>
+      </table>
+    </div>
+    <div class="d-tip"><strong>💡</strong> Cells are contenteditable — click to edit directly!</div>
+  </div>
+  <div class="d-box">
+    <div class="d-label">colspan &amp; rowspan Demo</div>
+    <div class="d-preview" style="overflow-x:auto;padding:8px">
+      <table style="border-collapse:collapse;font-family:sans-serif;font-size:12px;width:100%">
+        <thead>
+          <tr><th colspan="3" style="padding:6px 10px;border:1px solid #ccc;background:#fde68a;text-align:center">colspan="3" — spans all columns</th></tr>
+          <tr>
+            <th style="padding:6px 10px;border:1px solid #ccc;background:#dbeafe">A</th>
+            <th style="padding:6px 10px;border:1px solid #ccc;background:#dbeafe">B</th>
+            <th style="padding:6px 10px;border:1px solid #ccc;background:#dbeafe">C</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td rowspan="2" style="padding:6px 10px;border:1px solid #ccc;background:#d1fae5;vertical-align:middle;text-align:center">rowspan<br>="2"</td>
+            <td style="padding:6px 10px;border:1px solid #ccc">B1</td>
+            <td style="padding:6px 10px;border:1px solid #ccc">C1</td>
+          </tr>
+          <tr>
+            <td style="padding:6px 10px;border:1px solid #ccc">B2</td>
+            <td style="padding:6px 10px;border:1px solid #ccc">C2</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="d-label" style="margin-top:12px">Accessible Table Structure</div>
+    <pre class="d-code" style="font-size:10.5px">&lt;table&gt;
+  &lt;caption&gt;Monthly Sales&lt;/caption&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;&lt;th <span style="color:#f7c948">scope="col"</span>&gt;Month&lt;/th&gt;&lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;...&lt;/tbody&gt;
+  &lt;tfoot&gt;...&lt;/tfoot&gt;
+&lt;/table&gt;</pre>
+  </div>
+</div>`,
+  ref: `<div class="d-stitle">Table Element Reference</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+  ${[['table','Root table element'],['caption','Table title (first child)'],['thead','Header row group'],['tbody','Body row group(s)'],['tfoot','Footer row group'],['tr','Table row'],['th','Header cell (bold, centered)'],['td','Data cell'],['colgroup','Groups of columns'],['col','Single column (for styling)']].map(([t,d]) => `<div class="d-box" style="padding:10px"><code style="color:var(--accent2)">&lt;${t}&gt;</code><div style="font-size:11px;color:var(--muted);margin-top:3px">${d}</div></div>`).join('')}
+</div>
+<div class="d-stitle" style="margin-top:14px">scope Attribute (Accessibility)</div>
+<pre class="d-code">&lt;th <span style="color:#f7c948">scope="col"</span>&gt;   Header for a column
+&lt;th <span style="color:#f7c948">scope="row"</span>&gt;   Header for a row
+&lt;th <span style="color:#f7c948">scope="colgroup"</span>&gt; Header for multiple columns
+&lt;th <span style="color:#f7c948">scope="rowgroup"</span>&gt; Header for multiple rows</pre>`,
+  after() {}
+},
+
+'Forms': {
+  icon:'✎', color:'var(--accent3)', subtitle:'All Input Types, Select, Textarea & Buttons',
+  demo: `<div class="d-label">All HTML5 Input Types — fully interactive</div>
+<div class="lf-row">
+  <div class="lf-item"><label>text</label><input type="text" placeholder="John Doe"></div>
+  <div class="lf-item"><label>email</label><input type="email" placeholder="you@example.com"></div>
+  <div class="lf-item"><label>password</label><input type="password" placeholder="secret"></div>
+  <div class="lf-item"><label>search</label><input type="search" placeholder="Search…"></div>
+</div>
+<div class="lf-row">
+  <div class="lf-item"><label>number (0-100)</label><input type="number" min="0" max="100" value="42"></div>
+  <div class="lf-item"><label>range</label><input type="range" min="0" max="100" value="60" oninput="this.nextElementSibling.textContent=this.value"><span style="font-size:11px;color:var(--muted);margin-left:6px">60</span></div>
+  <div class="lf-item"><label>tel</label><input type="tel" placeholder="+49 123 456 789"></div>
+  <div class="lf-item"><label>url</label><input type="url" placeholder="https://…"></div>
+</div>
+<div class="lf-row">
+  <div class="lf-item"><label>date</label><input type="date"></div>
+  <div class="lf-item"><label>time</label><input type="time"></div>
+  <div class="lf-item"><label>datetime-local</label><input type="datetime-local"></div>
+  <div class="lf-item"><label>month</label><input type="month"></div>
+</div>
+<div class="lf-row">
+  <div class="lf-item"><label>color</label><input type="color" value="#6bcfff"></div>
+  <div class="lf-item"><label>file (.jpg, .png)</label><input type="file" accept=".jpg,.png,.gif"></div>
+  <div class="lf-item"><label>checkbox</label><input type="checkbox" checked> Accept terms</div>
+  <div class="lf-item"><label>radio</label><div><input type="radio" name="r" checked> Yes &nbsp;<input type="radio" name="r"> No</div></div>
+</div>
+<div class="lf-row">
+  <div class="lf-item" style="flex:2"><label>textarea</label><textarea rows="2" placeholder="Multiline text…" style="width:100%;padding:6px 8px;border-radius:5px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:JetBrains Mono,monospace;font-size:11px;resize:vertical;box-sizing:border-box"></textarea></div>
+  <div class="lf-item" style="flex:1"><label>select + optgroup</label><select style="width:100%;padding:6px 8px;border-radius:5px;border:1px solid var(--border);background:var(--surface);color:var(--text)"><optgroup label="Germany"><option>Berlin</option><option>Munich</option></optgroup><optgroup label="France"><option>Paris</option></optgroup></select></div>
+</div>
+<div class="lf-row">
+  <div class="lf-item"><label>submit</label><button type="submit" style="padding:7px 16px;background:#6bcfff;border:none;border-radius:6px;font-weight:700;cursor:pointer">Submit</button></div>
+  <div class="lf-item"><label>reset</label><button type="reset" style="padding:7px 16px;background:#ff6b6b;border:none;border-radius:6px;color:#fff;font-weight:700;cursor:pointer">Reset</button></div>
+  <div class="lf-item"><label>button</label><button type="button" onclick="this.textContent='Clicked! ✓'" style="padding:7px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);cursor:pointer">Click me</button></div>
+</div>`,
+  ref: `<div class="d-stitle">Form Element Reference</div>
+<pre class="d-code">&lt;form
+  <span style="color:#f7c948">action</span>="/submit"         Where to send data
+  <span style="color:#f7c948">method</span>="post"           GET (URL) | POST (body)
+  <span style="color:#f7c948">enctype</span>="multipart/form-data"  Required for file uploads
+  <span style="color:#f7c948">novalidate</span>             Disable HTML5 validation
+  <span style="color:#f7c948">autocomplete</span>="off"&gt;</pre>
+<div class="d-stitle">Datalist (Autocomplete)</div>
+<div class="d-preview" style="font-family:sans-serif">
+  <label style="font-size:11px;color:#666">Type a browser name:</label><br>
+  <input list="browsers-demo" style="padding:6px;border-radius:4px;border:1px solid #ccc;margin-top:4px;width:200px" placeholder="Start typing…">
+  <datalist id="browsers-demo"><option value="Chrome"><option value="Firefox"><option value="Safari"><option value="Edge"><option value="Opera"></datalist>
+</div>`,
+  after() {}
+},
+
+'Form Attributes & Validation': {
+  icon:'@', color:'var(--accent4)', subtitle:'Validation Attributes, Fieldset & Meter',
+  demo: `<div class="d-grid">
+  <div class="d-box">
+    <div class="d-label">Live HTML5 Validation — fill in and submit</div>
+    <form onsubmit="event.preventDefault();document.getElementById('val-result').textContent='✅ All fields valid! Form would submit now.';document.getElementById('val-result').style.color='var(--accent4)'" novalidate onkeyup="void 0">
+      <div class="vfield">
+        <label>Required text (minlength=3)</label>
+        <input type="text" required minlength="3" maxlength="30" placeholder="At least 3 characters">
+        <div class="hint">minlength="3" maxlength="30" required</div>
+      </div>
+      <div class="vfield">
+        <label>Email address</label>
+        <input type="email" required placeholder="user@example.com">
+        <div class="hint">type="email" required</div>
+      </div>
+      <div class="vfield">
+        <label>Password (pattern: 8+ chars, 1 number)</label>
+        <input type="password" required pattern="(?=.*\d).{8,}" placeholder="Min 8 chars, 1 digit">
+        <div class="hint">pattern="(?=.*\d).{8,}"</div>
+      </div>
+      <div class="vfield">
+        <label>Age (10–120)</label>
+        <input type="number" min="10" max="120" required placeholder="Your age">
+        <div class="hint">min="10" max="120"</div>
+      </div>
+      <button type="submit" style="padding:8px 20px;background:var(--accent4);border:none;border-radius:6px;color:#111;font-weight:700;cursor:pointer;font-family:JetBrains Mono,monospace;margin-top:4px">Validate & Submit</button>
+    </form>
+    <div id="val-result" style="margin-top:10px;font-size:12px"></div>
+  </div>
+  <div class="d-box">
+    <div class="d-label">Progress &amp; Meter Demo</div>
+    <div style="margin-bottom:12px">
+      <label style="font-size:11px;color:var(--muted)">Upload progress</label>
+      <input type="range" min="0" max="100" value="65" oninput="document.getElementById('prog1').value=this.value" style="width:100%;margin:6px 0">
+      <progress id="prog1" value="65" max="100" style="width:100%;height:18px;border-radius:6px"></progress>
+    </div>
+    <div style="margin-bottom:12px">
+      <label style="font-size:11px;color:var(--muted)">Disk usage (meter)</label>
+      <input type="range" min="0" max="1" step="0.01" value="0.72" oninput="document.getElementById('met1').value=this.value" style="width:100%;margin:6px 0">
+      <meter id="met1" value="0.72" min="0" max="1" low="0.3" high="0.8" optimum="0.5" style="width:100%;height:18px"></meter>
+    </div>
+    <div class="d-stitle">Fieldset &amp; Legend</div>
+    <div class="d-preview" style="font-family:sans-serif;font-size:12px">
+      <fieldset style="border:1px solid #ccc;border-radius:6px;padding:10px">
+        <legend style="padding:0 8px;font-weight:bold;color:#333">Contact Preference</legend>
+        <label><input type="radio" name="cp"> Email</label><br>
+        <label><input type="radio" name="cp"> Phone</label><br>
+        <label><input type="radio" name="cp"> SMS</label>
+      </fieldset>
+    </div>
+  </div>
+</div>`,
+  ref: `<div class="d-stitle">Validation Attributes</div>
+<pre class="d-code"><span style="color:#82aaff">required</span>               Field must not be empty
+<span style="color:#82aaff">minlength</span> / <span style="color:#82aaff">maxlength</span>  Character count limits (text)
+<span style="color:#82aaff">min</span> / <span style="color:#82aaff">max</span>             Numeric / date range
+<span style="color:#82aaff">step</span>                   Legal number intervals
+<span style="color:#82aaff">pattern</span>="[A-Z]{3}"    Regex the value must match
+<span style="color:#82aaff">type</span>                   Built-in format validation
+                       (email, url, tel, number…)
+<span style="color:#82aaff">novalidate</span>             On &lt;form&gt; — skip all validation</pre>
+<div class="d-tip"><strong>💡</strong> Use <code>:valid</code> and <code>:invalid</code> CSS pseudo-classes to style fields based on their validation state!</div>
+<div class="d-stitle">CSS Validation Styling</div>
+<pre class="d-code">input<span style="color:#c792ea">:valid</span>:not(<span style="color:#c792ea">:placeholder-shown</span>) {
+  border-color: <span style="color:#c3e88d">green</span>;
+}
+input<span style="color:#c792ea">:invalid</span>:not(<span style="color:#c792ea">:placeholder-shown</span>) {
+  border-color: <span style="color:#ff6b6b">red</span>;
+}</pre>`,
+  after() {}
+},
+
+'Global Attributes': {
+  icon:'⚙', color:'var(--accent5)', subtitle:'id, class, data-*, contenteditable, draggable & ARIA',
+  demo: `<div class="d-grid">
+  <div class="d-box">
+    <div class="d-label">Attribute Toggler — modify the demo element</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+      <button class="d-btn" data-attr="contenteditable" onclick="applyAttr('contenteditable')">contenteditable</button>
+      <button class="d-btn" data-attr="draggable" onclick="applyAttr('draggable')">draggable</button>
+      <button class="d-btn" data-attr="hidden" onclick="applyAttr('hidden')">hidden</button>
+      <button class="d-btn" data-attr="lang" onclick="applyAttr('lang')">lang (en/de)</button>
+    </div>
+    <div class="d-preview" style="min-height:90px;display:flex;align-items:center;justify-content:center">
+      <div id="attr-demo-el" style="background:#e0e7ff;border-radius:8px;padding:16px 24px;font-family:sans-serif;font-size:14px;color:#1e1b4b;transition:all 0.3s">Hello, I am a div element!</div>
+    </div>
+    <div class="d-label" style="margin-top:12px">Current HTML</div>
+    <pre id="attr-data-out" class="d-code" style="font-size:11px">&lt;div&gt;</pre>
+  </div>
+  <div class="d-box">
+    <div class="d-label">data-* Attribute Live Reader</div>
+    <div style="margin-bottom:8px">
+      <label style="font-size:10px;color:var(--muted)">data-user-id</label>
+      <input class="d-input" value="42" oninput="setDataAttr('userId',this.value)" style="margin-top:3px">
+    </div>
+    <div style="margin-bottom:8px">
+      <label style="font-size:10px;color:var(--muted)">data-role</label>
+      <input class="d-input" value="admin" oninput="setDataAttr('role',this.value)" style="margin-top:3px">
+    </div>
+    <div style="margin-bottom:8px">
+      <label style="font-size:10px;color:var(--muted)">data-theme</label>
+      <input class="d-input" value="dark" oninput="setDataAttr('theme',this.value)" style="margin-top:3px">
+    </div>
+    <div class="d-label">Read in JavaScript</div>
+    <pre class="d-code" style="font-size:11px">el.dataset.userId  // "42"
+el.dataset.role    // "admin"
+el.dataset.theme   // "dark"
+
+el.getAttribute('data-user-id')
+el.setAttribute('data-role','mod')</pre>
+    <div class="d-tip"><strong>💡</strong> <code>data-*</code> attributes store custom data on any element without custom attributes — great for passing data to JavaScript!</div>
+  </div>
+</div>`,
+  ref: `<div class="d-stitle">All Global Attributes</div>
+<pre class="d-code"><span style="color:#f7c948">id</span>="unique"           Unique identifier (once per page!)
+<span style="color:#f7c948">class</span>="a b c"         CSS class list (space-separated)
+<span style="color:#f7c948">style</span>="color:red"     Inline CSS (avoid for maintainability)
+<span style="color:#f7c948">title</span>="tooltip"      Browser tooltip on hover
+<span style="color:#f7c948">lang</span>="de"            Language override for element
+<span style="color:#f7c948">dir</span>="ltr|rtl|auto"   Text direction
+<span style="color:#f7c948">hidden</span>               Hides element (like display:none)
+<span style="color:#f7c948">tabindex</span>="0"         Adds to tab order (0=natural, -1=focus only, 1+=priority)
+<span style="color:#f7c948">draggable</span>="true"     Enables HTML5 Drag and Drop API
+<span style="color:#f7c948">contenteditable</span>      Makes element editable like textarea
+<span style="color:#f7c948">spellcheck</span>="true"   Browser spell check
+<span style="color:#f7c948">translate</span>="no"       Exclude from translation tools
+<span style="color:#f7c948">inert</span>                Disables all interactions and focus</pre>`,
+  after() { updateDataOut(); setDataAttr('userId','42'); setDataAttr('role','admin'); setDataAttr('theme','dark'); }
+},
+
+'Meta, SEO, Open Graph & Structured Data': {
+  icon:'🔍', color:'var(--accent)', subtitle:'SEO Meta Tags, Open Graph, Twitter Cards & JSON-LD',
+  demo: `<div class="d-grid">
+  <div class="d-box">
+    <div class="d-label">Open Graph Card Builder — edit and see preview</div>
+    <div style="margin-bottom:8px">
+      <label style="font-size:10px;color:var(--muted)">og:title</label>
+      <input id="og-title-in" class="d-input" value="My Awesome Article" oninput="updateOG()" style="margin-top:3px">
+    </div>
+    <div style="margin-bottom:8px">
+      <label style="font-size:10px;color:var(--muted)">og:description</label>
+      <input id="og-desc-in" class="d-input" value="A great article about HTML and the web." oninput="updateOG()" style="margin-top:3px">
+    </div>
+    <div style="margin-bottom:8px">
+      <label style="font-size:10px;color:var(--muted)">og:url</label>
+      <input id="og-url-in" class="d-input" value="example.com/article" oninput="updateOG()" style="margin-top:3px">
+    </div>
+    <div class="d-label" style="margin-top:12px">Social Card Preview</div>
+    <div class="og-card">
+      <div class="og-img">🌐</div>
+      <div class="og-body">
+        <div class="og-site" id="og-u">example.com/article</div>
+        <div class="og-title" id="og-t">My Awesome Article</div>
+        <div class="og-desc" id="og-d">A great article about HTML and the web.</div>
+      </div>
+    </div>
+  </div>
+  <div class="d-box">
+    <div class="d-label">Generated Meta Tags</div>
+    <pre class="d-code" style="font-size:10px;max-height:340px;overflow-y:auto" id="og-code"></pre>
+  </div>
+</div>`,
+  ref: `<div class="d-grid">
+  <div>
+    <div class="d-stitle">SEO Best Practices</div>
+    <div class="d-tip"><strong>Title:</strong> 50-60 chars · Include primary keyword · Unique per page</div>
+    <div class="d-tip"><strong>Description:</strong> 150-160 chars · Summarize page · Include CTA</div>
+    <div class="d-tip"><strong>Canonical:</strong> Prevents duplicate content penalties from Google</div>
+    <div class="d-warn"><strong>⚠️</strong> Keyword stuffing in meta keywords is ignored by Google and can hurt rankings.</div>
+  </div>
+  <div>
+    <div class="d-stitle">JSON-LD Structured Data</div>
+    <pre class="d-code" style="font-size:10.5px">&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Page Title",
+  "author": {
+    "@type": "Person",
+    "name": "John Doe"
+  },
+  "datePublished": "2024-01-15"
+}
+&lt;/script&gt;</pre>
+    <div class="d-tip"><strong>💡</strong> Structured data enables rich snippets in Google — stars, FAQs, breadcrumbs etc.</div>
+  </div>
+</div>`,
+  after() { updateOG(); const el = document.getElementById('og-code'); if(el) { const updateCode = () => { const t = document.getElementById('og-title-in').value; const d = document.getElementById('og-desc-in').value; const u = 'https://' + document.getElementById('og-url-in').value; el.textContent = `<meta property="og:title" content="${t}">\n<meta property="og:description" content="${d}">\n<meta property="og:url" content="${u}">\n<meta property="og:image" content="https://example.com/og-image.jpg">\n<meta property="og:type" content="website">\n<meta name="twitter:card" content="summary_large_image">\n<meta name="twitter:title" content="${t}">\n<meta name="twitter:description" content="${d}">`; }; updateCode(); ['og-title-in','og-desc-in','og-url-in'].forEach(id => document.getElementById(id)?.addEventListener('input', updateCode)); } }
+},
+
+'Accessibility (ARIA & Best Practices)': {
+  icon:'♿', color:'var(--accent3)', subtitle:'ARIA Roles, States, Properties & A11y Best Practices',
+  demo: `<div class="d-grid">
+  <div class="d-box">
+    <div class="d-label">Tab Order Demo — press Tab to navigate</div>
+    <div style="background:var(--surface2);border-radius:8px;padding:14px;display:flex;flex-wrap:wrap;gap:8px">
+      <button class="tabel" tabindex="1"><span class="tab-badge">1</span> First Button</button>
+      <a href="#" class="tabel" onclick="return false" tabindex="2"><span class="tab-badge">2</span> Link</a>
+      <input class="tabel" tabindex="3" placeholder="3 Input field" style="width:120px">
+      <button class="tabel" tabindex="4"><span class="tab-badge">4</span> Another Button</button>
+      <button class="tabel" tabindex="-1" style="opacity:0.4"><span class="tab-badge">-1</span> Skip (tabindex=-1)</button>
+    </div>
+    <div class="d-tip" style="margin-top:10px"><strong>💡</strong> <code>tabindex="0"</code> — natural order · <code>tabindex="1+"</code> — explicit order · <code>tabindex="-1"</code> — focusable via JS only</div>
+    <div class="d-label" style="margin-top:12px">ARIA Live Region Demo</div>
+    <div id="aria-live-box" aria-live="polite" aria-atomic="true" class="d-info" style="min-height:40px">Click a button to see the live region update</div>
+    <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+      <button class="d-btn" onclick="document.getElementById('aria-live-box').textContent='🔔 New notification: Your file has been saved!'">Trigger Notification</button>
+      <button class="d-btn" onclick="document.getElementById('aria-live-box').textContent='⚠️ Warning: Connection lost. Retrying…'">Trigger Warning</button>
+      <button class="d-btn" onclick="document.getElementById('aria-live-box').textContent='✅ Success: Upload complete (3 files)'">Trigger Success</button>
+    </div>
+  </div>
+  <div class="d-box">
+    <div class="d-label">ARIA Roles — Semantic Landmarks</div>
+    <div class="d-preview" style="font-family:sans-serif;font-size:11px;line-height:1.8">
+      ${[['banner','→ &lt;header&gt; (site-wide)'],['navigation','→ &lt;nav&gt;'],['main','→ &lt;main&gt;'],['complementary','→ &lt;aside&gt;'],['contentinfo','→ &lt;footer&gt; (site-wide)'],['search','→ Search form'],['form','→ &lt;form&gt; with a label'],['region','→ &lt;section&gt; with aria-label'],['button','→ &lt;div&gt; acting as button'],['alert','→ Live error message'],['dialog','→ Modal dialog'],['tooltip','→ Floating hint']].map(([r,d]) => `<div style="display:flex;gap:8px;align-items:center"><code style="background:#e0e7ff;color:#3730a3;padding:1px 6px;border-radius:3px;font-size:10px;white-space:nowrap">${r}</code><span style="color:#555">${d}</span></div>`).join('')}
+    </div>
+  </div>
+</div>`,
+  ref: `<div class="d-grid">
+  <div>
+    <div class="d-stitle">ARIA States & Properties</div>
+    <pre class="d-code"><span style="color:#82aaff">aria-label</span>="Close dialog"
+<span style="color:#82aaff">aria-labelledby</span>="heading-id"
+<span style="color:#82aaff">aria-describedby</span>="hint-id"
+<span style="color:#82aaff">aria-hidden</span>="true"      Hide from screen readers
+<span style="color:#82aaff">aria-expanded</span>="false"   Collapsed state
+<span style="color:#82aaff">aria-selected</span>="true"    Selected option
+<span style="color:#82aaff">aria-checked</span>="mixed"    Tri-state checkbox
+<span style="color:#82aaff">aria-disabled</span>="true"    Disabled state
+<span style="color:#82aaff">aria-required</span>="true"    Required field
+<span style="color:#82aaff">aria-invalid</span>="true"     Invalid input
+<span style="color:#82aaff">aria-live</span>="polite"      Announce when idle
+<span style="color:#82aaff">aria-live</span>="assertive"   Announce immediately
+<span style="color:#82aaff">aria-busy</span>="true"        Loading state</pre>
+  </div>
+  <div>
+    <div class="d-stitle">A11y Quick Wins</div>
+    <div class="d-ok"><strong>✅</strong> Every <code>&lt;img&gt;</code> needs meaningful <code>alt</code> text (or <code>alt=""</code> for decorative)</div>
+    <div class="d-ok"><strong>✅</strong> All form inputs need an associated <code>&lt;label&gt;</code></div>
+    <div class="d-ok"><strong>✅</strong> Minimum 4.5:1 contrast ratio for normal text (WCAG AA)</div>
+    <div class="d-ok"><strong>✅</strong> Interactive elements must be reachable by keyboard</div>
+    <div class="d-ok"><strong>✅</strong> Don't use <code>tabindex &gt; 0</code> — it creates confusing tab order</div>
+    <div class="d-warn"><strong>⚠️</strong> Don't use ARIA if a native HTML element can do the job!</div>
+  </div>
+</div>`,
+  after() {}
+},
+
+'Canvas & SVG & Graphics': {
+  icon:'◈', color:'var(--accent5)', subtitle:'HTML5 Canvas Drawing API & Inline SVG',
+  demo: `<div class="d-grid">
+  <div class="d-box">
+    <div class="d-label">Canvas Drawing App — draw freely!</div>
+    <div class="ctool">
+      ${['#6bcfff','#f7c948','#a8ff78','#ff6b6b','#c084fc','#f78c6c','#ffffff','#0f0e17'].map((c,i) => `<div class="c-col${i===0?' sel':''}" style="background:${c}" onclick="setCurColor(this,'${c}')" title="${c}"></div>`).join('')}
+      <button class="d-btn size-btn" onclick="setCurSize(2)">S</button>
+      <button class="d-btn size-btn" onclick="setCurSize(6)">M</button>
+      <button class="d-btn size-btn" onclick="setCurSize(14)">L</button>
+      <button class="d-btn" onclick="clearCanvas()" style="margin-left:auto">🗑 Clear</button>
+    </div>
+    <canvas id="draw-cv" width="400" height="220" style="width:100%;border-radius:8px;touch-action:none"></canvas>
+  </div>
+  <div class="d-box">
+    <div class="d-label">Inline SVG Examples</div>
+    <div class="d-preview" style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:center;padding:14px">
+      <svg width="80" height="80" viewBox="0 0 80 80"><circle cx="40" cy="40" r="36" fill="#6bcfff" opacity="0.8"/><text x="40" y="45" text-anchor="middle" font-size="14" font-weight="bold" fill="#fff">circle</text></svg>
+      <svg width="80" height="80" viewBox="0 0 80 80"><rect x="8" y="8" width="64" height="64" rx="8" fill="#f7c948" opacity="0.8"/><text x="40" y="45" text-anchor="middle" font-size="13" font-weight="bold" fill="#111">rect</text></svg>
+      <svg width="80" height="80" viewBox="0 0 80 80"><polygon points="40,6 74,74 6,74" fill="#a8ff78" opacity="0.8"/><text x="40" y="65" text-anchor="middle" font-size="11" font-weight="bold" fill="#111">polygon</text></svg>
+      <svg width="80" height="80" viewBox="0 0 80 80"><path d="M10,70 Q40,10 70,70" stroke="#ff6b6b" stroke-width="4" fill="none"/><text x="40" y="56" text-anchor="middle" font-size="12" font-weight="bold" fill="#ff6b6b">path</text></svg>
+      <svg width="80" height="80" viewBox="0 0 80 80"><ellipse cx="40" cy="40" rx="36" ry="22" fill="#c084fc" opacity="0.8"/><text x="40" y="45" text-anchor="middle" font-size="12" font-weight="bold" fill="#fff">ellipse</text></svg>
+      <svg width="80" height="80" viewBox="0 0 80 80"><text x="40" y="48" text-anchor="middle" font-size="36" fill="#f78c6c">SVG</text></svg>
+    </div>
+    <pre class="d-code" style="font-size:10.5px">&lt;svg viewBox="0 0 100 100"&gt;
+  &lt;circle cx="50" cy="50" r="40"
+    fill="<span style="color:#6bcfff">#6bcfff</span>"/&gt;
+  &lt;path d="M10 50 L90 50"
+    stroke="<span style="color:#f7c948">#f7c948</span>" stroke-width="2"/&gt;
+  &lt;text x="50" y="55"
+    text-anchor="middle"&gt;Hi&lt;/text&gt;
+&lt;/svg&gt;</pre>
+  </div>
+</div>`,
+  ref: `<div class="d-grid">
+  <div>
+    <div class="d-stitle">Canvas 2D API</div>
+    <pre class="d-code">const ctx = canvas.getContext(<span style="color:#c3e88d">'2d'</span>);
+<span style="color:#4a5568">// Shapes</span>
+ctx.<span style="color:#82aaff">fillRect</span>(x, y, w, h);
+ctx.<span style="color:#82aaff">strokeRect</span>(x, y, w, h);
+ctx.<span style="color:#82aaff">clearRect</span>(x, y, w, h);
+ctx.<span style="color:#82aaff">beginPath</span>();
+ctx.<span style="color:#82aaff">arc</span>(x, y, r, 0, Math.PI*2);
+ctx.<span style="color:#82aaff">moveTo</span>(x, y); ctx.<span style="color:#82aaff">lineTo</span>(x2, y2);
+ctx.<span style="color:#82aaff">fill</span>(); ctx.<span style="color:#82aaff">stroke</span>();
+<span style="color:#4a5568">// Styles</span>
+ctx.fillStyle   = <span style="color:#c3e88d">'#ff6b6b'</span>;
+ctx.strokeStyle = <span style="color:#c3e88d">'rgba(0,0,0,0.5)'</span>;
+ctx.lineWidth   = <span style="color:#f78c6c">3</span>;
+ctx.lineCap     = <span style="color:#c3e88d">'round'</span>;
+<span style="color:#4a5568">// Text</span>
+ctx.font        = <span style="color:#c3e88d">'16px sans-serif'</span>;
+ctx.<span style="color:#82aaff">fillText</span>(<span style="color:#c3e88d">'Hello'</span>, x, y);</pre>
+  </div>
+  <div>
+    <div class="d-stitle">SVG vs Canvas</div>
+    ${[['SVG','XML-based vector format'],['SVG','Scalable to any size without blur'],['SVG','DOM-accessible — style with CSS'],['SVG','Good for logos, icons, illustrations'],['Canvas','Pixel-based raster drawing'],['Canvas','No DOM — direct pixel manipulation'],['Canvas','Good for games, data viz, photo editing'],['Canvas','Better performance for many objects']].map(([t,d]) => `<div style="display:flex;gap:8px;margin-bottom:5px;font-size:12px"><span style="background:${t==='SVG'?'rgba(168,255,120,0.15)':'rgba(107,207,255,0.15)'};color:${t==='SVG'?'var(--accent4)':'var(--accent3)'};border-radius:4px;padding:1px 8px;font-size:10px;min-width:46px;text-align:center">${t}</span><span style="color:var(--muted)">${d}</span></div>`).join('')}
+  </div>
+</div>`,
+  after() { setTimeout(initCanvas, 50); }
+},
+
+'HTML Entities & Special Chars': {
+  icon:'&', color:'var(--accent)', subtitle:'HTML Entities, Named Characters & Unicode',
+  demo: `<div class="d-box" style="margin-bottom:12px">
+  <div class="d-label">Search Entities — type to filter</div>
+  <input id="ent-search" class="d-input" placeholder="Search by name, code or character…" oninput="filterEntities()" style="margin-bottom:10px">
+  <div style="max-height:340px;overflow-y:auto;border-radius:8px;border:1px solid var(--border)">
+    <table class="etbl">
+      <thead><tr><th>Char</th><th>Named Entity</th><th>Numeric</th><th>Description</th><th></th></tr></thead>
+      <tbody id="ent-body">
+        ${[
+          ['&amp;','&amp;amp;','&amp;#38;','Ampersand'],
+          ['&lt;','&amp;lt;','&amp;#60;','Less-than sign'],
+          ['&gt;','&amp;gt;','&amp;#62;','Greater-than sign'],
+          ['&quot;','&amp;quot;','&amp;#34;','Quotation mark'],
+          ['&apos;','&amp;apos;','&amp;#39;','Apostrophe'],
+          ['&nbsp;','&amp;nbsp;','&amp;#160;','Non-breaking space'],
+          ['©','&amp;copy;','&amp;#169;','Copyright sign'],
+          ['®','&amp;reg;','&amp;#174;','Registered trademark'],
+          ['™','&amp;trade;','&amp;#8482;','Trademark sign'],
+          ['€','&amp;euro;','&amp;#8364;','Euro sign'],
+          ['£','&amp;pound;','&amp;#163;','Pound sign'],
+          ['¥','&amp;yen;','&amp;#165;','Yen sign'],
+          ['—','&amp;mdash;','&amp;#8212;','Em dash'],
+          ['–','&amp;ndash;','&amp;#8211;','En dash'],
+          ['…','&amp;hellip;','&amp;#8230;','Horizontal ellipsis'],
+          ['←','&amp;larr;','&amp;#8592;','Left arrow'],
+          ['→','&amp;rarr;','&amp;#8594;','Right arrow'],
+          ['↑','&amp;uarr;','&amp;#8593;','Up arrow'],
+          ['↓','&amp;darr;','&amp;#8595;','Down arrow'],
+          ['♥','&amp;hearts;','&amp;#9829;','Heart'],
+          ['★','&amp;#9733;','&amp;#9733;','Black star'],
+          ['✓','&amp;#10003;','&amp;#10003;','Check mark'],
+          ['×','&amp;times;','&amp;#215;','Multiplication sign'],
+          ['÷','&amp;divide;','&amp;#247;','Division sign'],
+          ['½','&amp;frac12;','&amp;#189;','Fraction one half'],
+          ['°','&amp;deg;','&amp;#176;','Degree sign'],
+          ['µ','&amp;micro;','&amp;#181;','Micro sign'],
+          ['¶','&amp;para;','&amp;#182;','Pilcrow (paragraph)'],
+          ['😀','&amp;#x1F600;','&amp;#128512;','Grinning face emoji'],
+          ['🚀','&amp;#x1F680;','&amp;#128640;','Rocket emoji'],
+        ].map(([c,n,num,d]) => `<tr><td style="font-size:18px;text-align:center">${c}</td><td><code style="color:var(--type)">${n}</code></td><td><code style="color:var(--muted)">${num}</code></td><td style="color:var(--muted);font-size:11px">${d}</td><td><button class="e-cp" onclick="copyText('${n.replace(/&amp;/g,'&')}');this.textContent='✓'">Copy</button></td></tr>`).join('')}
+      </tbody>
+    </table>
+  </div>
+</div>`,
+  ref: `<div class="d-grid">
+  <div>
+    <div class="d-stitle">When to Use Entities</div>
+    <div class="d-warn"><strong>Must escape:</strong> <code>&amp;amp; &amp;lt; &amp;gt; &amp;quot;</code> — these are reserved in HTML</div>
+    <div class="d-tip"><strong>Optional:</strong> Characters outside ASCII can be typed directly in UTF-8 — entities are not required but improve readability</div>
+    <div class="d-tip"><strong>Non-breaking space</strong> <code>&amp;nbsp;</code> — prevents line break between words (e.g. "10&amp;nbsp;kg")</div>
+  </div>
+  <div>
+    <div class="d-stitle">Unicode Ranges</div>
+    <pre class="d-code"><span style="color:#c3e88d">"&#x1F600;"</span>  or  <span style="color:#82aaff">&amp;#x1F600;</span>
+<span style="color:#4a5568">Both render: 😀</span>
+
+Common Emoji ranges:
+😀 U+1F600 — Emoticons
+🌍 U+1F300 — Misc Symbols
+🎵 U+1F3B5 — Music
+💡 U+1F4A1 — Objects
+🔴 U+1F534 — Symbols</pre>
+  </div>
+</div>`,
+  after() {}
+},
+
+'Interactive, Script & Miscellaneous Elements': {
+  icon:'✦', color:'var(--accent2)', subtitle:'dialog, details, template, script loading & more',
+  demo: `<div class="d-grid">
+  <div class="d-box">
+    <div class="d-label">Working &lt;dialog&gt; Element</div>
+    <div style="display:flex;gap:8px;margin-bottom:10px">
+      <button class="d-btn" onclick="document.getElementById('demo-dlg').showModal()">Open Modal Dialog</button>
+      <button class="d-btn" onclick="document.getElementById('demo-dlg').show()">Open Non-modal</button>
+    </div>
+    <dialog id="demo-dlg" style="border-radius:12px;border:2px solid var(--accent3);background:var(--surface);color:var(--text);padding:24px;min-width:280px;font-family:JetBrains Mono,monospace;font-size:13px">
+      <h3 style="font-family:Syne,sans-serif;color:var(--accent3);margin-bottom:12px">Hello from &lt;dialog&gt;!</h3>
+      <p style="color:var(--muted);margin-bottom:16px;font-size:12px">This is a native HTML dialog element. Use <code>showModal()</code> for modal behavior with backdrop.</p>
+      <div style="display:flex;gap:8px">
+        <button onclick="document.getElementById('demo-dlg').close('confirm')" style="padding:7px 16px;background:var(--accent3);border:none;border-radius:6px;cursor:pointer;font-weight:700">Confirm</button>
+        <button onclick="document.getElementById('demo-dlg').close()" style="padding:7px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);cursor:pointer">Cancel</button>
+      </div>
+    </dialog>
+    <div class="d-label" style="margin-top:12px">&lt;details&gt; Accordion</div>
+    <div class="d-preview" style="font-family:sans-serif;font-size:13px;padding:10px">
+      <details style="margin-bottom:8px;border:1px solid #ddd;border-radius:6px;overflow:hidden">
+        <summary style="padding:10px 14px;cursor:pointer;background:#f0f9ff;font-weight:600;list-style:none;display:flex;justify-content:space-between">What is HTML? <span>▼</span></summary>
+        <p style="padding:10px 14px;margin:0;color:#555;font-size:12px">HyperText Markup Language — the standard markup language for creating web pages.</p>
+      </details>
+      <details style="border:1px solid #ddd;border-radius:6px;overflow:hidden">
+        <summary style="padding:10px 14px;cursor:pointer;background:#f0f9ff;font-weight:600;list-style:none;display:flex;justify-content:space-between">What is the DOM? <span>▼</span></summary>
+        <p style="padding:10px 14px;margin:0;color:#555;font-size:12px">Document Object Model — a tree representation of the HTML document that JavaScript can read and modify.</p>
+      </details>
+    </div>
+  </div>
+  <div class="d-box">
+    <div class="d-label">&lt;template&gt; — Clone &amp; Stamp</div>
+    <template id="demo-tmpl">
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:8px;display:flex;align-items:center;gap:10px">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--accent3);display:flex;align-items:center;justify-content:center;font-weight:700;color:#111;flex-shrink:0" class="tmpl-num">1</div>
+        <div class="tmpl-text" style="font-size:12px;color:var(--text)">Template item</div>
+      </div>
+    </template>
+    <button class="d-btn" onclick="cloneTmpl()" style="margin-bottom:10px">+ Clone template</button>
+    <div id="tmpl-out"></div>
+    <pre class="d-code" style="margin-top:10px;font-size:10.5px">&lt;template id="card-tmpl"&gt;
+  &lt;div class="card"&gt;
+    &lt;h3 class="title"&gt;&lt;/h3&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+<span style="color:#4a5568">// JavaScript:</span>
+const tmpl = document
+  .getElementById('card-tmpl')
+  .content;
+const clone = tmpl.cloneNode(true);
+clone.querySelector('.title')
+     .textContent = 'Hello!';
+document.body.appendChild(clone);</pre>
+  </div>
+</div>`,
+  ref: `<div class="d-grid">
+  <div>
+    <div class="d-stitle">dialog API</div>
+    <pre class="d-code">dialog.<span style="color:#82aaff">showModal</span>()   Modal + backdrop
+dialog.<span style="color:#82aaff">show</span>()         Non-modal
+dialog.<span style="color:#82aaff">close</span>(retVal) Close + return value
+dialog.<span style="color:#82aaff">open</span>          Boolean: is dialog open?
+dialog.<span style="color:#82aaff">returnValue</span>   Last close() value
+
+<span style="color:#4a5568">/* CSS for backdrop */</span>
+dialog<span style="color:#c792ea">::backdrop</span> {
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+}</pre>
+    <div class="d-tip"><strong>💡</strong> <code>dialog</code> handles focus trapping, Escape key close, and <code>::backdrop</code> automatically!</div>
+  </div>
+  <div>
+    <div class="d-stitle">Import Maps</div>
+    <pre class="d-code">&lt;script type="importmap"&gt;
+{
+  "imports": {
+    "lodash": "/lib/lodash.js",
+    "react": "https://esm.sh/react"
+  }
+}
+&lt;/script&gt;
+<span style="color:#4a5568">// Now use bare module specifiers:</span>
+<span style="color:#c792ea">import</span> _ <span style="color:#c792ea">from</span> <span style="color:#c3e88d">'lodash'</span>;</pre>
+    <div class="d-stitle">Object &amp; Embed</div>
+    <pre class="d-code">&lt;object data="doc.pdf" type="application/pdf"
+        width="600" height="400"&gt;
+  Fallback content here
+&lt;/object&gt;</pre>
+  </div>
+</div>`,
+  after() {
+    let tmplCount = 0;
+    window.cloneTmpl = function() {
+      tmplCount++;
+      const tmpl = document.getElementById('demo-tmpl');
+      if (!tmpl) return;
+      const clone = tmpl.content.cloneNode(true);
+      clone.querySelector('.tmpl-num').textContent = tmplCount;
+      clone.querySelector('.tmpl-text').textContent = 'Cloned item #' + tmplCount + ' — created from template';
+      document.getElementById('tmpl-out').appendChild(clone);
+    };
+  }
+}
+
+}; // end MODALS
+
+/* =====================================================================
+   WIREFRAME helper
+   ===================================================================== */
+function wfSel(el, name, desc) {
+  document.querySelectorAll('.wf-zone').forEach(x => x.classList.remove('wf-sel'));
+  el.classList.add('wf-sel');
+  const box = document.getElementById('wf-info');
+  if (box) box.innerHTML = '<strong>' + name + '</strong> — ' + desc;
+}
+
+/* =====================================================================
+   LINK DEMO helper
+   ===================================================================== */
+function updateLinkDemo() {
+  const type = document.getElementById('link-type').value;
+  const preview = document.getElementById('link-preview');
+  const code = document.getElementById('link-code');
+  const demos = {
+    url: { html: '<a href="https://example.com" target="_blank" rel="noopener noreferrer" style="color:#3b82f6;font-family:sans-serif;font-size:14px">Visit Example.com ↗</a>', code: '<a href="https://example.com"\n   target="_blank"\n   rel="noopener noreferrer">\n  Visit Example.com\n</a>' },
+    rel: { html: '<a href="./about.html" style="color:#10b981;font-family:sans-serif;font-size:14px">About Page (relative)</a>', code: '<a href="./about.html">About Page</a>\n<a href="../docs/guide.html">Docs</a>' },
+    anchor: { html: '<a href="#intro" style="color:#8b5cf6;font-family:sans-serif;font-size:14px">Jump to #intro ↓</a>', code: '<!-- Link -->\n<a href="#intro">Jump to Intro</a>\n\n<!-- Target -->\n<h2 id="intro">Introduction</h2>' },
+    mail: { html: '<a href="mailto:hello@example.com?subject=Hi&body=Hello!" style="color:#f59e0b;font-family:sans-serif;font-size:14px">✉️ Send Email</a>', code: '<a href="mailto:you@example.com\n?subject=Hello\n&body=Hi there!">Send Email</a>' },
+    tel: { html: '<a href="tel:+491234567890" style="color:#ef4444;font-family:sans-serif;font-size:14px">📞 Call +49 123 456 7890</a>', code: '<a href="tel:+491234567890">\n  +49 123 456 7890\n</a>' },
+    dl: { html: '<a href="/docs/guide.pdf" download style="color:#06b6d4;font-family:sans-serif;font-size:14px">⬇ Download PDF</a>', code: '<a href="/docs/guide.pdf"\n   download="my-guide.pdf">\n  Download PDF\n</a>' }
+  };
+  const d = demos[type];
+  preview.innerHTML = d.html;
+  code.textContent = d.code;
+}
+
+/* =====================================================================
+   MODAL SYSTEM
+   ===================================================================== */
+let currentAfter = null;
+
+function mOpen(title) {
+  const data = MODALS[title];
+  if (!data) return;
+
+  // Set header
+  const badge = document.getElementById('m-badge');
+  badge.textContent = data.icon;
+  badge.style.background = (data.color || 'var(--accent)') + '22';
+  badge.style.color = data.color || 'var(--accent)';
+  document.getElementById('m-title').textContent = title;
+  document.getElementById('m-sub').textContent = data.subtitle || '';
+
+  // Set tab content
+  document.getElementById('m-demo').innerHTML = data.demo || '';
+  document.getElementById('m-ref').innerHTML = data.ref || '';
+
+  // Reset tabs
+  document.querySelectorAll('.m-tab').forEach((t, i) => t.classList.toggle('active', i === 0));
+  document.getElementById('m-demo').className = 'm-pane active';
+  document.getElementById('m-ref').className = 'm-pane';
+
+  // Scroll to top
+  document.getElementById('m-body').scrollTop = 0;
+
+  // Show
+  document.getElementById('m-ov').classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  // Run after-render callback
+  if (data.after) { setTimeout(() => data.after(), 60); }
+}
+
+function mClose() {
+  document.getElementById('m-ov').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function mTab(btn) {
+  const tab = btn.dataset.tab;
+  document.querySelectorAll('.m-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.m-pane').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('m-' + tab).classList.add('active');
+}
+
+// Card click handler
+document.querySelectorAll('.card').forEach(card => {
+  card.addEventListener('click', () => {
+    const titleEl = card.querySelector('.card-title');
+    if (!titleEl) return;
+    // Decode HTML entities in the title
+    const tmp = document.createElement('div');
+    tmp.innerHTML = titleEl.innerHTML;
+    const title = tmp.textContent.trim();
+    mOpen(title);
+  });
+});
+
+// Keyboard: Escape closes modal
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') mClose();
+});
+</script>
+</body>
+</html>
+
