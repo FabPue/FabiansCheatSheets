@@ -38,6 +38,75 @@
   .c-purple .card-icon{background:rgba(124,106,247,.2);color:var(--accent)} .c-red .card-icon{background:rgba(247,116,106,.2);color:var(--accent2)} .c-green .card-icon{background:rgba(93,216,176,.2);color:var(--accent3)} .c-yellow .card-icon{background:rgba(247,200,106,.2);color:var(--accent4)} .c-blue .card-icon{background:rgba(116,184,247,.2);color:var(--accent5)}
   .c-purple .card-title{color:var(--accent)} .c-red .card-title{color:var(--accent2)} .c-green .card-title{color:var(--accent3)} .c-yellow .card-title{color:var(--accent4)} .c-blue .card-title{color:var(--accent5)}
   footer { text-align:center;padding:20px;color:var(--muted);font-size:11px;border-top:1px solid var(--border);margin-top:20px; }
+
+  /* ===== MODAL SYSTEM ===== */
+  .card { cursor:pointer; }
+  .card-header { position:relative; transition:background 0.15s; }
+  .card-header::after { content:'⤢'; position:absolute; right:12px; top:50%; transform:translateY(-50%); font-size:13px; color:var(--muted); opacity:0; transition:opacity 0.2s; pointer-events:none; }
+  .card:hover .card-header::after { opacity:1; }
+  .card:hover .card-header { background:#221c3a; }
+  #m-ov { position:fixed; inset:0; background:rgba(4,3,12,0.93); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); z-index:9000; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.3s; }
+  #m-ov.open { opacity:1; pointer-events:all; }
+  #m-panel { background:var(--surface); border:1px solid var(--border); border-radius:20px; width:min(1160px,96vw); max-height:90vh; display:flex; flex-direction:column; transform:scale(0.95) translateY(30px); transition:transform 0.38s cubic-bezier(0.34,1.4,0.64,1); box-shadow:0 40px 120px rgba(0,0,0,0.85); overflow:hidden; }
+  #m-ov.open #m-panel { transform:none; }
+  #m-head { padding:18px 24px; display:flex; align-items:center; gap:14px; border-bottom:1px solid var(--border); background:var(--surface2); flex-shrink:0; }
+  #m-badge { width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:800; flex-shrink:0; font-family:'Syne',sans-serif; }
+  #m-title { font-family:'Syne',sans-serif; font-size:19px; font-weight:800; color:#fff; }
+  #m-sub { font-size:11px; color:var(--muted); margin-top:2px; }
+  #m-close { margin-left:auto; width:36px; height:36px; border-radius:10px; border:1px solid var(--border); background:transparent; color:var(--muted); font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s; flex-shrink:0; }
+  #m-close:hover { background:var(--accent2); color:#fff; border-color:var(--accent2); }
+  #m-tabs { display:flex; border-bottom:1px solid var(--border); background:var(--surface2); flex-shrink:0; padding:0 24px; gap:2px; }
+  .m-tab { background:none; border:none; border-bottom:2px solid transparent; color:var(--muted); font-family:'Syne',sans-serif; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; padding:10px 18px; cursor:pointer; transition:all 0.15s; margin-bottom:-1px; }
+  .m-tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+  .m-tab:hover:not(.active) { color:var(--text); }
+  #m-body { flex:1; overflow-y:auto; padding:24px; scroll-behavior:smooth; }
+  #m-body::-webkit-scrollbar { width:6px; } #m-body::-webkit-scrollbar-track { background:var(--surface); } #m-body::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
+  .m-pane { display:none; animation:mfade 0.22s ease; }
+  .m-pane.active { display:block; }
+  @keyframes mfade { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+  .d-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .d-grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+  .d-box { background:#0a0912; border:1px solid var(--border); border-radius:12px; padding:16px; }
+  .d-label { font-family:'Syne',sans-serif; font-size:9px; text-transform:uppercase; letter-spacing:2px; color:var(--muted); margin-bottom:10px; }
+  .d-preview { background:#1e1e30; color:var(--text); border-radius:8px; padding:14px; min-height:60px; font-family:'JetBrains Mono',monospace; font-size:12px; line-height:1.7; }
+  .d-btn { background:var(--surface2); border:1px solid var(--border); border-radius:6px; color:var(--text); font-family:'JetBrains Mono',monospace; font-size:11px; padding:5px 11px; cursor:pointer; transition:all 0.15s; margin:2px; display:inline-flex; align-items:center; gap:4px; }
+  .d-btn:hover { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .d-btn.on { background:var(--accent3); color:#111; border-color:var(--accent3); }
+  .d-input { background:var(--surface2); border:1px solid var(--border); border-radius:6px; color:var(--text); font-family:'JetBrains Mono',monospace; font-size:12px; padding:7px 10px; width:100%; outline:none; box-sizing:border-box; }
+  .d-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(124,106,247,0.15); }
+  .d-select { background:var(--surface2); border:1px solid var(--border); border-radius:6px; color:var(--text); font-family:'JetBrains Mono',monospace; font-size:12px; padding:6px 10px; outline:none; cursor:pointer; }
+  .d-code { background:#0a0912; border:1px solid #1e1e30; border-radius:6px; padding:10px 12px; font-size:11px; line-height:1.7; white-space:pre; overflow-x:auto; color:var(--text); font-family:'JetBrains Mono',monospace; }
+  .d-tip { background:rgba(124,106,247,0.07); border:1px solid rgba(124,106,247,0.25); border-radius:8px; padding:10px 14px; font-size:12px; color:var(--text); margin:7px 0; }
+  .d-tip strong { color:var(--accent); }
+  .d-warn { background:rgba(247,116,106,0.07); border:1px solid rgba(247,116,106,0.25); border-radius:8px; padding:10px 14px; font-size:12px; color:var(--text); margin:7px 0; }
+  .d-warn strong { color:var(--accent2); }
+  .d-ok { background:rgba(93,216,176,0.07); border:1px solid rgba(93,216,176,0.25); border-radius:8px; padding:10px 14px; font-size:12px; color:var(--text); margin:7px 0; }
+  .d-ok strong { color:var(--accent3); }
+  .d-info { background:var(--surface2); border:1px solid var(--accent); border-radius:8px; padding:12px 14px; font-size:12px; color:var(--text); transition:all 0.25s; min-height:44px; }
+  .d-info strong { color:var(--accent); font-family:'Syne',sans-serif; }
+  .d-section { margin-bottom:20px; }
+  .d-stitle { font-family:'Syne',sans-serif; font-size:10px; text-transform:uppercase; letter-spacing:2px; color:var(--muted); margin-bottom:8px; border-bottom:1px solid var(--border); padding-bottom:5px; }
+  /* operator result cells */
+  .op-cell { background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:7px 10px; font-size:11.5px; display:flex; justify-content:space-between; align-items:center; }
+  .op-cell .oc-name { color:var(--muted); font-size:10px; }
+  .op-cell .oc-val { color:var(--accent3); font-weight:600; }
+  /* LINQ chain */
+  .linq-step { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:8px 12px; font-size:11px; display:flex; align-items:center; gap:8px; margin-bottom:5px; }
+  .linq-step .ls-method { color:var(--accent3); font-weight:600; }
+  .linq-step .ls-result { color:var(--accent4); margin-left:auto; }
+  /* async timeline */
+  .task-bar { height:28px; border-radius:6px; background:var(--surface2); overflow:hidden; position:relative; margin-bottom:6px; }
+  .task-fill { height:100%; border-radius:6px; width:0; transition:width 0.05s linear; display:flex; align-items:center; padding:0 10px; font-size:10px; font-family:'Syne',sans-serif; font-weight:700; color:#111; white-space:nowrap; }
+  /* exception tree */
+  .exc-node { padding:3px 10px; border-radius:5px; font-size:11.5px; display:inline-block; cursor:pointer; transition:all 0.15s; }
+  .exc-node:hover { opacity:0.8; }
+  .exc-branch { padding-left:18px; border-left:1px dashed var(--border); margin-left:14px; }
+  /* access matrix */
+  .am-tbl { width:100%; border-collapse:collapse; font-size:11px; }
+  .am-tbl th { background:var(--surface2); padding:6px 8px; text-align:left; color:var(--muted); font-size:10px; text-transform:uppercase; letter-spacing:1px; border:1px solid var(--border); }
+  .am-tbl td { padding:6px 8px; border:1px solid var(--border); text-align:center; }
+  /* loop boxes */
+  .loop-box { display:inline-flex; width:32px; height:32px; border-radius:6px; align-items:center; justify-content:center; font-size:11px; font-weight:700; margin:2px; transition:all 0.2s; border:2px solid transparent; }
 </style>
 </head>
 <body>
@@ -752,8 +821,8 @@ btn.Clicked += (s, e) => { <span class="cm">/* ... */</span> };</pre>
   </div>
 </div>
 
-<div class="card c-green col-3">
-  <div class="card-header"><div class="card-icon">✦</div><span class="card-title">Modern C# Features (9–12)</span></div>
+  <div class="card c-green col-3">
+   <div class="card-header"><div class="card-icon">✦</div><span class="card-title">Modern C# Features (9–14)</span></div>
   <div class="card-body">
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
       <div>
@@ -783,8 +852,7 @@ btn.Clicked += (s, e) => { <span class="cm">/* ... */</span> };</pre>
 
 <span class="cm">// Required members (C# 11)</span>
 <span class="kw">public required string</span> Name { <span class="kw">get</span>; <span class="kw">set</span>; }</pre>
-      </div>
-      <div>
+      </div><div>
         <div class="section-label">C# 12 — Primary Constructors</div>
 <pre><span class="cm">// Primary constructor</span>
 <span class="kw">class</span> <span class="ty">Service</span>(<span class="ty">ILogger</span> logger) {
@@ -797,12 +865,34 @@ btn.Clicked += (s, e) => { <span class="cm">/* ... */</span> };</pre>
 <span class="ty">List</span>&lt;<span class="kw">int</span>&gt; l = [<span class="nm">1</span>, <span class="nm">2</span>, ..<span class="fn">More</span>()];
 
 <span class="cm">// Type aliases</span>
-<span class="kw">using</span> <span class="ty">Coord</span> = (<span class="kw">int</span> X, <span class="kw">int</span> Y);</pre>
-      </div>
-    </div>
-  </div>
-</div>
+<span class="kw">using</span> <span class="ty">Coord</span> = (<span class="kw">int</span> X, <span class="kw">int</span> Y);
 
-</div></div>
-<footer>C# 12 &amp; .NET 8 Cheat Sheet — Fabian's Cheat Sheets</footer>
-</body></html>
+<span class="cm">// Overload resolution improvements (C# 14)</span>
+<span class="cm">// Better type inference for params collections</span>
+<span class="ty">IEnumerable</span>&lt;<span class="kw">int</span>&gt; best = [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>];</pre>
+       <div>
+         <div class="section-label">C# 13–14 — Params Collections & Overloads</div>
+<pre><span class="cm">// Params collections (C# 13)</span>
+<span class="kw">void</span> <span class="fn">Print</span>(<span class="kw">params</span> <span class="ty">ReadOnlySpan</span>&lt;<span class="ty">string</span>&gt; args) { }
+<span class="fn">Print</span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>);
+
+<span class="cm">// Inferred delegate types (C# 13)</span>
+<span class="kw">var</span> f = () => <span class="nm">42</span>;  <span class="cm">// Func&lt;int&gt;</span>
+
+<span class="cm">// Overload resolution (C# 14)</span>
+<span class="cm">// Better type inference for params</span>
+<span class="kw">void</span> <span class="fn">M</span>(<span class="kw">params</span> <span class="kw">int</span>[] xs) { }
+<span class="kw">void</span> <span class="fn">M</span>(<span class="kw">params</span> <span class="ty">ReadOnlySpan</span>&lt;<span class="kw">int</span>&gt; xs) { }
+
+<span class="cm">// Partial method hiding (C# 14)</span>
+<span class="kw">partial</span> <span class="ty">Base</span> => <span class="st">"virtual members"</span>;</pre>
+       </div>
+     </div>
+   </div>
+ </div>
+ 
+ </div></div>
+ <footer>C# 14 &amp; .NET 9 Cheat Sheet — Fabian's Cheat Sheets</footer>
+</div>
+</body>
+</html>
