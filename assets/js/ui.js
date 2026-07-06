@@ -19,6 +19,7 @@
   function CasesData() { return global.FCSCasesData; }
   function Ach() { return global.FCSAchievements; }
   function Admin() { return global.FCSAdmin; }
+  function Sounds() { return global.FCSSounds; }
 
   function deviconClass(slug) { return `devicon-${slug}-plain colored`; }
   function rarityMeta(id) {
@@ -538,7 +539,9 @@
       </div>
       <div class="fcs-dialog-body">
         <div class="case-intro">
-          <div class="case-cost">Kosten: ${C.CASE_COST} 🪙 &nbsp;·&nbsp; Guthaben: <span id="caseBal">${p.coins}</span> 🪙</div>
+          <div class="case-cost">Kosten: ${C.CASE_COST} 🪙 &nbsp;·&nbsp; Guthaben: <span id="caseBal">${p.coins}</span> 🪙
+            <button class="sound-toggle" id="soundToggle" title="Sound an/aus"></button>
+          </div>
           <div class="case-odds">${oddsChips}</div>
         </div>
         <div class="reel-viewport" id="reelView">
@@ -552,6 +555,20 @@
 
     // Fill an idle reel for visual flavour.
     fillIdleReel();
+
+    // Sound on/off toggle.
+    const sndBtn = dialog.querySelector('#soundToggle');
+    if (sndBtn) {
+      const Snd = Sounds();
+      const paint = () => { sndBtn.textContent = (Snd && Snd.isMuted()) ? '🔇' : '🔊'; };
+      paint();
+      sndBtn.onclick = () => {
+        if (!Snd) return;
+        Snd.setMuted(!Snd.isMuted());
+        if (!Snd.isMuted()) { Snd.resume(); Snd.tick(); }
+        paint();
+      };
+    }
 
     const btn = dialog.querySelector('#openCaseBtn');
     btn.onclick = () => startCaseOpen(btn);
@@ -586,6 +603,8 @@
     let p = Store.getProfile(user);
     const C = Cases();
     if (!C.canOpen(p)) { toast('Nicht genug Gold für eine Case.', 'error'); return; }
+    // Unlock audio here — this runs inside the button-click gesture.
+    if (Sounds()) Sounds().resume();
     btn.disabled = true;
     dialog.querySelector('#dropResult').innerHTML = '';
 
@@ -616,6 +635,10 @@
     track.classList.add('spin');
     track.style.transform = `translateX(${target}px)`;
 
+    // Drive the "tick" sound off the reel's live position so the ticks follow
+    // the CSS easing: rapid at the start, slowing to single clicks as it lands.
+    playReelTicks(track, step);
+
     setTimeout(() => {
       revealDrop(drop);
       btn.disabled = false;
@@ -625,7 +648,37 @@
     }, 6200);
   }
 
+  // Reads the track's live translateX each frame and fires a tick sound every
+  // time a new reel item crosses the center marker.
+  function playReelTicks(track, step) {
+    const Snd = Sounds();
+    if (!Snd || !track) return;
+    let lastIndex = 0;
+    const start = performance.now();
+    function frame() {
+      let x = 0;
+      const t = getComputedStyle(track).transform;
+      if (t && t !== 'none') {
+        try { x = new DOMMatrixReadOnly(t).m41; } catch (e) { x = 0; }
+      }
+      const idx = Math.floor(-x / step);
+      if (idx > lastIndex) {
+        // Cap per-frame ticks so the fast opening can't spam the audio graph.
+        const n = Math.min(idx - lastIndex, 3);
+        for (let i = 0; i < n; i++) Snd.tick();
+        lastIndex = idx;
+      }
+      if (performance.now() - start < 6100) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
   function revealDrop(drop) {
+    const Snd = Sounds();
+    if (Snd) {
+      if (drop.rarity === 'gold') Snd.gold();
+      else Snd.reveal(drop.rarity);
+    }
     const wear = wearMeta(drop.wearTier);
     const pinPct = Math.min(100, Math.max(0, drop.float * 100));
     const box = dialog.querySelector('#dropResult');

@@ -28,6 +28,19 @@
 /* ── case intro / open button ── */
 .case-intro { text-align: center; margin-bottom: 18px; }
 .case-cost { font-family: 'JetBrains Mono', monospace; color: #fbbf24; font-size: 14px; margin-bottom: 4px; }
+.sound-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1;
+  padding: 0 2px;
+  margin-left: 6px;
+  vertical-align: middle;
+  opacity: 0.75;
+  transition: opacity 0.2s, transform 0.2s;
+}
+.sound-toggle:hover { opacity: 1; transform: scale(1.15); }
 .case-odds { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin: 14px 0; }
 .odds-chip {
   font-family: 'JetBrains Mono', monospace;
