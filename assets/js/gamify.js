@@ -171,6 +171,7 @@
     profile.level = newLevel;
 
     ensureTodayBucket(profile).ids.push(challenge.id);
+    profile.solvedTotal = (profile.solvedTotal || 0) + 1;
     touchStreakOnSolve(profile);
 
     Store.saveProfile(username, profile);

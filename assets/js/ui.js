@@ -12,7 +12,23 @@
 
   const SEEN_VERSION_KEY = 'fcs_seen_version';
 
-  let overlay, dialog, toastWrap;
+  let overlay, dialog, toastWrap, achWrap;
+
+  /* deferred module refs (may load in any order) */
+  function Cases() { return global.FCSCases; }
+  function CasesData() { return global.FCSCasesData; }
+  function Ach() { return global.FCSAchievements; }
+  function Admin() { return global.FCSAdmin; }
+
+  function deviconClass(slug) { return `devicon-${slug}-plain colored`; }
+  function rarityMeta(id) {
+    const d = CasesData();
+    return (d && d.RARITIES.find(r => r.id === id)) || { id: 'grey', name: 'Grau', color: '#9aa4b2' };
+  }
+  function wearMeta(id) {
+    const d = CasesData();
+    return (d && d.WEAR_TIERS.find(w => w.id === id)) || { name: '', short: '' };
+  }
 
   /* ── small helpers ── */
   function esc(s) {
@@ -153,6 +169,32 @@
   }
 
   /* ── account / rewards dialog ── */
+  function renderAchievementsSection(profile) {
+    const A = Ach();
+    if (!A) return '';
+    const defs = A.DEFS;
+    const owned = new Set(profile.achievements || []);
+    const unlockedCount = defs.filter(d => owned.has(d.id)).length;
+    const rows = defs.map(d => {
+      const has = owned.has(d.id);
+      const reward = [d.xp ? `+${d.xp} XP` : '', d.gold ? `+${d.gold} 🪙` : ''].filter(Boolean).join(' · ');
+      return `
+        <div class="ach-row ${has ? '' : 'locked'}">
+          <div class="ar-icon">${has ? d.icon : '🔒'}</div>
+          <div>
+            <div class="ar-title">${esc(d.title)}</div>
+            <div class="ar-desc">${esc(d.desc)}</div>
+          </div>
+          <div class="ar-reward">${reward}</div>
+        </div>`;
+    }).join('');
+    return `
+      <div class="ach-section-title">Errungenschaften</div>
+      <div class="ach-progress">${unlockedCount} / ${defs.length} freigeschaltet</div>
+      <div class="ach-list">${rows}</div>`;
+  }
+
+
   function openAccount() {
     const user = Auth.currentUser();
     if (!user) return openAuth('login');
@@ -183,6 +225,8 @@
           ${canClaim ? '<button class="fcs-btn" id="claimBtn">Belohnung abholen</button>' : ''}
         </div>
 
+        ${renderAchievementsSection(p)}
+
         <button class="fcs-btn secondary" id="logoutBtn">Abmelden</button>
       </div>`);
     dialog.querySelector('.fcs-dialog-close').onclick = closeDialog;
@@ -201,6 +245,7 @@
         if (res.claimed) {
           toast(`+${res.amount} 🪙 Login-Bonus!`, 'coin');
           renderHeader();
+          runAchievementCheck();
           openAccount();
         }
       };
@@ -287,6 +332,7 @@
       if (res.streak) toast(`🔥 Streak: ${res.streak} Tage!`, 'streak');
       if (res.leveledUp) toast(`⭐ Level ${res.newLevel} erreicht!`, 'level');
       renderHeader();
+      runAchievementCheck();
     }
 
     if (solved) {
@@ -405,6 +451,305 @@
     });
   }
 
+  /* ── achievements: center popup queue + checking ── */
+  let achQueue = [];
+  let achShowing = false;
+
+  function queueAchievements(list) {
+    if (!list || !list.length) return;
+    list.forEach(a => achQueue.push(a));
+    if (!achShowing) showNextAchievement();
+  }
+
+  function showNextAchievement() {
+    if (!achQueue.length) { achShowing = false; return; }
+    achShowing = true;
+    const def = achQueue.shift();
+    const rewardBits = [];
+    if (def.xp) rewardBits.push(`+${def.xp} XP`);
+    if (def.gold) rewardBits.push(`+${def.gold} 🪙`);
+    const pop = el(`
+      <div class="ach-popup">
+        <div class="ach-icon">${def.icon || '🏅'}</div>
+        <div>
+          <div class="ach-eyebrow">Errungenschaft freigeschaltet</div>
+          <div class="ach-title">${esc(def.title)}</div>
+          <div class="ach-desc">${esc(def.desc)}</div>
+          <div class="ach-reward">${rewardBits.join('  ·  ')}</div>
+        </div>
+      </div>`);
+    achWrap.appendChild(pop);
+    // Visible for 10 seconds, then animate out and show the next one.
+    setTimeout(() => {
+      pop.classList.add('out');
+      setTimeout(() => { pop.remove(); showNextAchievement(); }, 500);
+    }, 10000);
+  }
+
+  function runAchievementCheck() {
+    const user = Auth.currentUser();
+    if (!user || !Ach()) return;
+    const unlocked = Ach().check(user);
+    if (unlocked.length) {
+      queueAchievements(unlocked);
+      renderHeader();
+    }
+  }
+
+  /* ── cases ── */
+  function openCases() {
+    const user = Auth.currentUser();
+    if (!user) { openAuth('login'); return; }
+    onLogin();
+    renderCases();
+  }
+
+  function renderCases() {
+    const user = Auth.currentUser();
+    const p = Store.getProfile(user);
+    const C = Cases();
+    const oddsChips = CasesData().RARITIES.map(r =>
+      `<span class="odds-chip r-${r.id}">${esc(r.name)} ${r.prob}%</span>`).join('');
+
+    openDialog(`
+      <div class="fcs-dialog-head">
+        <span class="fcs-dialog-title">📦 Case öffnen</span>
+        <button class="fcs-dialog-close">✕</button>
+      </div>
+      <div class="fcs-dialog-body">
+        <div class="case-intro">
+          <div class="case-cost">Kosten: ${C.CASE_COST} 🪙 &nbsp;·&nbsp; Guthaben: <span id="caseBal">${p.coins}</span> 🪙</div>
+          <div class="case-odds">${oddsChips}</div>
+        </div>
+        <div class="reel-viewport" id="reelView">
+          <div class="reel-marker"></div>
+          <div class="reel-track" id="reelTrack"></div>
+        </div>
+        <div id="dropResult"></div>
+        <button class="fcs-btn" id="openCaseBtn">Öffnen · ${C.CASE_COST} 🪙</button>
+      </div>`, true);
+    dialog.querySelector('.fcs-dialog-close').onclick = closeDialog;
+
+    // Fill an idle reel for visual flavour.
+    fillIdleReel();
+
+    const btn = dialog.querySelector('#openCaseBtn');
+    btn.onclick = () => startCaseOpen(btn);
+  }
+
+  function reelItemHTML(it) {
+    return `
+      <div class="reel-item r-${it.rarity}">
+        <i class="${deviconClass(it.slug)}"></i>
+        <span class="ri-name">${esc(it.name)}</span>
+      </div>`;
+  }
+
+  function fillIdleReel() {
+    const track = dialog.querySelector('#reelTrack');
+    if (!track) return;
+    const C = Cases();
+    let html = '';
+    for (let i = 0; i < 14; i++) {
+      const r = C.rollRarity();
+      const items = C.itemsByRarity(r.id);
+      const it = items[Math.floor(Math.random() * items.length)];
+      html += reelItemHTML({ slug: it.slug, name: it.name, rarity: r.id });
+    }
+    track.className = 'reel-track';
+    track.style.transform = 'translateX(0)';
+    track.innerHTML = html;
+  }
+
+  function startCaseOpen(btn) {
+    const user = Auth.currentUser();
+    let p = Store.getProfile(user);
+    const C = Cases();
+    if (!C.canOpen(p)) { toast('Nicht genug Gold für eine Case.', 'error'); return; }
+    btn.disabled = true;
+    dialog.querySelector('#dropResult').innerHTML = '';
+
+    const res = C.openCase(user, p);
+    if (!res.ok) { btn.disabled = false; toast('Öffnen fehlgeschlagen.', 'error'); return; }
+    const drop = res.drop;
+    const balEl = dialog.querySelector('#caseBal');
+    if (balEl) balEl.textContent = Store.getProfile(user).coins;
+    renderHeader();
+
+    const built = C.buildReel(drop, 60);
+    const track = dialog.querySelector('#reelTrack');
+    const view = dialog.querySelector('#reelView');
+    track.className = 'reel-track';
+    track.style.transform = 'translateX(0)';
+    track.innerHTML = built.reel.map(reelItemHTML).join('');
+
+    // Compute landing offset so the winning item lands under the center marker.
+    const ITEM = 104, GAP = 10, PAD = 10;
+    const step = ITEM + GAP;
+    const viewCenter = view.offsetWidth / 2;
+    const itemCenter = PAD + built.winIndex * step + ITEM / 2;
+    const jitter = (Math.random() * 40) - 20; // stay under the marker
+    const target = viewCenter - itemCenter + jitter;
+
+    // Force reflow, then animate.
+    void track.offsetWidth;
+    track.classList.add('spin');
+    track.style.transform = `translateX(${target}px)`;
+
+    setTimeout(() => {
+      revealDrop(drop);
+      btn.disabled = false;
+      btn.textContent = `Nochmal öffnen · ${C.CASE_COST} 🪙`;
+      if (drop.rarity === 'gold') showGoldExplosion(drop);
+      runAchievementCheck();
+    }, 6200);
+  }
+
+  function revealDrop(drop) {
+    const wear = wearMeta(drop.wearTier);
+    const pinPct = Math.min(100, Math.max(0, drop.float * 100));
+    const box = dialog.querySelector('#dropResult');
+    if (!box) return;
+    box.innerHTML = `
+      <div class="drop-reveal r-${drop.rarity}">
+        <div class="drop-card">
+          <span class="rarity-label">${esc(rarityMeta(drop.rarity).name)}</span>
+          <i class="${deviconClass(drop.slug)}"></i>
+          <div class="drop-name">${esc(drop.name)}</div>
+          <div class="drop-wear">${esc(wear.name)} · Float ${drop.float.toFixed(4)}</div>
+          <div class="wear-bar"><div class="wear-pin" style="left:${pinPct}%"></div></div>
+        </div>
+      </div>`;
+    toast(`Gedroppt: ${drop.name} (${rarityMeta(drop.rarity).name})`, drop.rarity === 'gold' ? 'coin' : '');
+  }
+
+  function showGoldExplosion(drop) {
+    const ov = el(`
+      <div class="gold-explosion">
+        <div class="rays"></div>
+        <div class="gold-core">
+          <i class="${deviconClass(drop.slug)}"></i>
+          <div class="gold-title">LEGENDÄR</div>
+          <div class="gold-name">${esc(drop.name)}</div>
+          <div class="gold-sub">GOLD · ${esc(wearMeta(drop.wearTier).name)} · Float ${drop.float.toFixed(4)}</div>
+          <button class="gold-dismiss">Sensationell!</button>
+        </div>
+      </div>`);
+    // Confetti
+    const colors = ['#ffb700', '#fff3b0', '#ff9a00', '#ffd447', '#ffcf33'];
+    for (let i = 0; i < 80; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.left = Math.random() * 100 + 'vw';
+      c.style.background = colors[Math.floor(Math.random() * colors.length)];
+      c.style.animationDuration = (1.8 + Math.random() * 2.4) + 's';
+      c.style.animationDelay = (Math.random() * 0.8) + 's';
+      ov.appendChild(c);
+    }
+    document.body.appendChild(ov);
+    const dismiss = () => ov.remove();
+    ov.querySelector('.gold-dismiss').onclick = dismiss;
+    ov.addEventListener('click', e => { if (e.target === ov) dismiss(); });
+  }
+
+  /* ── inventory ── */
+  let invFilter = 'all';
+
+  function openInventory() {
+    const user = Auth.currentUser();
+    if (!user) { openAuth('login'); return; }
+    onLogin();
+    renderInventory();
+  }
+
+  function renderInventory() {
+    const user = Auth.currentUser();
+    const p = Store.getProfile(user);
+    const items = (p.inventory || []).slice();
+    const order = { gold: 0, red: 1, epic: 2, blue: 3, grey: 4 };
+    items.sort((a, b) => (order[a.rarity] - order[b.rarity]) || (b.obtainedAt - a.obtainedAt));
+
+    const chips = ['all'].concat(CasesData().RARITIES.map(r => r.id));
+    const chipHtml = chips.map(id => {
+      const label = id === 'all' ? `Alle (${items.length})` : rarityMeta(id).name;
+      const cls = id === 'all' ? '' : 'r-' + id;
+      return `<div class="inv-chip ${cls} ${invFilter === id ? 'active' : ''}" data-f="${id}">${label}</div>`;
+    }).join('');
+
+    openDialog(`
+      <div class="fcs-dialog-head">
+        <span class="fcs-dialog-title">🎒 Inventar</span>
+        <button class="fcs-dialog-close">✕</button>
+      </div>
+      <div class="fcs-dialog-body">
+        <div class="inv-toolbar">${chipHtml}</div>
+        <div id="invGrid"></div>
+      </div>`, true);
+    dialog.querySelector('.fcs-dialog-close').onclick = closeDialog;
+    dialog.querySelectorAll('.inv-chip').forEach(ch => {
+      ch.onclick = () => { invFilter = ch.dataset.f; renderInventory(); };
+    });
+
+    const grid = dialog.querySelector('#invGrid');
+    const shown = items.filter(it => invFilter === 'all' || it.rarity === invFilter);
+    if (!shown.length) {
+      grid.innerHTML = '<div class="inv-empty">Noch keine Items — öffne eine Case! 📦</div>';
+      return;
+    }
+    grid.className = 'inv-grid';
+    grid.innerHTML = shown.map(it => {
+      const wear = wearMeta(it.wearTier);
+      return `
+        <div class="inv-item r-${it.rarity}">
+          <i class="${deviconClass(it.slug)}"></i>
+          <div class="inv-name">${esc(it.name)}</div>
+          <div class="inv-wear-line">${esc(wear.short)} · ${esc(rarityMeta(it.rarity).name)}</div>
+          <div class="inv-float">${it.float.toFixed(4)}</div>
+        </div>`;
+    }).join('');
+  }
+
+  /* ── admin gold ── */
+  function openAdmin() {
+    const user = Auth.currentUser();
+    if (!user) { openAuth('login'); return; }
+    openDialog(`
+      <div class="fcs-dialog-head">
+        <span class="fcs-dialog-title">🔐 Admin</span>
+        <button class="fcs-dialog-close">✕</button>
+      </div>
+      <div class="fcs-dialog-body">
+        <div class="fcs-msg" id="admMsg"></div>
+        <div class="fcs-field">
+          <label>Code</label>
+          <input class="fcs-input" id="admCode" type="password" autocomplete="off">
+        </div>
+        <div class="fcs-field">
+          <label>Menge Gold</label>
+          <input class="fcs-input" id="admAmount" type="number" value="${Admin() ? Admin().DEFAULT_AMOUNT : 10000}">
+        </div>
+        <button class="fcs-btn" id="admSubmit">Gold hinzufügen</button>
+        <p class="admin-note">Zugriff via Strg+Umschalt+G.</p>
+      </div>`);
+    dialog.querySelector('.fcs-dialog-close').onclick = closeDialog;
+    const msg = dialog.querySelector('#admMsg');
+    dialog.querySelector('#admSubmit').onclick = () => {
+      const code = dialog.querySelector('#admCode').value;
+      const amount = dialog.querySelector('#admAmount').value;
+      if (!Admin() || !Admin().verify(code)) {
+        msg.textContent = 'Falscher Code.';
+        msg.className = 'fcs-msg show error';
+        return;
+      }
+      const res = Admin().grant(amount);
+      if (!res.ok) { msg.textContent = 'Fehler: ' + res.reason; msg.className = 'fcs-msg show error'; return; }
+      renderHeader();
+      runAchievementCheck();
+      closeDialog();
+      toast(`+${res.added} 🪙 hinzugefügt.`, 'coin');
+    };
+  }
+
   /* ── changelog / "what's new" dialog ── */
   function openChangelog() {
     const cl = global.FCSChangelog;
@@ -462,6 +807,9 @@
     toastWrap = el('<div class="fcs-toast-wrap" id="fcsToasts"></div>');
     document.body.appendChild(toastWrap);
 
+    achWrap = el('<div class="ach-popup-wrap" id="fcsAchievements"></div>');
+    document.body.appendChild(achWrap);
+
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape' && overlay.classList.contains('active')) closeDialog();
     });
@@ -479,6 +827,8 @@
       if (Gamify.canClaimDailyReward(p)) {
         setTimeout(() => toast('🎁 Dein täglicher Bonus wartet! Klick auf deinen Namen.', 'coin'), 800);
       }
+      // Backfill any achievements already earned (e.g. existing streak).
+      setTimeout(runAchievementCheck, 1200);
     } else {
       renderHeader();
     }
@@ -487,7 +837,11 @@
     maybeShowChangelog();
   }
 
-  global.FCSApp = { init, openAuth, openAccount, openChallenges, openShop, openChangelog, renderHeader };
+  global.FCSApp = {
+    init, renderHeader,
+    openAuth, openAccount, openChallenges, openShop, openChangelog,
+    openCases, openInventory, openAdmin
+  };
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);

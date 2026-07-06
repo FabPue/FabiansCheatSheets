@@ -8,35 +8,30 @@
   'use strict';
 
   const CHANGELOG = {
-    version: '2.0',
-    codename: 'Gamification Update',
+    version: '2.1',
+    codename: 'Gambling Update',
     date: 'Juli 2026',
-    intro: 'Das erste große Update ist da! Aus der Referenz-Sammlung wird ein interaktives Erlebnis:',
+    intro: 'Zeit für etwas Nervenkitzel! Setze dein Gold ein und sammle seltene Sprach-Items:',
     features: [
       {
-        icon: '👤',
-        title: 'Accounts',
-        text: 'Registriere dich mit Benutzername & Passwort — komplett lokal, ohne E-Mail und ohne Server.'
+        icon: '📦',
+        title: 'Cases öffnen',
+        text: 'Öffne für 25 Gold eine Case mit CS-artiger Reel-Animation und gewinne Programmiersprachen-Items.'
       },
       {
-        icon: '🎯',
-        title: 'Daily Challenges',
-        text: 'Tägliche Aufgaben in Easy/Medium/Hard — Multiple-Choice, Code-Vervollständigung und Freitext.'
+        icon: '💎',
+        title: 'Raritäten & Abnutzung',
+        text: 'Items gibt es in Grau, Blau, Episch, Rot und dem sagenhaften Gold — jeweils mit Wear von Fabrikneu bis Kampfspuren.'
       },
       {
-        icon: '🔥',
-        title: 'Streak, XP & Level',
-        text: 'Löse jeden Tag mindestens eine Aufgabe, halte deine Streak am Leben, sammle XP und steige im Level auf.'
+        icon: '🎒',
+        title: 'Inventar',
+        text: 'Alle gewonnenen Icons landen in deinem Inventar — mit Rarität, Abnutzung und Float-Wert, filterbar nach Seltenheit.'
       },
       {
-        icon: '🎁',
-        title: 'Täglicher Login-Bonus',
-        text: 'Hol dir jeden Tag Coins ab — mit Streak-Bonus. Reset um Mitternacht.'
-      },
-      {
-        icon: '🛍️',
-        title: 'Theme Shop',
-        text: 'Gib deine verdienten Coins aus und schalte neue Farb-Themes für die Seite frei.'
+        icon: '🏅',
+        title: 'Errungenschaften',
+        text: 'Schalte Erfolge frei und kassiere XP & Gold — von der ersten Streak bis zum Case CEO.'
       }
     ]
   };

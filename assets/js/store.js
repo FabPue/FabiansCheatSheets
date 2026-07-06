@@ -102,8 +102,12 @@
       lastStreakDate: null,
       lastRewardDate: null,
       solvedToday: { date: null, ids: [] },
+      solvedTotal: 0,
       ownedThemes: ['default'],
-      activeTheme: 'default'
+      activeTheme: 'default',
+      inventory: [],
+      casesOpened: 0,
+      achievements: []
     };
   }
 

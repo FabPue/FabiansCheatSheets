@@ -29,6 +29,9 @@ Now with optional **gamification**: create a local account, collect a daily logi
 - 🧩 **Daily challenges** — Multiple-choice, code-completion and freetext tasks across easy/medium/hard difficulties
 - 🔥 **Streaks, XP & levels** — Solve at least one challenge a day to grow your streak and level up
 - 🛍️ **Theme shop** — Spend earned coins to unlock and apply new color themes
+- 📦 **Cases** — Open cases for 25 gold with a CS-style reel animation and win programming-language items in five rarities (grey → gold) with wear grades (Factory New → Battle-Scarred)
+- 🎒 **Inventory** — Browse every item you've dropped, filterable by rarity, with wear tier and float value
+- 🏅 **Achievements** — Unlock milestones for XP & gold, from your first streak to Case CEO
 
 ---
 
@@ -80,12 +83,18 @@ FabiansCheatSheets/
 ├── index.html                      # Main landing page & modal viewer
 ├── assets/
 │   ├── css/
-│   │   └── gamify.css             # Styles for accounts, challenges & shop
+│   │   ├── gamify.css             # Styles for accounts, challenges & shop
+│   │   └── cases.css             # Styles for cases, inventory & achievements
 │   └── js/
 │       ├── store.js               # localStorage, hashing, profile model
 │       ├── challenges-data.js     # Daily challenge pool
+│       ├── changelog.js           # "What's new" popup data
+│       ├── cases-data.js          # Case rarities, wear tiers & item pool
+│       ├── achievements-data.js   # Achievement definitions
 │       ├── gamify.js              # Rewards, streak, XP/level, daily logic
 │       ├── shop.js                # Unlockable color themes
+│       ├── cases.js               # Case opening logic
+│       ├── achievements.js        # Achievement evaluation & awarding
 │       ├── auth.js                # Local register / login / logout
 │       └── ui.js                  # Header widget & dialogs
 ├── CheatSheets/

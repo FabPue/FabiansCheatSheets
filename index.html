@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fabian's Cheat Sheets</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@300;400;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
 <link rel="stylesheet" href="assets/css/gamify.css">
+<link rel="stylesheet" href="assets/css/cases.css">
 <style>
   :root {
     --bg: #080810;
@@ -529,7 +531,7 @@
     <div class="logo-icon">&lt;/&gt;</div>
     <span class="logo-text">Fabian's <span>Cheat</span>Sheets</span>
   </div>
-  <div class="header-badge" id="versionBadge" title="Was ist neu?">7 languages · v2.0</div>
+  <div class="header-badge" id="versionBadge" title="Was ist neu?">7 languages · v2.1</div>
   <div class="user-widget" id="userWidget"></div>
 </header>
 
@@ -582,6 +584,32 @@
           <span class="topic-tag">unlock</span>
         </div>
         <div class="open-hint">→ Themes freischalten</div>
+      </div>
+
+      <!-- Case öffnen -->
+      <div class="lang-card card-case" onclick="FCSApp.openCases()">
+        <div class="lang-icon"><span class="lang-emoji">📦</span></div>
+        <div class="lang-name">Case öffnen</div>
+        <div class="lang-version">25 Gold · Drops</div>
+        <div class="lang-topics">
+          <span class="topic-tag">grau</span>
+          <span class="topic-tag">episch</span>
+          <span class="topic-tag">gold</span>
+        </div>
+        <div class="open-hint">→ Case öffnen</div>
+      </div>
+
+      <!-- Inventar -->
+      <div class="lang-card card-inv" onclick="FCSApp.openInventory()">
+        <div class="lang-icon"><span class="lang-emoji">🎒</span></div>
+        <div class="lang-name">Inventar</div>
+        <div class="lang-version">Deine Drops</div>
+        <div class="lang-topics">
+          <span class="topic-tag">items</span>
+          <span class="topic-tag">wear</span>
+          <span class="topic-tag">float</span>
+        </div>
+        <div class="open-hint">→ Sammlung ansehen</div>
       </div>
 
     </div>
@@ -810,9 +838,14 @@
 <script src="assets/js/store.js"></script>
 <script src="assets/js/challenges-data.js"></script>
 <script src="assets/js/changelog.js"></script>
+<script src="assets/js/cases-data.js"></script>
+<script src="assets/js/achievements-data.js"></script>
 <script src="assets/js/gamify.js"></script>
 <script src="assets/js/shop.js"></script>
+<script src="assets/js/cases.js"></script>
+<script src="assets/js/achievements.js"></script>
 <script src="assets/js/auth.js"></script>
+<script src="assets/js/admin.js"></script>
 <script src="assets/js/ui.js"></script>
 </body>
 </html>
