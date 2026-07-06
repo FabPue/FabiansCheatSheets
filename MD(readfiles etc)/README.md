@@ -8,7 +8,7 @@
  
 **Fabian's Cheat Sheets** is a personal web project offering concise, well-structured cheat sheets for various programming languages and technologies. Each cheat sheet is presented as a visual card with syntax highlights, key concepts, and quick-reference tables — designed to keep you in flow while coding.
  
-No logins. No ads. Just the information you need.
+Now with optional **gamification**: create a local account, collect a daily login reward, solve daily challenges to build a streak, earn coins & XP, level up, and spend coins on unlockable color themes. No ads. Just the information you need — plus a little fun.
  
 **Status:** v1.0 stable | **Languages:** 7 | **Code Examples:** 200+ | **Topics Covered:** 50+
  
@@ -24,6 +24,11 @@ No logins. No ads. Just the information you need.
 - 🎯 **Interactive modal view** — Click any card to open the complete cheat sheet
 - 🎨 **Syntax highlighting** — Code examples with proper formatting
 - 📱 **Fully responsive** — Works seamlessly on desktop, tablet, and mobile
+- 👤 **Local accounts** — Register with just a username & password (no email, no server). Data stays in your browser
+- 🎁 **Daily rewards** — A login bonus that resets every day at midnight, scaled by your streak
+- 🧩 **Daily challenges** — Multiple-choice, code-completion and freetext tasks across easy/medium/hard difficulties
+- 🔥 **Streaks, XP & levels** — Solve at least one challenge a day to grow your streak and level up
+- 🛍️ **Theme shop** — Spend earned coins to unlock and apply new color themes
 
 ---
 
@@ -73,6 +78,16 @@ No logins. No ads. Just the information you need.
 ```
 FabiansCheatSheets/
 ├── index.html                      # Main landing page & modal viewer
+├── assets/
+│   ├── css/
+│   │   └── gamify.css             # Styles for accounts, challenges & shop
+│   └── js/
+│       ├── store.js               # localStorage, hashing, profile model
+│       ├── challenges-data.js     # Daily challenge pool
+│       ├── gamify.js              # Rewards, streak, XP/level, daily logic
+│       ├── shop.js                # Unlockable color themes
+│       ├── auth.js                # Local register / login / logout
+│       └── ui.js                  # Header widget & dialogs
 ├── CheatSheets/
 │   ├── c-cheatsheet.html          # C Language reference
 │   ├── csharp-cheatsheet.html     # C# & .NET reference
