@@ -201,6 +201,114 @@
       id: 'ts-narrow', lang: 'TypeScript', difficulty: 'hard', type: 'free',
       prompt: 'Schreibe einen Type-Guard `isString(x): x is string`.',
       solution: 'function isString(x: unknown): x is string {\n  return typeof x === "string";\n}'
+    },
+
+    /* ── EASY (v3.0) ── */
+    {
+      id: 'js-length', lang: 'JavaScript', difficulty: 'easy', type: 'code',
+      prompt: 'Ergänze die Eigenschaft für die Anzahl der Zeichen eines Strings:',
+      code: 'const n = "hallo".____;',
+      answers: ['length']
+    },
+    {
+      id: 'py-range', lang: 'Python', difficulty: 'easy', type: 'mc',
+      prompt: 'Was erzeugt `range(3)` beim Iterieren?',
+      options: ['1 2 3', '0 1 2', '0 1 2 3', '3'],
+      answer: 1
+    },
+    {
+      id: 'css-color', lang: 'CSS', difficulty: 'easy', type: 'code',
+      prompt: 'Ergänze die Eigenschaft, um die Textfarbe zu setzen:',
+      code: 'p { ____: red; }',
+      answers: ['color']
+    },
+    {
+      id: 'sql-order', lang: 'SQL', difficulty: 'easy', type: 'mc',
+      prompt: 'Welches Keyword sortiert das Ergebnis?',
+      options: ['SORT BY', 'ORDER BY', 'GROUP BY', 'RANK BY'],
+      answer: 1
+    },
+    {
+      id: 'html-img', lang: 'HTML', difficulty: 'easy', type: 'code',
+      prompt: 'Ergänze das Attribut für den Bildpfad:',
+      code: '<img ____="logo.png" alt="Logo">',
+      answers: ['src']
+    },
+    {
+      id: 'cs-type-int', lang: 'C#', difficulty: 'easy', type: 'mc',
+      prompt: 'Welcher Datentyp speichert eine ganze Zahl in C#?',
+      options: ['string', 'int', 'bool', 'char'],
+      answer: 1
+    },
+
+    /* ── MEDIUM (v3.0) ── */
+    {
+      id: 'js-filter', lang: 'JavaScript', difficulty: 'medium', type: 'code',
+      prompt: 'Behalte nur positive Zahlen. Ergänze die Methode:',
+      code: 'const pos = nums.____(n => n > 0);',
+      answers: ['filter']
+    },
+    {
+      id: 'py-fstring', lang: 'Python', difficulty: 'medium', type: 'mc',
+      prompt: 'Welches Präfix erzeugt einen formatierten String (f-string)?',
+      options: ['b"..."', 'r"..."', 'f"..."', 's"..."'],
+      answer: 2
+    },
+    {
+      id: 'ts-array', lang: 'TypeScript', difficulty: 'medium', type: 'code',
+      prompt: 'Ergänze den Typ für ein Array aus Zahlen:',
+      code: 'let xs: ____[] = [1, 2, 3];',
+      answers: ['number']
+    },
+    {
+      id: 'sql-distinct', lang: 'SQL', difficulty: 'medium', type: 'code',
+      prompt: 'Ergänze das Keyword, um doppelte Werte zu entfernen:',
+      code: 'SELECT ____ city FROM users;',
+      answers: ['distinct']
+    },
+    {
+      id: 'c-sizeof', lang: 'C', difficulty: 'medium', type: 'mc',
+      prompt: 'Was liefert `sizeof(int)` typischerweise?',
+      options: ['1', '2', '4', 'Die Anzahl der ints'],
+      answer: 2
+    },
+    {
+      id: 'js-json', lang: 'JavaScript', difficulty: 'medium', type: 'code',
+      prompt: 'Wandle ein Objekt in einen JSON-String um. Ergänze:',
+      code: 'const s = JSON.____(obj);',
+      answers: ['stringify']
+    },
+
+    /* ── HARD (v3.0) ── */
+    {
+      id: 'py-lambda', lang: 'Python', difficulty: 'hard', type: 'code',
+      prompt: 'Ergänze das Keyword für eine anonyme Funktion:',
+      code: 'square = ____ x: x * x',
+      answers: ['lambda']
+    },
+    {
+      id: 'js-reduce', lang: 'JavaScript', difficulty: 'hard', type: 'code',
+      prompt: 'Summiere ein Array. Ergänze die Methode:',
+      code: 'const sum = nums.____((a, b) => a + b, 0);',
+      answers: ['reduce']
+    },
+    {
+      id: 'ts-readonly', lang: 'TypeScript', difficulty: 'hard', type: 'mc',
+      prompt: 'Welcher Utility-Type macht alle Properties schreibgeschützt?',
+      options: ['Partial<T>', 'Readonly<T>', 'Record<K,T>', 'Omit<T,K>'],
+      answer: 1
+    },
+    {
+      id: 'sql-having', lang: 'SQL', difficulty: 'hard', type: 'mc',
+      prompt: 'Womit filtert man nach einer Aggregation (GROUP BY)?',
+      options: ['WHERE', 'HAVING', 'FILTER', 'ON'],
+      answer: 1
+    },
+    {
+      id: 'c-free', lang: 'C', difficulty: 'hard', type: 'code',
+      prompt: 'Gib zuvor per malloc reservierten Speicher wieder frei:',
+      code: '____(ptr);',
+      answers: ['free']
     }
   ];
 

@@ -22,10 +22,19 @@
   function Sounds() { return global.FCSSounds; }
 
   function deviconClass(slug) { return `devicon-${slug}-plain colored`; }
+  // Renders a language icon: a Devicon glyph when the item has a `slug`, else a
+  // labelled/emoji badge fallback (item.glyph) for languages Devicon lacks.
+  function iconMarkup(item) {
+    if (item && item.slug) return `<i class="${deviconClass(item.slug)}"></i>`;
+    const g = (item && item.glyph) || '?';
+    const emoji = !/^[A-Za-z0-9#+]+$/.test(g); // label vs. emoji fallback
+    return `<span class="lang-glyph${emoji ? ' is-emoji' : ''}">${esc(g)}</span>`;
+  }
   // Wraps a language icon so its float/wear tier drives the visual condition
-  // (glow & sparkle when good, scratches when worn). See .skin-icon in cases.css.
-  function skinIconHTML(slug, wearId) {
-    return `<span class="skin-icon wear-${wearId}"><i class="${deviconClass(slug)}"></i></span>`;
+  // (glow & sparkle when good, scratches/flames when worn). See .skin-icon in cases.css.
+  function skinIconHTML(item, wearId, floatVal) {
+    const extreme = (typeof floatVal === 'number' && floatVal >= 0.90) ? ' float-extreme' : '';
+    return `<span class="skin-icon wear-${wearId}${extreme}">${iconMarkup(item)}</span>`;
   }
   function rarityMeta(id) {
     const d = CasesData();
@@ -224,6 +233,7 @@
         </div>
         <div class="xp-bar"><div class="xp-fill" style="width:${prog.pct}%"></div></div>
         <div class="xp-text">${prog.into} / ${prog.need} XP bis Level ${prog.level + 1}</div>
+        <div class="xp-text" style="margin-top:6px">📦 Cases geöffnet: ${p.casesOpened || 0} &nbsp;·&nbsp; 🎒 Items: ${(p.inventory || []).length} &nbsp;·&nbsp; 🧩 Gelöst: ${p.solvedTotal || 0}</div>
 
         <div class="reward-box ${canClaim ? '' : 'claimed'}">
           <div class="rw-title">🎁 Täglicher Login-Bonus</div>
@@ -547,6 +557,7 @@
           <div class="case-cost">Kosten: ${C.CASE_COST} 🪙 &nbsp;·&nbsp; Guthaben: <span id="caseBal">${p.coins}</span> 🪙
             <button class="sound-toggle" id="soundToggle" title="Sound an/aus"></button>
           </div>
+          <div class="case-counter">📦 Geöffnete Cases: <span id="caseCount">${p.casesOpened || 0}</span></div>
           <div class="case-odds">${oddsChips}</div>
         </div>
         <div class="reel-viewport" id="reelView">
@@ -582,7 +593,7 @@
   function reelItemHTML(it) {
     return `
       <div class="reel-item r-${it.rarity}">
-        <i class="${deviconClass(it.slug)}"></i>
+        ${iconMarkup(it)}
         <span class="ri-name">${esc(it.name)}</span>
       </div>`;
   }
@@ -616,8 +627,11 @@
     const res = C.openCase(user, p);
     if (!res.ok) { btn.disabled = false; toast('Öffnen fehlgeschlagen.', 'error'); return; }
     const drop = res.drop;
+    const freshProfile = Store.getProfile(user);
     const balEl = dialog.querySelector('#caseBal');
-    if (balEl) balEl.textContent = Store.getProfile(user).coins;
+    if (balEl) balEl.textContent = freshProfile.coins;
+    const countEl = dialog.querySelector('#caseCount');
+    if (countEl) countEl.textContent = freshProfile.casesOpened || 0;
     renderHeader();
 
     const built = C.buildReel(drop, 60);
@@ -692,7 +706,7 @@
       <div class="drop-reveal r-${drop.rarity}">
         <div class="drop-card">
           <span class="rarity-label">${esc(rarityMeta(drop.rarity).name)}</span>
-          ${skinIconHTML(drop.slug, drop.wearTier)}
+          ${skinIconHTML(drop, drop.wearTier, drop.float)}
           <div class="drop-name">${esc(drop.name)}</div>
           <div class="drop-wear">${esc(wear.name)} · Float ${drop.float.toFixed(4)}</div>
           <div class="wear-bar"><div class="wear-pin" style="left:${pinPct}%"></div></div>
@@ -706,7 +720,7 @@
       <div class="gold-explosion">
         <div class="rays"></div>
         <div class="gold-core">
-          <i class="${deviconClass(drop.slug)}"></i>
+          ${iconMarkup(drop)}
           <div class="gold-title">LEGENDÄR</div>
           <div class="gold-name">${esc(drop.name)}</div>
           <div class="gold-sub">GOLD · ${esc(wearMeta(drop.wearTier).name)} · Float ${drop.float.toFixed(4)}</div>
@@ -779,7 +793,7 @@
       const wear = wearMeta(it.wearTier);
       return `
         <div class="inv-item r-${it.rarity}">
-          ${skinIconHTML(it.slug, it.wearTier)}
+          ${skinIconHTML(it, it.wearTier, it.float)}
           <div class="inv-name">${esc(it.name)}</div>
           <div class="inv-wear-line">${esc(wear.short)} · ${esc(rarityMeta(it.rarity).name)}</div>
           <div class="inv-float">${it.float.toFixed(4)}</div>

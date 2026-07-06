@@ -43,6 +43,7 @@
     return {
       uid: 'itm_' + Date.now().toString(36) + '_' + Math.floor(Math.random() * 1e6).toString(36),
       slug: item.slug,
+      glyph: item.glyph,
       name: item.name,
       rarity: rarity.id,
       wearTier: wear.id,
@@ -74,11 +75,11 @@
     for (let i = 0; i < n; i++) {
       const rarity = rollRarity();
       const item = rollItem(rarity.id);
-      reel.push({ slug: item.slug, name: item.name, rarity: rarity.id });
+      reel.push({ slug: item.slug, glyph: item.glyph, name: item.name, rarity: rarity.id });
     }
     // Place the actual win near the end at a fixed index.
     const winIndex = n - 8;
-    reel[winIndex] = { slug: winningDrop.slug, name: winningDrop.name, rarity: winningDrop.rarity };
+    reel[winIndex] = { slug: winningDrop.slug, glyph: winningDrop.glyph, name: winningDrop.name, rarity: winningDrop.rarity };
     return { reel: reel, winIndex: winIndex };
   }
 
