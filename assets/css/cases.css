@@ -291,3 +291,90 @@
 /* signature colors for the new feature titlecards */
 .card-case { --card-color: #fbbf24; --card-glow: radial-gradient(ellipse at top, rgba(251,191,36,0.10), transparent 70%); --card-shadow: rgba(251,191,36,0.28); }
 .card-inv  { --card-color: #38bdf8; --card-glow: radial-gradient(ellipse at top, rgba(56,189,248,0.10), transparent 70%); --card-shadow: rgba(56,189,248,0.25); }
+
+/* ── float / wear condition effects on the skin icon ──
+   Wrap an icon in <span class="skin-icon wear-XX"><i …></i></span>.
+   Good float (fn/mw) = glow + shine sweep + sparkle; bad float (ww/bs) =
+   desaturated + scratch streaks; ft stays neutral. */
+.skin-icon { position: relative; display: inline-flex; }
+.skin-icon > i { position: relative; z-index: 1; }
+.skin-icon::before,
+.skin-icon::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  border-radius: 8px;
+}
+
+/* GOOD — pristine glow */
+.skin-icon.wear-fn > i { filter: drop-shadow(0 0 8px rgba(190,230,255,0.55)) saturate(1.12) brightness(1.08); }
+.skin-icon.wear-mw > i { filter: drop-shadow(0 0 5px rgba(190,230,255,0.32)) saturate(1.05) brightness(1.04); }
+
+/* GOOD — shine band (swept across on ::before) */
+.skin-icon.wear-fn::before,
+.skin-icon.wear-mw::before {
+  inset: -25%;
+  background: linear-gradient(115deg, transparent 42%, rgba(255,255,255,0.6) 50%, transparent 58%);
+  background-size: 250% 250%;
+  background-position: 150% center;
+  mix-blend-mode: screen;
+  opacity: 0;
+}
+
+/* GOOD — sparkles for Factory New (::after) */
+.skin-icon.wear-fn::after {
+  background-image:
+    radial-gradient(circle, #ffffff 0 1px, transparent 2px),
+    radial-gradient(circle, #cdefff 0 1px, transparent 2px),
+    radial-gradient(circle, #ffffff 0 1px, transparent 2px);
+  background-repeat: no-repeat;
+  background-position: 18% 22%, 78% 30%, 52% 78%;
+  opacity: 0;
+}
+
+/* Animate the shine/sparkle in the drop reveal (single item) and on hover in
+   the inventory — keeps a grid of many items calm until pointed at. */
+.drop-card .skin-icon.wear-fn::before,
+.drop-card .skin-icon.wear-mw::before,
+.inv-item:hover .skin-icon.wear-fn::before,
+.inv-item:hover .skin-icon.wear-mw::before {
+  animation: skinShine 2.6s ease-in-out infinite;
+}
+.drop-card .skin-icon.wear-fn::after,
+.inv-item:hover .skin-icon.wear-fn::after {
+  animation: skinTwinkle 1.6s ease-in-out infinite;
+}
+@keyframes skinShine {
+  0%       { background-position: 150% center; opacity: 0; }
+  40%      { opacity: 0.9; }
+  70%,100% { background-position: -60% center; opacity: 0; }
+}
+@keyframes skinTwinkle {
+  0%, 100% { opacity: 0; }
+  50%      { opacity: 1; }
+}
+
+/* BAD — desaturated, dimmed, and scratched */
+.skin-icon.wear-ww > i { filter: grayscale(0.4) brightness(0.88) contrast(0.95); }
+.skin-icon.wear-bs > i { filter: grayscale(0.68) brightness(0.78) contrast(0.9); }
+.skin-icon.wear-ww::after,
+.skin-icon.wear-bs::after {
+  background:
+    linear-gradient(66deg,  transparent 47%, rgba(255,255,255,0.12) 48%, transparent 49%),
+    linear-gradient(112deg, transparent 61%, rgba(0,0,0,0.22) 62%, transparent 63%),
+    linear-gradient(84deg,  transparent 29%, rgba(0,0,0,0.18) 30%, transparent 31%),
+    linear-gradient(133deg, transparent 72%, rgba(0,0,0,0.16) 73%, transparent 74%);
+  mix-blend-mode: multiply;
+}
+.skin-icon.wear-ww::after { opacity: 0.55; }
+.skin-icon.wear-bs::after { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .skin-icon::before,
+  .skin-icon::after { animation: none !important; }
+  /* keep a static glint on good skins so they still read as pristine */
+  .skin-icon.wear-fn::before,
+  .skin-icon.wear-mw::before { opacity: 0.5; background-position: 60% center; }
+}

@@ -22,6 +22,11 @@
   function Sounds() { return global.FCSSounds; }
 
   function deviconClass(slug) { return `devicon-${slug}-plain colored`; }
+  // Wraps a language icon so its float/wear tier drives the visual condition
+  // (glow & sparkle when good, scratches when worn). See .skin-icon in cases.css.
+  function skinIconHTML(slug, wearId) {
+    return `<span class="skin-icon wear-${wearId}"><i class="${deviconClass(slug)}"></i></span>`;
+  }
   function rarityMeta(id) {
     const d = CasesData();
     return (d && d.RARITIES.find(r => r.id === id)) || { id: 'grey', name: 'Grau', color: '#9aa4b2' };
@@ -687,7 +692,7 @@
       <div class="drop-reveal r-${drop.rarity}">
         <div class="drop-card">
           <span class="rarity-label">${esc(rarityMeta(drop.rarity).name)}</span>
-          <i class="${deviconClass(drop.slug)}"></i>
+          ${skinIconHTML(drop.slug, drop.wearTier)}
           <div class="drop-name">${esc(drop.name)}</div>
           <div class="drop-wear">${esc(wear.name)} · Float ${drop.float.toFixed(4)}</div>
           <div class="wear-bar"><div class="wear-pin" style="left:${pinPct}%"></div></div>
@@ -774,7 +779,7 @@
       const wear = wearMeta(it.wearTier);
       return `
         <div class="inv-item r-${it.rarity}">
-          <i class="${deviconClass(it.slug)}"></i>
+          ${skinIconHTML(it.slug, it.wearTier)}
           <div class="inv-name">${esc(it.name)}</div>
           <div class="inv-wear-line">${esc(wear.short)} · ${esc(rarityMeta(it.rarity).name)}</div>
           <div class="inv-float">${it.float.toFixed(4)}</div>
