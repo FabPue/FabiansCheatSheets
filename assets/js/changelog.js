@@ -8,30 +8,30 @@
   'use strict';
 
   const CHANGELOG = {
-    version: '2.1',
-    codename: 'Gambling Update',
+    version: '2.2',
+    codename: 'Sound Update',
     date: 'Juli 2026',
-    intro: 'Zeit für etwas Nervenkitzel! Setze dein Gold ein und sammle seltene Sprach-Items:',
+    intro: 'Jetzt mit Ton! Das Case-Öffnen klingt endlich so, wie es sich anfühlt:',
     features: [
+      {
+        icon: '🔊',
+        title: 'Case-Sounds',
+        text: 'Beim Öffnen tickt das Reel im CS-Stil — schnell am Anfang, langsamer werdend, bis es unter dem Marker landet.'
+      },
+      {
+        icon: '🎉',
+        title: 'Reveal-Chimes',
+        text: 'Jeder Drop bekommt einen eigenen Klang, der mit der Seltenheit heller und voller wird — inklusive Gold-Fanfare.'
+      },
+      {
+        icon: '🔇',
+        title: 'Sound-Schalter',
+        text: 'Zu laut? Der 🔊-Button im Case-Fenster schaltet den Ton jederzeit an oder aus — die Wahl wird gemerkt.'
+      },
       {
         icon: '📦',
         title: 'Cases öffnen',
         text: 'Öffne für 25 Gold eine Case mit CS-artiger Reel-Animation und gewinne Programmiersprachen-Items.'
-      },
-      {
-        icon: '💎',
-        title: 'Raritäten & Abnutzung',
-        text: 'Items gibt es in Grau, Blau, Episch, Rot und dem sagenhaften Gold — jeweils mit Wear von Fabrikneu bis Kampfspuren.'
-      },
-      {
-        icon: '🎒',
-        title: 'Inventar',
-        text: 'Alle gewonnenen Icons landen in deinem Inventar — mit Rarität, Abnutzung und Float-Wert, filterbar nach Seltenheit.'
-      },
-      {
-        icon: '🏅',
-        title: 'Errungenschaften',
-        text: 'Schalte Erfolge frei und kassiere XP & Gold — von der ersten Streak bis zum Case CEO.'
       }
     ]
   };
