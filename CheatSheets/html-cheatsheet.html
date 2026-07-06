@@ -903,7 +903,8 @@ function buildBP() {
   if (css) out += `\n  <link rel="stylesheet" href="style.css">`;
   out += `\n</head>\n<body>\n  <header></header>\n  <main></main>\n  <footer></footer>`;
   if (js)  out += `\n  <script defer src="app.js"><\/script>`;
-  out += `\n</body>\n</html>`;
+  out += `\n<script src="../assets/js/cheatsheet-search.js"></script>
+</body>\n</html>`;
   const el = document.getElementById('bpOut');
   if (el) el.textContent = out;
 }

@@ -28,6 +28,7 @@
 /* ── case intro / open button ── */
 .case-intro { text-align: center; margin-bottom: 18px; }
 .case-cost { font-family: 'JetBrains Mono', monospace; color: #fbbf24; font-size: 14px; margin-bottom: 4px; }
+.case-counter { font-family: 'JetBrains Mono', monospace; color: var(--muted); font-size: 12px; margin-bottom: 4px; }
 .sound-toggle {
   background: none;
   border: none;
@@ -235,6 +236,72 @@
 .inv-item.r-gold { animation: goldFloat 2.6s ease-in-out infinite; }
 .inv-item.r-red:hover, .inv-item.r-epic:hover { transform: translateY(-3px); transition: transform 0.2s; }
 
+/* ── marketplace ── */
+.market-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.market-sell-btn {
+  margin-top: 8px;
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--rc);
+  background: color-mix(in srgb, var(--rc) 16%, transparent);
+  color: #fff;
+  border-radius: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
+}
+.market-sell-btn:hover { background: color-mix(in srgb, var(--rc) 32%, transparent); transform: translateY(-1px); }
+
+/* ── collections ── */
+.coll-list { display: flex; flex-direction: column; gap: 12px; }
+.coll-card {
+  border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px;
+  background: rgba(255,255,255,0.015);
+}
+.coll-card.done { border-color: #34d399; background: rgba(52,211,153,0.06); }
+.coll-head { display: flex; align-items: center; gap: 12px; }
+.coll-icon { font-size: 30px; }
+.coll-name { font-weight: 700; font-size: 15px; color: #fff; }
+.coll-desc { font-size: 12px; color: var(--muted); }
+.coll-count { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--muted); }
+.coll-bar { height: 6px; border-radius: 4px; background: rgba(255,255,255,0.06); margin: 10px 0; overflow: hidden; }
+.coll-fill { height: 100%; background: linear-gradient(90deg, #7c6af7, #34d399); transition: width 0.4s; }
+.coll-reqs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.coll-req {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  padding: 3px 8px; border-radius: 8px; border: 1px solid var(--border);
+  color: var(--muted);
+}
+.coll-req.met { color: #34d399; border-color: rgba(52,211,153,0.5); background: rgba(52,211,153,0.08); }
+.coll-wear { opacity: 0.75; font-size: 9px; }
+.coll-foot { display: flex; justify-content: flex-end; align-items: center; }
+.coll-claimed { color: #34d399; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+.coll-reward-hint { color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+
+/* ── float leaderboard ── */
+.lb-best {
+  font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #fbbf24;
+  border: 1px solid rgba(251,191,36,0.4); border-radius: 10px;
+  padding: 10px 12px; margin-bottom: 14px; background: rgba(251,191,36,0.06);
+}
+.lb-list { display: flex; flex-direction: column; gap: 6px; }
+.lb-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px; border: 1px solid var(--border); border-radius: 10px;
+  border-left: 3px solid var(--rc);
+}
+.lb-rank { font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: var(--muted); width: 26px; text-align: center; }
+.lb-row:nth-child(1) .lb-rank { color: #ffd447; }
+.lb-row:nth-child(2) .lb-rank { color: #d4d4d8; }
+.lb-row:nth-child(3) .lb-rank { color: #cd7f32; }
+.lb-icon { font-size: 20px; display: inline-flex; align-items: center; }
+.lb-icon i { font-size: 20px; }
+.lb-icon .lang-glyph { font-size: 12px; }
+.lb-name { font-weight: 600; color: #fff; font-size: 14px; }
+.lb-wear { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); }
+.lb-float { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--rc); }
+
 /* ── achievement center popup ── */
 .ach-popup-wrap {
   position: fixed; top: 22%; left: 0; right: 0; z-index: 1250;
@@ -290,7 +357,10 @@
 
 /* signature colors for the new feature titlecards */
 .card-case { --card-color: #fbbf24; --card-glow: radial-gradient(ellipse at top, rgba(251,191,36,0.10), transparent 70%); --card-shadow: rgba(251,191,36,0.28); }
-.card-inv  { --card-color: #38bdf8; --card-glow: radial-gradient(ellipse at top, rgba(56,189,248,0.10), transparent 70%); --card-shadow: rgba(56,189,248,0.25); }
+.card-inv    { --card-color: #38bdf8; --card-glow: radial-gradient(ellipse at top, rgba(56,189,248,0.10), transparent 70%); --card-shadow: rgba(56,189,248,0.25); }
+.card-market { --card-color: #34d399; --card-glow: radial-gradient(ellipse at top, rgba(52,211,153,0.10), transparent 70%); --card-shadow: rgba(52,211,153,0.25); }
+.card-coll   { --card-color: #f59e0b; --card-glow: radial-gradient(ellipse at top, rgba(245,158,11,0.10), transparent 70%); --card-shadow: rgba(245,158,11,0.25); }
+.card-lb     { --card-color: #f472b6; --card-glow: radial-gradient(ellipse at top, rgba(244,114,182,0.10), transparent 70%); --card-shadow: rgba(244,114,182,0.25); }
 
 /* ── float / wear condition effects on the skin icon ──
    Wrap an icon in <span class="skin-icon wear-XX"><i …></i></span>.
@@ -378,3 +448,54 @@
   .skin-icon.wear-fn::before,
   .skin-icon.wear-mw::before { opacity: 0.5; background-position: 60% center; }
 }
+
+/* ── EXTREME float: flames (only occurs on Battle-Scarred, float >= 0.90) ── */
+.skin-icon.float-extreme > i,
+.skin-icon.float-extreme > .lang-glyph {
+  filter: brightness(0.95) drop-shadow(0 0 10px rgba(255,90,0,0.9)) drop-shadow(0 0 3px rgba(255,180,0,0.9));
+}
+.skin-icon.float-extreme::before {
+  inset: 20% -18% -14% -18%;
+  z-index: 3;
+  background:
+    radial-gradient(ellipse 40% 62% at 30% 100%, rgba(255,120,0,0.95), transparent 70%),
+    radial-gradient(ellipse 46% 74% at 55% 100%, rgba(255,55,0,0.9),  transparent 72%),
+    radial-gradient(ellipse 38% 56% at 76% 100%, rgba(255,185,0,0.9), transparent 70%);
+  filter: blur(3px);
+  mix-blend-mode: screen;
+  transform-origin: bottom center;
+  animation: floatFlames 0.42s ease-in-out infinite alternate;
+  opacity: 1;
+}
+@keyframes floatFlames {
+  0%   { transform: scaleY(1)    translateY(0)     skewX(-2deg); opacity: 0.82; }
+  100% { transform: scaleY(1.22) translateY(-7%)   skewX(3deg);  opacity: 1; }
+}
+
+/* ── fallback language badge (languages Devicon doesn't cover) ── */
+.lang-glyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--rc, #cdd3e1);
+  border: 2px solid color-mix(in srgb, var(--rc, #8a90a6) 65%, transparent);
+  background: color-mix(in srgb, var(--rc, #8a90a6) 14%, transparent);
+  border-radius: 0.28em;
+  padding: 0.16em 0.26em;
+  min-width: 1.05em;
+  box-sizing: border-box;
+}
+.lang-glyph.is-emoji {
+  border: none;
+  background: none;
+  padding: 0;
+  font-weight: 400;
+}
+/* context sizes (roughly matching the devicon glyph in each place) */
+.reel-item .lang-glyph { font-size: 22px; }
+.drop-card .skin-icon .lang-glyph { font-size: 34px; }
+.inv-item .skin-icon .lang-glyph { font-size: 20px; }
+.gold-core .lang-glyph { font-size: 56px; }

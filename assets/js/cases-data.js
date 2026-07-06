@@ -28,7 +28,9 @@
     { id: 'bs', name: 'Kampfspuren',                  short: 'KS', min: 0.45, max: 1.00 }
   ];
 
-  // slug = Devicon slug; name = display name; rarity = tier id.
+  // Each item: name, rarity (tier id) and an icon — either a Devicon `slug`
+  // (rendered as devicon-<slug>-plain) or a `glyph` fallback (emoji / short
+  // label shown in a badge) for languages Devicon doesn't cover.
   const ITEMS = [
     // grey — Common
     { slug: 'html5',    name: 'HTML5',      rarity: 'grey' },
@@ -48,14 +50,18 @@
     { slug: 'ruby',       name: 'Ruby',       rarity: 'blue' },
     { slug: 'r',          name: 'R',          rarity: 'blue' },
     { slug: 'sqlite',     name: 'SQLite',     rarity: 'blue' },
+    { slug: 'fsharp',     name: 'F#',         rarity: 'blue' },
+    { glyph: 'B',   name: 'B',        rarity: 'blue' },
+    { glyph: 'BAS', name: 'BASIC',    rarity: 'blue' },
+    { glyph: 'Fr',  name: 'Fortress', rarity: 'blue' },
 
     // epic — Epic
     { slug: 'typescript', name: 'TypeScript', rarity: 'epic' },
     { slug: 'csharp',     name: 'C#',         rarity: 'epic' },
-    { slug: 'java',       name: 'Java',       rarity: 'epic' },
     { slug: 'go',         name: 'Go',         rarity: 'epic' },
     { slug: 'cplusplus',  name: 'C++',        rarity: 'epic' },
     { slug: 'nodejs',     name: 'Node.js',    rarity: 'epic' },
+    { glyph: 'Nat', name: 'Natural',    rarity: 'epic' },
 
     // red — Rare
     { slug: 'rust',   name: 'Rust',   rarity: 'red' },
@@ -63,11 +69,15 @@
     { slug: 'swift',  name: 'Swift',  rarity: 'red' },
     { slug: 'dart',   name: 'Dart',   rarity: 'red' },
     { slug: 'scala',  name: 'Scala',  rarity: 'red' },
+    { slug: 'java',   name: 'Java',   rarity: 'red' },
+    { slug: 'c',      name: 'C',      rarity: 'red' },
 
     // gold — Legendary
     { slug: 'haskell',  name: 'Haskell',  rarity: 'gold' },
     { slug: 'elixir',   name: 'Elixir',   rarity: 'gold' },
-    { slug: 'clojure',  name: 'Clojure',  rarity: 'gold' }
+    { slug: 'clojure',  name: 'Clojure',  rarity: 'gold' },
+    { slug: 'fortran',  name: 'Fortran',  rarity: 'gold' },
+    { glyph: '🐱',      name: 'Scratch',  rarity: 'gold' }
   ];
 
   global.FCSCasesData = { CASE_COST, RARITIES, WEAR_TIERS, ITEMS };
