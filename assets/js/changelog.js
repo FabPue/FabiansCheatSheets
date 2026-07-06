@@ -8,30 +8,50 @@
   'use strict';
 
   const CHANGELOG = {
-    version: '2.2',
-    codename: 'Sound Update',
+    version: '3.0',
+    codename: 'Major Update',
     date: 'Juli 2026',
-    intro: 'Jetzt mit Ton! Das Case-Öffnen klingt endlich so, wie es sich anfühlt:',
+    intro: 'Das größte Update bisher — Marktplatz, Collections, Bestenliste, neue Sprachen, Effekte und mehr:',
     features: [
       {
-        icon: '🔊',
-        title: 'Case-Sounds',
-        text: 'Beim Öffnen tickt das Reel im CS-Stil — schnell am Anfang, langsamer werdend, bis es unter dem Marker landet.'
+        icon: '💰',
+        title: 'Marktplatz',
+        text: 'Verkaufe Items aus deinem Inventar für Coins — der Wert steigt mit Seltenheit und besserem Float.'
       },
       {
-        icon: '🎉',
-        title: 'Reveal-Chimes',
-        text: 'Jeder Drop bekommt einen eigenen Klang, der mit der Seltenheit heller und voller wird — inklusive Gold-Fanfare.'
+        icon: '🏆',
+        title: 'Collections',
+        text: 'Sammle bestimmte Sprachen-Sets (manche in speziellen Floats) und kassiere einmalige Belohnungen.'
       },
       {
-        icon: '🔇',
-        title: 'Sound-Schalter',
-        text: 'Zu laut? Der 🔊-Button im Case-Fenster schaltet den Ton jederzeit an oder aus — die Wahl wird gemerkt.'
+        icon: '🏅',
+        title: 'Float-Bestenliste',
+        text: 'Deine besten (niedrigsten) Floats im Ranking — wer hat den makellosesten Drop?'
       },
       {
-        icon: '📦',
-        title: 'Cases öffnen',
-        text: 'Öffne für 25 Gold eine Case mit CS-artiger Reel-Animation und gewinne Programmiersprachen-Items.'
+        icon: '🧬',
+        title: 'Mehr Sprachen',
+        text: 'Neue Case-Items inkl. F#, Fortran, C, C++, Java, Natural, BASIC, Fortress und Scratch als Gold.'
+      },
+      {
+        icon: '🔥',
+        title: 'Float-Effekte',
+        text: 'Guter Float glänzt und funkelt, schlechter zeigt Kratzer — und bei extrem schlechtem Float lodern Flammen.'
+      },
+      {
+        icon: '🌌',
+        title: 'Animierte Themes',
+        text: 'Aurora mit funkelnden Sternen und Deep Ocean mit sanften Wellen — jetzt in Bewegung.'
+      },
+      {
+        icon: '🔍',
+        title: 'Cheatsheet-Suche',
+        text: 'In jedem Cheat Sheet gibt es jetzt eine Suchleiste (Taste „/") zum sofortigen Filtern der Karten.'
+      },
+      {
+        icon: '🎯',
+        title: 'Mehr Daily Quests & Case-Counter',
+        text: 'Zusätzliche tägliche Aufgaben und ein Zähler für geöffnete Cases.'
       }
     ]
   };

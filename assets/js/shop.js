@@ -61,6 +61,9 @@
     const theme = getTheme(id);
     const root = document.documentElement;
     Object.keys(theme.vars).forEach(k => root.style.setProperty(k, theme.vars[k]));
+    // Flag the active theme so themes.css can add animated backgrounds
+    // (aurora stars, ocean waves) for the themes that ship with motion.
+    root.setAttribute('data-fcs-theme', theme.id);
   }
 
   function owns(profile, id) {
