@@ -115,16 +115,75 @@
     return KEYS.profilePrefix + username.toLowerCase();
   }
 
+  /* ── tamper protection ──
+   * Profiles are signed with a synchronous checksum over the economy-relevant
+   * fields. Editing e.g. `coins` directly in localStorage invalidates the
+   * signature, which is detected on load. NOTE: the secret lives in this file
+   * and is therefore discoverable — this deters casual cookie/localStorage
+   * editing but is NOT real security (that would require a server).
+   */
+  const SIG_SECRET = 'fcs-integrity-7Kq2$whileTrue::do-not-touch-v21';
+
+  function fnv1aHex(str) {
+    let h = 2166136261 >>> 0;
+    for (let i = 0; i < str.length; i++) {
+      h ^= str.charCodeAt(i);
+      h = Math.imul(h, 16777619) >>> 0;
+    }
+    // second pass with a rotation for a bit more spread
+    let h2 = 0x811c9dc5 >>> 0;
+    for (let i = str.length - 1; i >= 0; i--) {
+      h2 ^= str.charCodeAt(i);
+      h2 = Math.imul(h2, 16777619) >>> 0;
+    }
+    return (h >>> 0).toString(16).padStart(8, '0') + (h2 >>> 0).toString(16).padStart(8, '0');
+  }
+
+  function economySnapshot(p) {
+    return [
+      p.coins | 0,
+      p.xp | 0,
+      p.level | 0,
+      p.casesOpened | 0,
+      p.solvedTotal | 0,
+      (p.inventory || []).length,
+      (p.achievements || []).length
+    ].join('|');
+  }
+
+  function signProfile(p) {
+    return fnv1aHex(SIG_SECRET + '::' + economySnapshot(p));
+  }
+
   function getProfile(username) {
     if (!username) return null;
-    const p = readJSON(profileKey(username), null);
-    if (!p) return null;
+    const raw = readJSON(profileKey(username), null);
+    if (!raw) return null;
     // Merge with defaults so older profiles gain new fields.
-    return Object.assign(defaultProfile(), p);
+    const p = Object.assign(defaultProfile(), raw);
+    const expected = signProfile(p);
+
+    if (p._sig === expected) {
+      // valid, untouched
+      return p;
+    }
+
+    const wasSignedBefore = (p.coinResetDone === true) || (typeof p._sig === 'string' && p._sig.length > 0);
+    if (wasSignedBefore) {
+      // Signature present/expected but does not match -> tampering. Wipe coins.
+      p.coins = 0;
+      p._tampered = true;
+    }
+    // Legacy profile (never signed): accept balance as-is; the one-time
+    // case-open reset will neutralise any pre-update cheated balances.
+    p._sig = signProfile(p);
+    writeJSON(profileKey(username), p);
+    return p;
   }
 
   function saveProfile(username, profile) {
     if (!username) return;
+    profile._sig = signProfile(profile);
     writeJSON(profileKey(username), profile);
   }
 

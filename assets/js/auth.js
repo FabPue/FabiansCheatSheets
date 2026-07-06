@@ -46,7 +46,9 @@
       createdAt: Store.todayKey()
     };
     Store.saveUsers(users);
-    Store.saveProfile(username, Store.defaultProfile());
+    const freshProfile = Store.defaultProfile();
+    freshProfile.coinResetDone = true;
+    Store.saveProfile(username, freshProfile);
     Store.setSession(username);
     return { ok: true };
   }

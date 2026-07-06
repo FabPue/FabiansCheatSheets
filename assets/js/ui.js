@@ -501,6 +501,26 @@
     const user = Auth.currentUser();
     if (!user) { openAuth('login'); return; }
     onLogin();
+
+    // One-time forced coin reset (v2.1.1 anti-tamper). Runs exactly once per
+    // user: neutralises any pre-update balances that may have been edited via
+    // localStorage/cookies before signature protection existed.
+    const rp = Store.getProfile(user);
+    if (rp && rp.coinResetDone !== true) {
+      rp.coins = 0;
+      rp.coinResetDone = true;
+      rp._tampered = false;
+      Store.saveProfile(user, rp);
+      renderHeader();
+      toast('🔒 Sicherheitsupdate: Coins wurden zurückgesetzt.', 'error');
+    } else if (rp && rp._tampered) {
+      // Signature mismatch was detected on load and coins already wiped.
+      rp._tampered = false;
+      Store.saveProfile(user, rp);
+      renderHeader();
+      toast('⚠️ Manipulation erkannt — Coins zurückgesetzt.', 'error');
+    }
+
     renderCases();
   }
 
