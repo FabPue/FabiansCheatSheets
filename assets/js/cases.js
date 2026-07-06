@@ -56,6 +56,50 @@
     return profile.coins >= Data.CASE_COST;
   }
 
+  // ── selling (local marketplace) ──
+  // Base coin value per rarity, scaled by float: a lower float (better
+  // condition) is worth more. No server, so this is a vendor buy-back.
+  const SELL_BASE = { grey: 8, blue: 20, epic: 60, red: 160, gold: 600 };
+
+  function sellValue(drop) {
+    const base = SELL_BASE[drop.rarity] || 5;
+    const f = typeof drop.float === 'number' ? drop.float : 0.5;
+    return Math.max(1, Math.round(base * (1.3 - 0.6 * f)));
+  }
+
+  // Removes one inventory item by uid and credits its sell value.
+  // Returns { ok, value, reason }.
+  function sellItem(username, profile, uid) {
+    const inv = profile.inventory || [];
+    const idx = inv.findIndex(it => it.uid === uid);
+    if (idx === -1) return { ok: false, reason: 'not-found' };
+    const value = sellValue(inv[idx]);
+    inv.splice(idx, 1);
+    profile.inventory = inv;
+    profile.coins += value;
+    profile.coinsFromSales = (profile.coinsFromSales || 0) + value;
+    Store.saveProfile(username, profile);
+    return { ok: true, value: value };
+  }
+
+  // Sells every item of the given rarities at once. Returns { count, total }.
+  function sellAll(username, profile, rarities) {
+    const set = rarities && rarities.length ? new Set(rarities) : null;
+    const inv = profile.inventory || [];
+    let total = 0, count = 0;
+    const keep = [];
+    inv.forEach(it => {
+      if (!set || set.has(it.rarity)) { total += sellValue(it); count += 1; }
+      else keep.push(it);
+    });
+    if (count === 0) return { count: 0, total: 0 };
+    profile.inventory = keep;
+    profile.coins += total;
+    profile.coinsFromSales = (profile.coinsFromSales || 0) + total;
+    Store.saveProfile(username, profile);
+    return { count: count, total: total };
+  }
+
   // Deducts the cost, rolls a drop, stores it. Returns { ok, reason, drop }.
   function openCase(username, profile) {
     if (!canOpen(profile)) return { ok: false, reason: 'insufficient' };
@@ -86,6 +130,7 @@
   global.FCSCases = {
     CASE_COST: Data.CASE_COST,
     rarityById, itemsByRarity, wearTierForFloat,
-    rollRarity, canOpen, openCase, buildReel, buildDrop
+    rollRarity, canOpen, openCase, buildReel, buildDrop,
+    sellValue, sellItem, sellAll
   };
 })(window);

@@ -20,6 +20,7 @@
   function Ach() { return global.FCSAchievements; }
   function Admin() { return global.FCSAdmin; }
   function Sounds() { return global.FCSSounds; }
+  function Collections() { return global.FCSCollections; }
 
   function deviconClass(slug) { return `devicon-${slug}-plain colored`; }
   // Renders a language icon: a Devicon glyph when the item has a `slug`, else a
@@ -801,6 +802,204 @@
     }).join('');
   }
 
+  /* ── marketplace: sell items for coins ── */
+  let marketFilter = 'all';
+
+  function openMarket() {
+    const user = Auth.currentUser();
+    if (!user) { openAuth('login'); return; }
+    onLogin();
+    renderMarket();
+  }
+
+  function renderMarket() {
+    const user = Auth.currentUser();
+    const p = Store.getProfile(user);
+    const C = Cases();
+    const items = (p.inventory || []).slice();
+    const order = { gold: 0, red: 1, epic: 2, blue: 3, grey: 4 };
+    items.sort((a, b) => (order[a.rarity] - order[b.rarity]) || (a.float - b.float));
+
+    const chips = ['all'].concat(CasesData().RARITIES.map(r => r.id));
+    const chipHtml = chips.map(id => {
+      const label = id === 'all' ? `Alle (${items.length})` : rarityMeta(id).name;
+      const cls = id === 'all' ? '' : 'r-' + id;
+      return `<div class="inv-chip ${cls} ${marketFilter === id ? 'active' : ''}" data-f="${id}">${label}</div>`;
+    }).join('');
+
+    openDialog(`
+      <div class="fcs-dialog-head">
+        <span class="fcs-dialog-title">💰 Marktplatz</span>
+        <button class="fcs-dialog-close">✕</button>
+      </div>
+      <div class="fcs-dialog-body">
+        <div class="xp-text" style="margin-bottom:12px">Guthaben: <span style="color:#fbbf24" id="mktBal">${p.coins}</span> 🪙 — verkaufe Items für Coins. Besserer Float = mehr wert.</div>
+        <div class="inv-toolbar">${chipHtml}</div>
+        <div class="market-actions">
+          <button class="fcs-btn secondary" data-sell="grey" style="width:auto;padding:8px 14px">Alle Grauen verkaufen</button>
+          <button class="fcs-btn secondary" data-sell="grey,blue" style="width:auto;padding:8px 14px">Grau + Blau verkaufen</button>
+        </div>
+        <div id="marketGrid"></div>
+      </div>`, true);
+    dialog.querySelector('.fcs-dialog-close').onclick = closeDialog;
+    dialog.querySelectorAll('.inv-chip').forEach(ch => {
+      ch.onclick = () => { marketFilter = ch.dataset.f; renderMarket(); };
+    });
+    dialog.querySelectorAll('[data-sell]').forEach(btn => {
+      btn.onclick = () => {
+        const rar = btn.dataset.sell.split(',');
+        const prof = Store.getProfile(user);
+        const res = C.sellAll(user, prof, rar);
+        if (!res.count) { toast('Nichts zu verkaufen.', ''); return; }
+        toast(`${res.count} Items verkauft · +${res.total} 🪙`, 'coin');
+        renderHeader();
+        renderMarket();
+      };
+    });
+
+    const grid = dialog.querySelector('#marketGrid');
+    const shown = items.filter(it => marketFilter === 'all' || it.rarity === marketFilter);
+    if (!shown.length) {
+      grid.innerHTML = '<div class="inv-empty">Keine Items zum Verkaufen — öffne eine Case! 📦</div>';
+      return;
+    }
+    grid.className = 'inv-grid';
+    grid.innerHTML = shown.map(it => {
+      const wear = wearMeta(it.wearTier);
+      return `
+        <div class="inv-item r-${it.rarity}" data-uid="${esc(it.uid)}">
+          ${skinIconHTML(it, it.wearTier, it.float)}
+          <div class="inv-name">${esc(it.name)}</div>
+          <div class="inv-wear-line">${esc(wear.short)} · ${it.float.toFixed(4)}</div>
+          <button class="market-sell-btn">Verkaufen · ${C.sellValue(it)} 🪙</button>
+        </div>`;
+    }).join('');
+    grid.querySelectorAll('.inv-item').forEach(card => {
+      const uid = card.dataset.uid;
+      card.querySelector('.market-sell-btn').onclick = () => {
+        const prof = Store.getProfile(user);
+        const res = C.sellItem(user, prof, uid);
+        if (!res.ok) { toast('Verkauf fehlgeschlagen.', 'error'); return; }
+        toast(`Verkauft · +${res.value} 🪙`, 'coin');
+        renderHeader();
+        renderMarket();
+      };
+    });
+  }
+
+  /* ── collections ── */
+  function openCollections() {
+    const user = Auth.currentUser();
+    if (!user) { openAuth('login'); return; }
+    onLogin();
+    renderCollections();
+  }
+
+  function renderCollections() {
+    const user = Auth.currentUser();
+    const p = Store.getProfile(user);
+    const Col = Collections();
+    if (!Col) return;
+
+    const cards = Col.COLLECTIONS.map(c => {
+      const prog = Col.collectionProgress(p, c);
+      const claimed = Col.isClaimed(p, c.id);
+      const inv = p.inventory || [];
+      const reqChips = c.req.map(r => {
+        const met = inv.some(it => it.name === r.name && (!r.wear || it.wearTier === r.wear));
+        const wearTag = r.wear ? ` <span class="coll-wear">${esc(wearMeta(r.wear).short)}</span>` : '';
+        return `<span class="coll-req ${met ? 'met' : ''}">${met ? '✓' : '○'} ${esc(r.name)}${wearTag}</span>`;
+      }).join('');
+      const pct = Math.round((prog.have / prog.need) * 100);
+      let btn;
+      if (claimed) btn = '<span class="coll-claimed">✓ Belohnung erhalten</span>';
+      else if (prog.done) btn = `<button class="fcs-btn" data-claim="${c.id}" style="width:auto;padding:8px 16px">Belohnung abholen · +${c.reward.coins} 🪙</button>`;
+      else btn = `<span class="coll-reward-hint">Belohnung: +${c.reward.coins} 🪙 · +${c.reward.xp} XP</span>`;
+
+      return `
+        <div class="coll-card ${prog.done ? 'done' : ''}">
+          <div class="coll-head">
+            <span class="coll-icon">${c.icon}</span>
+            <div>
+              <div class="coll-name">${esc(c.name)}</div>
+              <div class="coll-desc">${esc(c.desc)}</div>
+            </div>
+            <span class="coll-count">${prog.have}/${prog.need}</span>
+          </div>
+          <div class="coll-bar"><div class="coll-fill" style="width:${pct}%"></div></div>
+          <div class="coll-reqs">${reqChips}</div>
+          <div class="coll-foot">${btn}</div>
+        </div>`;
+    }).join('');
+
+    openDialog(`
+      <div class="fcs-dialog-head">
+        <span class="fcs-dialog-title">🏆 Collections</span>
+        <button class="fcs-dialog-close">✕</button>
+      </div>
+      <div class="fcs-dialog-body">
+        <div class="xp-text" style="margin-bottom:14px">Sammle bestimmte Sprachen (teils in bestimmten Floats) und kassiere Belohnungen.</div>
+        <div class="coll-list">${cards}</div>
+      </div>`, true);
+    dialog.querySelector('.fcs-dialog-close').onclick = closeDialog;
+    dialog.querySelectorAll('[data-claim]').forEach(btn => {
+      btn.onclick = () => {
+        const prof = Store.getProfile(user);
+        const res = Col.claim(user, prof, btn.dataset.claim);
+        if (!res.ok) { toast('Abholen nicht möglich.', 'error'); return; }
+        // Reflect any XP-driven level change and re-check achievements.
+        const p2 = Store.getProfile(user);
+        p2.level = Gamify.levelForXp(p2.xp);
+        Store.saveProfile(user, p2);
+        toast(`Collection abgeschlossen! +${res.reward.coins} 🪙 +${res.reward.xp} XP`, 'coin');
+        renderHeader();
+        runAchievementCheck();
+        renderCollections();
+      };
+    });
+  }
+
+  /* ── float leaderboard (local) ── */
+  function openLeaderboard() {
+    const user = Auth.currentUser();
+    if (!user) { openAuth('login'); return; }
+    onLogin();
+    renderLeaderboard();
+  }
+
+  function renderLeaderboard() {
+    const user = Auth.currentUser();
+    const p = Store.getProfile(user);
+    // Lower float = better condition, so rank ascending by float.
+    const items = (p.inventory || []).slice().sort((a, b) => a.float - b.float);
+    const top = items.slice(0, 15);
+    const best = items[0];
+
+    const rows = top.map((it, i) => {
+      const wear = wearMeta(it.wearTier);
+      return `
+        <div class="lb-row r-${it.rarity}">
+          <span class="lb-rank">${i + 1}</span>
+          <span class="lb-icon">${iconMarkup(it)}</span>
+          <span class="lb-name">${esc(it.name)}</span>
+          <span class="lb-wear">${esc(wear.short)}</span>
+          <span class="lb-float">${it.float.toFixed(4)}</span>
+        </div>`;
+    }).join('');
+
+    openDialog(`
+      <div class="fcs-dialog-head">
+        <span class="fcs-dialog-title">🏅 Float-Bestenliste</span>
+        <button class="fcs-dialog-close">✕</button>
+      </div>
+      <div class="fcs-dialog-body">
+        <p class="fcs-note" style="margin-bottom:14px">Niedrigerer Float = besserer Zustand. Hinweis: Diese Seite hat keinen Server — die Bestenliste ist lokal (deine eigenen Drops in diesem Browser).</p>
+        ${best ? `<div class="lb-best">🥇 Dein Rekord: <b>${esc(best.name)}</b> · Float <b>${best.float.toFixed(4)}</b> (${esc(wearMeta(best.wearTier).name)})</div>` : ''}
+        <div class="lb-list">${rows || '<div class="inv-empty">Noch keine Drops — öffne eine Case! 📦</div>'}</div>
+      </div>`, true);
+    dialog.querySelector('.fcs-dialog-close').onclick = closeDialog;
+  }
+
   /* ── admin gold ── */
   function openAdmin() {
     const user = Auth.currentUser();
@@ -932,7 +1131,7 @@
   global.FCSApp = {
     init, renderHeader,
     openAuth, openAccount, openChallenges, openShop, openChangelog,
-    openCases, openInventory, openAdmin
+    openCases, openInventory, openMarket, openCollections, openLeaderboard, openAdmin
   };
 
   if (document.readyState === 'loading') {
