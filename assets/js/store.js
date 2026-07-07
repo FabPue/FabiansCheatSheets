@@ -107,7 +107,8 @@
       activeTheme: 'default',
       inventory: [],
       casesOpened: 0,
-      achievements: []
+      achievements: [],
+      tdProgress: 0
     };
   }
 

@@ -21,6 +21,8 @@
   function Admin() { return global.FCSAdmin; }
   function Sounds() { return global.FCSSounds; }
   function Collections() { return global.FCSCollections; }
+  function Td() { return global.FCSTd; }
+  function TdData() { return global.FCSTdData; }
 
   function deviconClass(slug) { return `devicon-${slug}-plain colored`; }
   // Renders a language icon: a Devicon glyph when the item has a `slug`, else a
@@ -82,13 +84,18 @@
   }
 
   /* ── dialog control ── */
+  let activeGame = null;
+  function stopActiveGame() { if (activeGame) { activeGame.destroy(); activeGame = null; } }
+
   function openDialog(innerHTML, wide) {
+    stopActiveGame();
     dialog.className = 'fcs-dialog' + (wide ? ' wide' : '');
     dialog.innerHTML = innerHTML;
     overlay.classList.add('active');
     document.body.style.overflow = 'hidden';
   }
   function closeDialog() {
+    stopActiveGame();
     overlay.classList.remove('active');
     document.body.style.overflow = '';
     setTimeout(() => { dialog.innerHTML = ''; }, 300);
@@ -1088,6 +1095,163 @@
     dialog.querySelector('.fcs-dialog-close').onclick = closeDialog;
   }
 
+  /* ── tower defense ── */
+  function openTowerDefense() {
+    const user = Auth.currentUser();
+    if (!user) { openAuth('login'); return; }
+    onLogin();
+    renderTdLevels();
+  }
+
+  function renderTdLevels() {
+    const user = Auth.currentUser();
+    const p = Store.getProfile(user);
+    const progress = p.tdProgress || 0;      // highest cleared level idx
+    const levels = TdData().LEVELS;
+
+    const cells = levels.map(lv => {
+      const cleared = lv.idx <= progress;
+      const unlocked = lv.idx <= progress + 1;
+      const cls = cleared ? 'cleared' : (unlocked ? 'open' : 'locked');
+      const mark = cleared ? '✓' : (unlocked ? (lv.isBoss ? '💀' : '▶') : '🔒');
+      return `<button class="td-lvl ${cls} ${lv.isBoss ? 'boss' : ''}" data-idx="${lv.idx}" ${unlocked ? '' : 'disabled'}>
+          <span class="td-lvl-label">${lv.label}</span>
+          <span class="td-lvl-mark">${mark}</span>
+        </button>`;
+    }).join('');
+
+    openDialog(`
+      <div class="fcs-dialog-head">
+        <span class="fcs-dialog-title">🗼 Tower Defense</span>
+        <button class="fcs-dialog-close">✕</button>
+      </div>
+      <div class="fcs-dialog-body">
+        <p class="fcs-note" style="margin-bottom:14px">Verteidige gegen Bugs! Platziere deine ergambelten Sprachen als Türme — höhere Seltenheit & besserer Float = mehr Leben und Schaden. Boss-Level (💀) auf jeder x.0.</p>
+        <div class="td-level-grid">${cells}</div>
+      </div>`, true);
+    dialog.querySelector('.fcs-dialog-close').onclick = closeDialog;
+    dialog.querySelectorAll('.td-lvl:not([disabled])').forEach(b => {
+      b.onclick = () => renderTdGame(Number(b.dataset.idx));
+    });
+  }
+
+  function renderTdGame(levelIdx) {
+    const user = Auth.currentUser();
+    const p = Store.getProfile(user);
+    const level = TdData().LEVELS[levelIdx - 1];
+    const defenders = Td().defendersFromInventory(p.inventory);
+
+    const paletteHtml = defenders.length ? defenders.map((d, i) =>
+      `<button class="td-card r-${d.rarity}" data-i="${i}" title="${esc(d.archLabel)}">
+        <span class="td-card-label">${esc(d.label)}</span>
+        <span class="td-card-name">${esc(d.name)}</span>
+        <span class="td-card-stats">💥${d.damage} ❤${d.hp}</span>
+        <span class="td-card-cost">${d.cost}B</span>
+      </button>`).join('')
+      : '<div class="inv-empty">Keine Türme — öffne erst ein paar Cases, um Sprachen zu gewinnen! 📦</div>';
+
+    openDialog(`
+      <div class="fcs-dialog-head">
+        <span class="fcs-dialog-title">🗼 Level ${level.label}${level.isBoss ? ' — BOSS' : ''}</span>
+        <button class="fcs-dialog-close">✕</button>
+      </div>
+      <div class="fcs-dialog-body td-game">
+        <div class="td-hud">
+          <span class="td-hud-item">💾 <b id="tdBytes">—</b> Bytes</span>
+          <span class="td-hud-item">❤ <b id="tdLives">5</b></span>
+          <span class="td-hud-item">🐛 <b id="tdKilled">0</b>/<b id="tdTotal">0</b></span>
+          <button class="fcs-btn" id="tdStart" style="width:auto;padding:8px 18px">▶ Start</button>
+          <button class="fcs-btn secondary" id="tdBack" style="width:auto;padding:8px 14px">↩ Level</button>
+        </div>
+        <div class="td-board-wrap">
+          <canvas id="tdCanvas" class="td-canvas"></canvas>
+          <div class="td-end" id="tdEnd"></div>
+        </div>
+        <div class="td-palette-label">Türme (Klick zum Auswählen, dann aufs Feld):</div>
+        <div class="td-palette" id="tdPalette">${paletteHtml}</div>
+      </div>`, true);
+    dialog.querySelector('.fcs-dialog-close').onclick = closeDialog;
+    dialog.querySelector('#tdBack').onclick = () => renderTdLevels();
+
+    const canvas = dialog.querySelector('#tdCanvas');
+    const game = Td().newGame({
+      canvas: canvas,
+      level: level,
+      onState: st => {
+        setText('#tdBytes', st.bytes);
+        setText('#tdLives', st.lives);
+        setText('#tdKilled', st.killed);
+        setText('#tdTotal', st.total);
+        // dim palette cards you can't afford
+        dialog.querySelectorAll('.td-card').forEach((c, i) => {
+          if (defenders[i]) c.classList.toggle('poor', st.bytes < defenders[i].cost);
+        });
+      },
+      onEnd: res => onTdEnd(res, levelIdx)
+    });
+    activeGame = game;
+
+    let selectedCard = null;
+    dialog.querySelectorAll('.td-card').forEach((c) => {
+      c.onclick = () => {
+        const d = defenders[Number(c.dataset.i)];
+        if (!d) return;
+        game.select(d);
+        if (selectedCard) selectedCard.classList.remove('selected');
+        c.classList.add('selected'); selectedCard = c;
+      };
+    });
+
+    const startBtn = dialog.querySelector('#tdStart');
+    startBtn.onclick = () => {
+      if (!defenders.length) { toast('Erst Cases öffnen für Türme!', 'error'); return; }
+      startBtn.disabled = true;
+      game.start();
+    };
+  }
+
+  function onTdEnd(res, levelIdx) {
+    const user = Auth.currentUser();
+    const endBox = dialog.querySelector('#tdEnd');
+    if (!endBox) return;
+    let rewardMsg = '';
+    if (res.won) {
+      const p = Store.getProfile(user);
+      const already = (p.tdProgress || 0) >= levelIdx;
+      if (!already) {
+        p.tdProgress = levelIdx;
+        p.coins += res.level.reward.coins;
+        p.xp += res.level.reward.xp;
+        p.level = Gamify.levelForXp(p.xp);
+        Store.saveProfile(user, p);
+        rewardMsg = `+${res.level.reward.coins} 🪙 · +${res.level.reward.xp} XP`;
+        renderHeader();
+        runAchievementCheck();
+      } else {
+        rewardMsg = 'Bereits gemeistert — keine erneute Belohnung.';
+      }
+    }
+    const nextIdx = levelIdx + 1;
+    const hasNext = res.won && TdData().LEVELS[nextIdx - 1];
+    endBox.innerHTML = `
+      <div class="td-end-card ${res.won ? 'win' : 'lose'}">
+        <div class="td-end-title">${res.won ? '🎉 Level geschafft!' : '💀 Verloren'}</div>
+        <div class="td-end-sub">${res.won ? esc(rewardMsg) : 'Die Bugs sind durchgekommen.'}</div>
+        <div class="td-end-actions">
+          <button class="fcs-btn" id="tdRetry" style="width:auto;padding:8px 16px">↻ Nochmal</button>
+          ${hasNext ? `<button class="fcs-btn" id="tdNext" style="width:auto;padding:8px 16px">Nächstes ${TdData().LEVELS[nextIdx - 1].label} →</button>` : ''}
+          <button class="fcs-btn secondary" id="tdToLevels" style="width:auto;padding:8px 16px">Level-Auswahl</button>
+        </div>
+      </div>`;
+    endBox.classList.add('show');
+    endBox.querySelector('#tdRetry').onclick = () => renderTdGame(levelIdx);
+    endBox.querySelector('#tdToLevels').onclick = () => renderTdLevels();
+    const nb = endBox.querySelector('#tdNext');
+    if (nb) nb.onclick = () => renderTdGame(nextIdx);
+  }
+
+  function setText(sel, val) { const e = dialog.querySelector(sel); if (e) e.textContent = val; }
+
   /* ── admin gold ── */
   function openAdmin() {
     const user = Auth.currentUser();
@@ -1219,7 +1383,7 @@
   global.FCSApp = {
     init, renderHeader,
     openAuth, openAccount, openChallenges, openShop, openChangelog,
-    openCases, openInventory, openMarket, openCollections, openLeaderboard, openAdmin
+    openCases, openInventory, openMarket, openCollections, openLeaderboard, openTowerDefense, openAdmin
   };
 
   if (document.readyState === 'loading') {
