@@ -84,5 +84,27 @@
 .td-end-sub { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--muted); margin: 6px 0 16px; }
 .td-end-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
 
+/* ── tower context menu (upgrade / sell) ── */
+.td-tower-menu {
+  position: fixed; z-index: 1400;
+  min-width: 180px;
+  background: var(--surface, #0f0f1a);
+  border: 1px solid var(--border, #1e1e32);
+  border-radius: 12px;
+  padding: 10px 12px;
+  box-shadow: 0 16px 44px rgba(0,0,0,0.6);
+}
+.ttm-title { font-weight: 700; color: #fff; font-size: 13px; }
+.ttm-tier { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #34d399; margin-left: 4px; }
+.ttm-stats { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); margin: 4px 0 10px; }
+.ttm-actions { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.ttm-max { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #fbbf24; }
+
+/* ── tutorial ── */
+.td-tut { display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; }
+.td-tut-row { display: flex; gap: 12px; align-items: flex-start; font-size: 13px; color: var(--text); line-height: 1.5; }
+.td-tut-ic { font-size: 22px; flex-shrink: 0; width: 28px; text-align: center; }
+.td-tut-row b { color: #fff; }
+
 /* card signature colour for the landing-page tile */
 .card-td { --card-color: #22d3ee; --card-glow: radial-gradient(ellipse at top, rgba(34,211,238,0.12), transparent 70%); --card-shadow: rgba(34,211,238,0.28); }

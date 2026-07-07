@@ -85,7 +85,12 @@
 
   /* ── dialog control ── */
   let activeGame = null;
-  function stopActiveGame() { if (activeGame) { activeGame.destroy(); activeGame = null; } }
+  let tdMenu = null;
+  function closeTowerMenu() {
+    if (tdMenu) { tdMenu.remove(); tdMenu = null; document.removeEventListener('click', tdOutsideCloser); }
+  }
+  function tdOutsideCloser(e) { if (tdMenu && !tdMenu.contains(e.target)) closeTowerMenu(); }
+  function stopActiveGame() { closeTowerMenu(); if (activeGame) { activeGame.destroy(); activeGame = null; } }
 
   function openDialog(innerHTML, wide) {
     stopActiveGame();
@@ -1096,11 +1101,69 @@
   }
 
   /* ── tower defense ── */
+  const TD_TUT_KEY = 'fcs_td_tutorial';
+
   function openTowerDefense() {
     const user = Auth.currentUser();
     if (!user) { openAuth('login'); return; }
     onLogin();
+    let seen = false;
+    try { seen = localStorage.getItem(TD_TUT_KEY) === '1'; } catch (e) {}
+    if (!seen) return showTdTutorial();
     renderTdLevels();
+  }
+
+  function showTdTutorial() {
+    openDialog(`
+      <div class="fcs-dialog-head">
+        <span class="fcs-dialog-title">🗼 Tower Defense — So geht's</span>
+        <button class="fcs-dialog-close">✕</button>
+      </div>
+      <div class="fcs-dialog-body">
+        <div class="td-tut">
+          <div class="td-tut-row"><span class="td-tut-ic">🧱</span><div><b>Türme platzieren:</b> Wähle unten eine Sprache und klick auf ein Feld. Jeder Turm kostet <b>Bytes</b> 💾 (regenerieren automatisch + pro getötetem Bug).</div></div>
+          <div class="td-tut-row"><span class="td-tut-ic">⚔️</span><div><b>Jede Sprache kämpft anders:</b> C durchschlägt, C++ macht Splash, SQL verlangsamt, Haskell trifft die ganze Lane, HTML ist ein Tank.</div></div>
+          <div class="td-tut-row"><span class="td-tut-ic">💠</span><div><b>Float & Rarität zählen:</b> Höhere Seltenheit und besserer Float = mehr Leben und Schaden.</div></div>
+          <div class="td-tut-row"><span class="td-tut-ic">⬆️</span><div><b>Upgrade & Verkauf:</b> Klick auf einen platzierten Turm, um ihn aufzuwerten oder für Bytes zu verkaufen.</div></div>
+          <div class="td-tut-row"><span class="td-tut-ic">❤️</span><div><b>Ziel:</b> Lass keine Bugs links durch! Bei 0 Leben ist die Runde verloren. Boss-Level (💀) auf jeder x.0.</div></div>
+        </div>
+        <button class="fcs-btn" id="tdTutGo">Los geht's! 🚀</button>
+      </div>`, true);
+    dialog.querySelector('.fcs-dialog-close').onclick = closeDialog;
+    dialog.querySelector('#tdTutGo').onclick = () => {
+      try { localStorage.setItem(TD_TUT_KEY, '1'); } catch (e) {}
+      renderTdLevels();
+    };
+  }
+
+  function showTowerMenu(info, ev, game) {
+    closeTowerMenu();
+    const m = el(`
+      <div class="td-tower-menu">
+        <div class="ttm-title">${esc(info.name)} <span class="ttm-tier">Lv ${info.tier + 1}/${info.maxTier + 1}</span></div>
+        <div class="ttm-stats">💥 ${info.dmg} &nbsp; ❤ ${info.hp}/${info.maxHp}</div>
+        <div class="ttm-actions">
+          ${info.upgradeCost != null
+            ? `<button class="fcs-btn" id="ttmUp" style="width:auto;padding:6px 12px">⬆ Upgrade · ${info.upgradeCost}B</button>`
+            : '<span class="ttm-max">Max-Level ✓</span>'}
+          <button class="fcs-btn secondary" id="ttmSell" style="width:auto;padding:6px 12px">💰 +${info.refund}B</button>
+        </div>
+      </div>`);
+    document.body.appendChild(m);
+    tdMenu = m;
+    const px = Math.min(ev.clientX, window.innerWidth - 200);
+    const py = Math.min(ev.clientY, window.innerHeight - 120);
+    m.style.left = Math.max(8, px) + 'px';
+    m.style.top = Math.max(8, py) + 'px';
+    const up = m.querySelector('#ttmUp');
+    if (up) up.onclick = () => {
+      const res = game.upgradeAt(info.row, info.col);
+      if (!res.ok && res.reason === 'poor') toast('Zu wenig Bytes für das Upgrade.', 'error');
+      closeTowerMenu();
+    };
+    m.querySelector('#ttmSell').onclick = () => { game.sellAt(info.row, info.col); closeTowerMenu(); };
+    // Defer so the click that opened the menu doesn't immediately close it.
+    setTimeout(() => document.addEventListener('click', tdOutsideCloser), 0);
   }
 
   function renderTdLevels() {
@@ -1167,7 +1230,7 @@
           <canvas id="tdCanvas" class="td-canvas"></canvas>
           <div class="td-end" id="tdEnd"></div>
         </div>
-        <div class="td-palette-label">Türme (Klick zum Auswählen, dann aufs Feld):</div>
+        <div class="td-palette-label">Türme (Klick zum Auswählen, dann aufs Feld) · platzierten Turm anklicken für ⬆ Upgrade / 💰 Verkauf:</div>
         <div class="td-palette" id="tdPalette">${paletteHtml}</div>
       </div>`, true);
     dialog.querySelector('.fcs-dialog-close').onclick = closeDialog;
@@ -1187,7 +1250,8 @@
           if (defenders[i]) c.classList.toggle('poor', st.bytes < defenders[i].cost);
         });
       },
-      onEnd: res => onTdEnd(res, levelIdx)
+      onEnd: res => onTdEnd(res, levelIdx),
+      onTower: (info, cell, ev) => showTowerMenu(info, ev, game)
     });
     activeGame = game;
 

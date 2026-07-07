@@ -58,7 +58,9 @@
     segfault: { name: 'Segfault',       hp: 36,  speed: 40, dps: 13, reward: 16, color: '#f4324c', glyph: '✖' },
     leak:     { name: 'Memory Leak',    hp: 104, speed: 17, dps: 20, reward: 26, color: '#4b8bf5', glyph: '💧' },
     race:     { name: 'Race Condition', hp: 28,  speed: 56, dps: 11, reward: 20, color: '#a855f7', glyph: '⚡' },
-    bloat:    { name: 'Bloatware',      hp: 210, speed: 13, dps: 24, reward: 40, color: '#f7a063', glyph: '🐘' }
+    bloat:    { name: 'Bloatware',      hp: 210, speed: 13, dps: 24, reward: 40, color: '#f7a063', glyph: '🐘' },
+    ghost:    { name: 'Heisenbug',      hp: 46,  speed: 62, dps: 14, reward: 28, color: '#22d3ee', glyph: '👻' },
+    armored:  { name: 'Deprecated API', hp: 120, speed: 20, dps: 20, reward: 36, color: '#b45309', glyph: '🛡️', armor: 0.4 }
   };
 
   const BOSSES = {

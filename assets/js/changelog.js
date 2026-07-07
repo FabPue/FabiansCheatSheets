@@ -34,6 +34,11 @@
         text: 'Kämpfe dich durch 1.1 bis 3.0 — mit fetten Boss-Gegnern (Legacy Monolith, Blue Screen) auf jeder x.0.'
       },
       {
+        icon: '⬆️',
+        title: 'Upgrades, Verkauf & mehr Bugs',
+        text: 'Klick auf einen Turm, um ihn aufzuwerten oder zu verkaufen. Neue Gegner (Heisenbug, Deprecated API mit Rüstung) und ein Tutorial beim ersten Start.'
+      },
+      {
         icon: '🌌',
         title: 'Premium-Themes',
         text: 'Vier neue animierte Themes: Neon Grid, Molten Core, Matrix und Galaxy — mehr Effekte, höherer Preis.'

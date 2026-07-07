@@ -81,8 +81,9 @@
     /* ── spawn queue ── */
     function buildQueue(lv) {
       const q = [];
-      const pool = lv.idx <= 9 ? ['nullptr', 'segfault', 'race', 'leak']
-                               : ['nullptr', 'segfault', 'race', 'leak', 'bloat'];
+      const pool = lv.idx <= 6 ? ['nullptr', 'segfault', 'race', 'leak']
+                 : lv.idx <= 12 ? ['nullptr', 'segfault', 'race', 'leak', 'bloat', 'ghost']
+                 : ['segfault', 'race', 'leak', 'bloat', 'ghost', 'armored', 'nullptr'];
       let t = 1.5;
       const gap = Math.max(0.55, 2.2 - lv.idx * 0.05);
       for (let i = 0; i < lv.count; i++) {
@@ -100,13 +101,14 @@
 
     function makeEnemy(spec) {
       const base = spec.boss ? D.BOSSES[spec.type] : D.ENEMIES[spec.type];
-      const hp = Math.round(base.hp * (spec.boss ? 1 : level.enemyHp));
+      const bossScale = spec.boss ? (1 + Math.max(0, level.idx - 10) * 0.12) : level.enemyHp;
+      const hp = Math.round(base.hp * bossScale);
       return {
         type: spec.type, boss: !!spec.boss, name: base.name,
         lane: spec.lane, x: cols * CELL + CELL * 0.5,
         hp: hp, maxHp: hp,
         speed: base.speed * (spec.boss ? 1 : level.enemySpeed),
-        dps: base.dps, reward: base.reward,
+        dps: base.dps, reward: base.reward, armor: base.armor || 0,
         color: base.color, glyph: base.glyph,
         slowUntil: 0
       };
@@ -125,15 +127,59 @@
     function onLeave() { hoverCell = null; }
     function onClick(e) {
       const c = cellFromEvent(e);
-      if (!c || !selected) return;
-      if (grid[c.row][c.col]) return;          // occupied
+      if (!c) return;
+      const existing = grid[c.row][c.col];
+      if (existing) {                           // click a placed tower -> its menu
+        if (cfg.onTower) cfg.onTower(towerInfo(existing), c, e);
+        return;
+      }
+      if (!selected) return;
       if (bytes < selected.cost) { floater(c.col * CELL + CELL / 2, c.row * CELL + 14, 'Zu wenig Bytes', '#f4324c'); return; }
       bytes -= selected.cost;
       grid[c.row][c.col] = {
         stat: selected, row: c.row, col: c.col,
         x: c.col * CELL + CELL / 2, y: c.row * CELL + CELL / 2,
-        hp: selected.hp, maxHp: selected.hp, cd: 0
+        hp: selected.hp, maxHp: selected.hp, cd: 0,
+        dmg: selected.damage, tier: 0, invested: selected.cost
       };
+      redrawIfIdle();
+    }
+    // Redraw immediately when the game loop isn't running (e.g. placing before Start).
+    function redrawIfIdle() { if (!running && !ended) { draw(); pushState(); } }
+
+    // ── tower upgrade / sell ──
+    const MAX_TIER = 2;
+    function upgradeCostOf(d) { return Math.round(d.stat.cost * (0.8 + d.tier * 0.5)); }
+    function towerInfo(d) {
+      return {
+        row: d.row, col: d.col, name: d.stat.name, label: d.stat.label,
+        tier: d.tier, maxTier: MAX_TIER, kind: d.stat.kind,
+        dmg: Math.round(d.dmg * 10) / 10, hp: Math.round(d.hp), maxHp: d.maxHp,
+        upgradeCost: d.tier >= MAX_TIER ? null : upgradeCostOf(d),
+        refund: Math.round(d.invested * 0.6)
+      };
+    }
+    function upgradeAt(row, col) {
+      const d = grid[row][col];
+      if (!d || d.tier >= MAX_TIER) return { ok: false, reason: 'max' };
+      const cost = upgradeCostOf(d);
+      if (bytes < cost) return { ok: false, reason: 'poor', cost: cost };
+      bytes -= cost; d.tier += 1; d.invested += cost;
+      d.dmg = Math.round(d.dmg * 1.5 * 10) / 10;
+      const nm = Math.round(d.maxHp * 1.5);
+      d.hp += (nm - d.maxHp); d.maxHp = nm;
+      floater(d.x, d.y - 10, 'Upgrade!', '#34d399');
+      redrawIfIdle();
+      return { ok: true, cost: cost };
+    }
+    function sellAt(row, col) {
+      const d = grid[row][col];
+      if (!d) return { ok: false };
+      const refund = Math.round(d.invested * 0.6);
+      bytes += refund; grid[row][col] = null;
+      floater(d.x, d.y - 10, '+' + refund + 'B', '#fbbf24');
+      redrawIfIdle();
+      return { ok: true, refund: refund };
     }
     canvas.addEventListener('mousemove', onMove);
     canvas.addEventListener('mouseleave', onLeave);
@@ -163,12 +209,12 @@
         if (target && d.cd <= 0) {
           d.cd = 1 / s.fireRate;
           if (s.kind === 'aoe') {
-            enemies.forEach(e => { if (e.lane === r && e.x > d.x) damageEnemy(e, s.damage); });
+            enemies.forEach(e => { if (e.lane === r && e.x > d.x) damageEnemy(e, d.dmg); });
             floaters.push({ lane: r, fromX: d.x, aoe: true, color: s.color, t: 0 });
           } else {
             projectiles.push({
               x: d.x + CELL * 0.3, y: d.y, lane: r, vx: s.projSpeed,
-              damage: s.damage, pierce: s.pierce, splash: s.splash,
+              damage: d.dmg, pierce: s.pierce, splash: s.splash,
               slow: s.kind === 'slow', slowFactor: s.slowFactor, slowTime: s.slowTime,
               color: s.color, hit: new Set()
             });
@@ -221,7 +267,7 @@
       if (!queue.length && enemies.length === 0 && spawnedCount >= totalToSpawn) endGame(true);
     }
 
-    function damageEnemy(e, dmg) { e.hp -= dmg; }
+    function damageEnemy(e, dmg) { e.hp -= dmg * (1 - (e.armor || 0)); }
 
     /* ── render ── */
     function draw() {
@@ -329,6 +375,8 @@
       destroy: destroy,
       select: function (stat) { selected = stat; },
       getSelected: function () { return selected; },
+      upgradeAt: upgradeAt,
+      sellAt: sellAt,
       cellSize: CELL, cols: cols, rows: rows
     };
   }
