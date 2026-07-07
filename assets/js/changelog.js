@@ -8,40 +8,40 @@
   'use strict';
 
   const CHANGELOG = {
-    version: '3.1',
-    codename: 'Float & Polish',
+    version: '4.0',
+    codename: 'Tower Defense',
     date: 'Juli 2026',
-    intro: 'Alles dreht sich um den Float — mit aufgeräumtem Inventar, Sprüchen und fieseren Flammen:',
+    intro: 'Das gigantische Update: verteidige mit deinen ergambelten Sprachen gegen Bugs — plus neue Premium-Themes!',
     features: [
       {
-        icon: '🎒',
-        title: 'Aufgeräumtes Inventar',
-        text: 'Gleiche Sprachen sind jetzt gruppiert: nur der beste Float wird gezeigt — Klick auf die Karte klappt alle weiteren Floats auf.'
+        icon: '🗼',
+        title: 'Tower Defense',
+        text: 'Ganz neuer Spielmodus im PvZ-Stil: platziere deine Sprachen als Türme und wehre Bug-Wellen über 5 Lanes ab.'
       },
       {
-        icon: '🔤',
-        title: 'Sortierung',
-        text: 'Sortiere dein Inventar alphabetisch (A–Z) oder nach Seltenheit.'
+        icon: '⚔️',
+        title: 'Sprach-Attacken',
+        text: 'Jede Sprache kämpft nach ihrem Merkmal: C durchschlägt (Zeiger), C++ macht Splash, SQL verlangsamt (JOIN-Lock), Haskell trifft die ganze Lane, HTML ist ein Tank.'
       },
       {
-        icon: '💠',
-        title: 'Schimmer bei Top-Floats',
-        text: 'Unter Float 0.05 wandert ein glitzernder Schimmer über das Item — mal hier, mal dort.'
+        icon: '💪',
+        title: 'Float & Rarität zählen',
+        text: 'Höhere Seltenheit und besserer Float bedeuten mehr Leben und mehr Schaden für deinen Turm.'
       },
       {
-        icon: '💬',
-        title: 'Float-Sprüche',
-        text: 'Besondere Floats bekommen eigene Sprüche als Popup — von „Absolute Spitzenklasse!" bis „Geh bitte nicht gambeln".'
+        icon: '💀',
+        title: '20 Level & Bosse',
+        text: 'Kämpfe dich durch 1.1 bis 3.0 — mit fetten Boss-Gegnern (Legacy Monolith, Blue Screen) auf jeder x.0.'
       },
       {
-        icon: '🏅',
-        title: 'Float-Achievements',
-        text: 'Neue Erfolge für extrem gute (unter 0.0001) und extrem schlechte (über 0.9999) Floats.'
+        icon: '⬆️',
+        title: 'Upgrades, Verkauf & mehr Bugs',
+        text: 'Klick auf einen Turm, um ihn aufzuwerten oder zu verkaufen. Neue Gegner (Heisenbug, Deprecated API mit Rüstung) und ein Tutorial beim ersten Start.'
       },
       {
-        icon: '🔥',
-        title: 'Fiesere Flammen',
-        text: 'Der Flammen-Effekt bei extrem schlechtem Float ist jetzt richtig grässlich — verkohlt, rauchend, mit Glut.'
+        icon: '🌌',
+        title: 'Premium-Themes',
+        text: 'Vier neue animierte Themes: Neon Grid, Molten Core, Matrix und Galaxy — mehr Effekte, höherer Preis.'
       }
     ]
   };

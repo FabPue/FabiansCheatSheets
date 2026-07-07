@@ -1,0 +1,110 @@
+/*
+ * td.css — Tower Defense UI (level select, game board, palette, HUD).
+ */
+
+/* ── level select ── */
+.td-level-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  gap: 10px;
+}
+.td-lvl {
+  position: relative;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  padding: 14px 8px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+.td-lvl:not([disabled]):hover { transform: translateY(-3px); border-color: #7c6af7; box-shadow: 0 8px 24px rgba(124,106,247,0.25); }
+.td-lvl-label { font-size: 16px; font-weight: 700; }
+.td-lvl-mark { font-size: 13px; }
+.td-lvl.cleared { border-color: #34d399; color: #34d399; background: rgba(52,211,153,0.08); }
+.td-lvl.open { border-color: #7c6af7; }
+.td-lvl.boss.open { border-color: #f4324c; box-shadow: 0 0 18px rgba(244,50,76,0.3); }
+.td-lvl.locked, .td-lvl[disabled] { opacity: 0.4; cursor: not-allowed; }
+
+/* ── game view ── */
+.td-game { display: flex; flex-direction: column; gap: 12px; }
+.td-hud {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text);
+}
+.td-hud-item b { color: #fbbf24; }
+.td-hud .fcs-btn { margin-left: auto; }
+.td-hud .fcs-btn.secondary { margin-left: 0; }
+
+.td-board-wrap { position: relative; width: 100%; }
+.td-canvas {
+  width: 100%; height: auto; display: block;
+  background: #05050c;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  image-rendering: auto;
+}
+
+.td-palette-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); }
+.td-palette { display: flex; gap: 8px; flex-wrap: wrap; }
+.td-card {
+  position: relative;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  min-width: 78px; padding: 8px 10px 6px;
+  border: 1px solid var(--rc, #7c6af7); border-radius: 10px;
+  background: color-mix(in srgb, var(--rc, #7c6af7) 12%, var(--surface));
+  color: var(--text); cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+.td-card:hover { transform: translateY(-2px); }
+.td-card.selected { box-shadow: 0 0 0 2px var(--rc, #7c6af7), 0 8px 20px rgba(0,0,0,0.4); }
+.td-card.poor { opacity: 0.45; }
+.td-card-label { font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 16px; color: var(--rc); }
+.td-card-name { font-size: 10px; color: var(--text); }
+.td-card-stats { font-size: 9px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+.td-card-cost { font-size: 10px; color: #fbbf24; font-family: 'JetBrains Mono', monospace; }
+
+/* ── end overlay ── */
+.td-end {
+  position: absolute; inset: 0;
+  display: none; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.7); border-radius: 12px;
+}
+.td-end.show { display: flex; }
+.td-end-card {
+  text-align: center; padding: 24px 30px; border-radius: 16px;
+  border: 1px solid var(--border); background: var(--surface);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+.td-end-card.win { border-color: #34d399; box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 30px rgba(52,211,153,0.3); }
+.td-end-card.lose { border-color: #f4324c; box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 30px rgba(244,50,76,0.3); }
+.td-end-title { font-family: 'Bebas Neue', sans-serif; font-size: 32px; letter-spacing: 1px; color: #fff; }
+.td-end-sub { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--muted); margin: 6px 0 16px; }
+.td-end-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+
+/* ── tower context menu (upgrade / sell) ── */
+.td-tower-menu {
+  position: fixed; z-index: 1400;
+  min-width: 180px;
+  background: var(--surface, #0f0f1a);
+  border: 1px solid var(--border, #1e1e32);
+  border-radius: 12px;
+  padding: 10px 12px;
+  box-shadow: 0 16px 44px rgba(0,0,0,0.6);
+}
+.ttm-title { font-weight: 700; color: #fff; font-size: 13px; }
+.ttm-tier { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #34d399; margin-left: 4px; }
+.ttm-stats { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); margin: 4px 0 10px; }
+.ttm-actions { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.ttm-max { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #fbbf24; }
+
+/* ── tutorial ── */
+.td-tut { display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; }
+.td-tut-row { display: flex; gap: 12px; align-items: flex-start; font-size: 13px; color: var(--text); line-height: 1.5; }
+.td-tut-ic { font-size: 22px; flex-shrink: 0; width: 28px; text-align: center; }
+.td-tut-row b { color: #fff; }
+
+/* card signature colour for the landing-page tile */
+.card-td { --card-color: #22d3ee; --card-glow: radial-gradient(ellipse at top, rgba(34,211,238,0.12), transparent 70%); --card-shadow: rgba(34,211,238,0.28); }

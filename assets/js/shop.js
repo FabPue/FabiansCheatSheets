@@ -50,6 +50,35 @@
         '--bg': '#0a0416', '--surface': '#140a24', '--border': '#2a1644',
         '--text': '#f3e8ff', '--muted': '#6a4a8a', '--glow': 'rgba(217,70,239,0.22)'
       }
+    },
+    /* ── premium animated themes (v4.0) — pricier, richer motion ── */
+    {
+      id: 'neongrid', name: 'Neon Grid', price: 900, premium: true,
+      vars: {
+        '--bg': '#050510', '--surface': '#0b0b1e', '--border': '#1b2b4a',
+        '--text': '#d6f5ff', '--muted': '#4a6a8a', '--glow': 'rgba(34,211,238,0.28)'
+      }
+    },
+    {
+      id: 'molten', name: 'Molten Core', price: 1100, premium: true,
+      vars: {
+        '--bg': '#100503', '--surface': '#1e0a06', '--border': '#3d1a0c',
+        '--text': '#ffe8dc', '--muted': '#8a5040', '--glow': 'rgba(255,90,20,0.3)'
+      }
+    },
+    {
+      id: 'matrix', name: 'Matrix', price: 1300, premium: true,
+      vars: {
+        '--bg': '#020a04', '--surface': '#04160a', '--border': '#0c3a1c',
+        '--text': '#c8ffd6', '--muted': '#3f8a5a', '--glow': 'rgba(34,255,120,0.25)'
+      }
+    },
+    {
+      id: 'galaxy', name: 'Galaxy', price: 1600, premium: true,
+      vars: {
+        '--bg': '#03040f', '--surface': '#0a0c22', '--border': '#22284a',
+        '--text': '#e6e8ff', '--muted': '#5a5f8a', '--glow': 'rgba(129,140,248,0.28)'
+      }
     }
   ];
 

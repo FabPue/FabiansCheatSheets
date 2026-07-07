@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="assets/css/gamify.css">
 <link rel="stylesheet" href="assets/css/cases.css">
 <link rel="stylesheet" href="assets/css/themes.css">
+<link rel="stylesheet" href="assets/css/td.css">
 <style>
   :root {
     --bg: #080810;
@@ -532,7 +533,7 @@
     <div class="logo-icon">&lt;/&gt;</div>
     <span class="logo-text">Fabian's <span>Cheat</span>Sheets</span>
   </div>
-  <div class="header-badge" id="versionBadge" title="Was ist neu?">7 languages · v3.1</div>
+  <div class="header-badge" id="versionBadge" title="Was ist neu?">7 languages · v4.0</div>
   <div class="user-widget" id="userWidget"></div>
 </header>
 
@@ -650,6 +651,19 @@
           <span class="topic-tag">lokal</span>
         </div>
         <div class="open-hint">→ Top Floats</div>
+      </div>
+
+      <!-- Tower Defense -->
+      <div class="lang-card card-td" onclick="FCSApp.openTowerDefense()">
+        <div class="lang-icon"><span class="lang-emoji">🗼</span></div>
+        <div class="lang-name">Tower Defense</div>
+        <div class="lang-version">20 Level · Bosse</div>
+        <div class="lang-topics">
+          <span class="topic-tag">towers</span>
+          <span class="topic-tag">bugs</span>
+          <span class="topic-tag">boss</span>
+        </div>
+        <div class="open-hint">→ Spielen</div>
       </div>
 
     </div>
@@ -885,6 +899,8 @@
 <script src="assets/js/shop.js"></script>
 <script src="assets/js/cases.js"></script>
 <script src="assets/js/collections.js"></script>
+<script src="assets/js/td-data.js"></script>
+<script src="assets/js/td.js"></script>
 <script src="assets/js/achievements.js"></script>
 <script src="assets/js/auth.js"></script>
 <script src="assets/js/admin.js"></script>
