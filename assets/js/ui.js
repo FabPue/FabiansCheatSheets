@@ -34,8 +34,15 @@
   // Wraps a language icon so its float/wear tier drives the visual condition
   // (glow & sparkle when good, scratches/flames when worn). See .skin-icon in cases.css.
   function skinIconHTML(item, wearId, floatVal) {
-    const extreme = (typeof floatVal === 'number' && floatVal >= 0.90) ? ' float-extreme' : '';
-    return `<span class="skin-icon wear-${wearId}${extreme}">${iconMarkup(item)}</span>`;
+    const f = typeof floatVal === 'number' ? floatVal : null;
+    const extreme = (f !== null && f >= 0.90) ? ' float-extreme' : '';
+    const pristine = (f !== null && f < 0.05) ? ' float-pristine' : '';
+    // Extra overlay layers: roaming shimmer for pristine floats, chaotic
+    // flames for extreme floats (styled in cases.css).
+    let extra = '';
+    if (pristine) extra = '<span class="pristine-shimmer" aria-hidden="true"></span>';
+    else if (extreme) extra = '<span class="flames" aria-hidden="true"></span>';
+    return `<span class="skin-icon wear-${wearId}${extreme}${pristine}">${iconMarkup(item)}${extra}</span>`;
   }
   function rarityMeta(id) {
     const d = CasesData();
@@ -693,6 +700,38 @@
     requestAnimationFrame(frame);
   }
 
+  // Special one-liners for notable floats. Ordered best -> worst; first match wins.
+  const FLOAT_PHRASES = [
+    { max: 0.0001, text: 'Absolute Spitzenklasse! 🏆', kind: 'great' },
+    { max: 0.0010, text: 'Traumhafter Float! ✨',       kind: 'great' },
+    { max: 0.0100, text: 'Richtig sauber. 😎',           kind: 'great' },
+    { min: 0.9999, text: 'Geh bitte nicht gambeln. 💀',  kind: 'bad' },
+    { min: 0.9900, text: 'Autsch… richtig ranzig. 🤢',   kind: 'bad' },
+    { min: 0.9500, text: 'Das riecht schon. 🗑️',        kind: 'bad' }
+  ];
+
+  function floatPhrase(f) {
+    for (const p of FLOAT_PHRASES) {
+      if (p.max !== undefined && f <= p.max) return p;
+      if (p.min !== undefined && f >= p.min) return p;
+    }
+    return null;
+  }
+
+  function showFloatPhrase(phrase, floatVal) {
+    if (!phrase || !achWrap) return;
+    const pop = el(`
+      <div class="float-phrase ${phrase.kind}">
+        <div class="fp-float">${floatVal.toFixed(4)}</div>
+        <div class="fp-text">${esc(phrase.text)}</div>
+      </div>`);
+    achWrap.appendChild(pop);
+    setTimeout(() => {
+      pop.classList.add('out');
+      setTimeout(() => pop.remove(), 500);
+    }, 4200);
+  }
+
   function revealDrop(drop) {
     const Snd = Sounds();
     if (Snd) {
@@ -714,6 +753,7 @@
         </div>
       </div>`;
     toast(`Gedroppt: ${drop.name} (${rarityMeta(drop.rarity).name})`, drop.rarity === 'gold' ? 'coin' : '');
+    showFloatPhrase(floatPhrase(drop.float), drop.float);
   }
 
   function showGoldExplosion(drop) {
@@ -747,6 +787,8 @@
 
   /* ── inventory ── */
   let invFilter = 'all';
+  let invSort = 'az';                 // 'az' | 'rarity'
+  const invExpanded = {};             // language name -> expanded?
 
   function openInventory() {
     const user = Auth.currentUser();
@@ -755,12 +797,27 @@
     renderInventory();
   }
 
+  // Groups inventory by language name; each group keeps its items sorted by
+  // float ascending (best first). Returns array of { name, rarity, items, best }.
+  function groupInventory(items) {
+    const map = new Map();
+    items.forEach(it => {
+      if (!map.has(it.name)) map.set(it.name, []);
+      map.get(it.name).push(it);
+    });
+    const groups = [];
+    map.forEach((list, name) => {
+      list.sort((a, b) => a.float - b.float);
+      groups.push({ name: name, rarity: list[0].rarity, items: list, best: list[0] });
+    });
+    return groups;
+  }
+
   function renderInventory() {
     const user = Auth.currentUser();
     const p = Store.getProfile(user);
     const items = (p.inventory || []).slice();
     const order = { gold: 0, red: 1, epic: 2, blue: 3, grey: 4 };
-    items.sort((a, b) => (order[a.rarity] - order[b.rarity]) || (b.obtainedAt - a.obtainedAt));
 
     const chips = ['all'].concat(CasesData().RARITIES.map(r => r.id));
     const chipHtml = chips.map(id => {
@@ -776,30 +833,61 @@
       </div>
       <div class="fcs-dialog-body">
         <div class="inv-toolbar">${chipHtml}</div>
+        <div class="inv-sort">
+          <span class="inv-sort-label">Sortieren:</span>
+          <div class="inv-sort-chip ${invSort === 'az' ? 'active' : ''}" data-s="az">A–Z</div>
+          <div class="inv-sort-chip ${invSort === 'rarity' ? 'active' : ''}" data-s="rarity">Seltenheit</div>
+        </div>
         <div id="invGrid"></div>
       </div>`, true);
     dialog.querySelector('.fcs-dialog-close').onclick = closeDialog;
     dialog.querySelectorAll('.inv-chip').forEach(ch => {
       ch.onclick = () => { invFilter = ch.dataset.f; renderInventory(); };
     });
+    dialog.querySelectorAll('.inv-sort-chip').forEach(ch => {
+      ch.onclick = () => { invSort = ch.dataset.s; renderInventory(); };
+    });
 
     const grid = dialog.querySelector('#invGrid');
-    const shown = items.filter(it => invFilter === 'all' || it.rarity === invFilter);
-    if (!shown.length) {
+    const filtered = items.filter(it => invFilter === 'all' || it.rarity === invFilter);
+    if (!filtered.length) {
       grid.innerHTML = '<div class="inv-empty">Noch keine Items — öffne eine Case! 📦</div>';
       return;
     }
+
+    let groups = groupInventory(filtered);
+    if (invSort === 'az') {
+      groups.sort((a, b) => a.name.localeCompare(b.name));
+    } else {
+      groups.sort((a, b) => (order[a.rarity] - order[b.rarity]) || a.name.localeCompare(b.name));
+    }
+
     grid.className = 'inv-grid';
-    grid.innerHTML = shown.map(it => {
-      const wear = wearMeta(it.wearTier);
+    grid.innerHTML = groups.map(g => {
+      const wear = wearMeta(g.best.wearTier);
+      const multi = g.items.length > 1;
+      const expanded = multi && invExpanded[g.name];
+      const others = g.items.map((it, i) =>
+        `<div class="inv-sub-row"><span>#${i + 1}</span><span>${esc(wearMeta(it.wearTier).short)}</span><span class="inv-sub-float">${it.float.toFixed(4)}</span></div>`
+      ).join('');
       return `
-        <div class="inv-item r-${it.rarity}">
-          ${skinIconHTML(it, it.wearTier, it.float)}
-          <div class="inv-name">${esc(it.name)}</div>
-          <div class="inv-wear-line">${esc(wear.short)} · ${esc(rarityMeta(it.rarity).name)}</div>
-          <div class="inv-float">${it.float.toFixed(4)}</div>
+        <div class="inv-item r-${g.rarity} ${multi ? 'has-more' : ''} ${expanded ? 'expanded' : ''}" data-name="${esc(g.name)}">
+          ${multi ? `<span class="inv-count">×${g.items.length}</span>` : ''}
+          ${skinIconHTML(g.best, g.best.wearTier, g.best.float)}
+          <div class="inv-name">${esc(g.name)}</div>
+          <div class="inv-wear-line">${esc(wear.short)} · ${esc(rarityMeta(g.rarity).name)}</div>
+          <div class="inv-float">${g.best.float.toFixed(4)}${multi ? ' <span class="inv-best-tag">beste</span>' : ''}</div>
+          ${multi ? `<div class="inv-sublist">${others}</div>` : ''}
         </div>`;
     }).join('');
+
+    grid.querySelectorAll('.inv-item.has-more').forEach(card => {
+      card.addEventListener('click', () => {
+        const name = card.dataset.name;
+        invExpanded[name] = !invExpanded[name];
+        card.classList.toggle('expanded', invExpanded[name]);
+      });
+    });
   }
 
   /* ── marketplace: sell items for coins ── */

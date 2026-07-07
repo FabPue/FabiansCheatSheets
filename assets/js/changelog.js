@@ -8,50 +8,40 @@
   'use strict';
 
   const CHANGELOG = {
-    version: '3.0',
-    codename: 'Major Update',
+    version: '3.1',
+    codename: 'Float & Polish',
     date: 'Juli 2026',
-    intro: 'Das größte Update bisher — Marktplatz, Collections, Bestenliste, neue Sprachen, Effekte und mehr:',
+    intro: 'Alles dreht sich um den Float — mit aufgeräumtem Inventar, Sprüchen und fieseren Flammen:',
     features: [
       {
-        icon: '💰',
-        title: 'Marktplatz',
-        text: 'Verkaufe Items aus deinem Inventar für Coins — der Wert steigt mit Seltenheit und besserem Float.'
+        icon: '🎒',
+        title: 'Aufgeräumtes Inventar',
+        text: 'Gleiche Sprachen sind jetzt gruppiert: nur der beste Float wird gezeigt — Klick auf die Karte klappt alle weiteren Floats auf.'
       },
       {
-        icon: '🏆',
-        title: 'Collections',
-        text: 'Sammle bestimmte Sprachen-Sets (manche in speziellen Floats) und kassiere einmalige Belohnungen.'
+        icon: '🔤',
+        title: 'Sortierung',
+        text: 'Sortiere dein Inventar alphabetisch (A–Z) oder nach Seltenheit.'
+      },
+      {
+        icon: '💠',
+        title: 'Schimmer bei Top-Floats',
+        text: 'Unter Float 0.05 wandert ein glitzernder Schimmer über das Item — mal hier, mal dort.'
+      },
+      {
+        icon: '💬',
+        title: 'Float-Sprüche',
+        text: 'Besondere Floats bekommen eigene Sprüche als Popup — von „Absolute Spitzenklasse!" bis „Geh bitte nicht gambeln".'
       },
       {
         icon: '🏅',
-        title: 'Float-Bestenliste',
-        text: 'Deine besten (niedrigsten) Floats im Ranking — wer hat den makellosesten Drop?'
-      },
-      {
-        icon: '🧬',
-        title: 'Mehr Sprachen',
-        text: 'Neue Case-Items inkl. F#, Fortran, C, C++, Java, Natural, BASIC, Fortress und Scratch als Gold.'
+        title: 'Float-Achievements',
+        text: 'Neue Erfolge für extrem gute (unter 0.0001) und extrem schlechte (über 0.9999) Floats.'
       },
       {
         icon: '🔥',
-        title: 'Float-Effekte',
-        text: 'Guter Float glänzt und funkelt, schlechter zeigt Kratzer — und bei extrem schlechtem Float lodern Flammen.'
-      },
-      {
-        icon: '🌌',
-        title: 'Animierte Themes',
-        text: 'Aurora mit funkelnden Sternen und Deep Ocean mit sanften Wellen — jetzt in Bewegung.'
-      },
-      {
-        icon: '🔍',
-        title: 'Cheatsheet-Suche',
-        text: 'In jedem Cheat Sheet gibt es jetzt eine Suchleiste (Taste „/") zum sofortigen Filtern der Karten.'
-      },
-      {
-        icon: '🎯',
-        title: 'Mehr Daily Quests & Case-Counter',
-        text: 'Zusätzliche tägliche Aufgaben und ein Zähler für geöffnete Cases.'
+        title: 'Fiesere Flammen',
+        text: 'Der Flammen-Effekt bei extrem schlechtem Float ist jetzt richtig grässlich — verkohlt, rauchend, mit Glut.'
       }
     ]
   };
