@@ -449,27 +449,68 @@
   .skin-icon.wear-mw::before { opacity: 0.5; background-position: 60% center; }
 }
 
-/* ── EXTREME float: flames (only occurs on Battle-Scarred, float >= 0.90) ── */
+/* ── EXTREME float: charred, smoking, flaming wreck (Battle-Scarred, >= 0.90) ── */
+/* The icon looks burnt: desaturated, darkened, scorched reddish. */
 .skin-icon.float-extreme > i,
 .skin-icon.float-extreme > .lang-glyph {
-  filter: brightness(0.95) drop-shadow(0 0 10px rgba(255,90,0,0.9)) drop-shadow(0 0 3px rgba(255,180,0,0.9));
+  filter: grayscale(0.55) brightness(0.55) sepia(0.45) hue-rotate(-18deg)
+          contrast(1.15) drop-shadow(0 0 7px rgba(255,45,0,0.85));
 }
+/* Dark, wafting smoke behind/around the icon (::before). */
 .skin-icon.float-extreme::before {
-  inset: 20% -18% -14% -18%;
+  inset: -35% -22% 26% -22%;
   z-index: 3;
   background:
-    radial-gradient(ellipse 40% 62% at 30% 100%, rgba(255,120,0,0.95), transparent 70%),
-    radial-gradient(ellipse 46% 74% at 55% 100%, rgba(255,55,0,0.9),  transparent 72%),
-    radial-gradient(ellipse 38% 56% at 76% 100%, rgba(255,185,0,0.9), transparent 70%);
-  filter: blur(3px);
+    radial-gradient(ellipse 46% 55% at 42% 100%, rgba(24,20,16,0.65), transparent 72%),
+    radial-gradient(ellipse 40% 50% at 62% 100%, rgba(40,36,30,0.5),  transparent 70%);
+  filter: blur(6px);
+  transform-origin: bottom center;
+  animation: smokeWaft 2.3s ease-in-out infinite alternate;
+  opacity: 0.85;
+}
+@keyframes smokeWaft {
+  0%   { transform: translateY(0)    translateX(-5%) scale(1);    opacity: 0.5; }
+  100% { transform: translateY(-14%) translateX(6%)  scale(1.12); opacity: 0.85; }
+}
+/* Injected flame element: jagged, flickering tongues (harsh steps = ugly). */
+.skin-icon .flames { display: none; }
+.skin-icon.float-extreme .flames {
+  display: block;
+  position: absolute;
+  left: -22%; right: -22%; bottom: -16%; top: 12%;
+  z-index: 4;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 20% 58% at 22% 100%, rgba(255,80,0,0.95),  transparent 66%),
+    radial-gradient(ellipse 16% 72% at 40% 100%, rgba(220,25,0,0.92),  transparent 70%),
+    radial-gradient(ellipse 19% 60% at 56% 100%, rgba(255,130,0,0.9),  transparent 67%),
+    radial-gradient(ellipse 15% 78% at 71% 100%, rgba(180,15,0,0.92),  transparent 71%),
+    radial-gradient(ellipse 22% 52% at 87% 100%, rgba(255,70,0,0.88),  transparent 65%);
+  filter: blur(1.5px) contrast(1.4) saturate(1.3);
   mix-blend-mode: screen;
   transform-origin: bottom center;
-  animation: floatFlames 0.42s ease-in-out infinite alternate;
-  opacity: 1;
+  animation: uglyFlames 0.22s steps(2, end) infinite;
 }
-@keyframes floatFlames {
-  0%   { transform: scaleY(1)    translateY(0)     skewX(-2deg); opacity: 0.82; }
-  100% { transform: scaleY(1.22) translateY(-7%)   skewX(3deg);  opacity: 1; }
+/* Rising embers on top of the flames. */
+.skin-icon.float-extreme .flames::after {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(2px 2px at 28% 62%, #ffcf33, transparent 60%),
+    radial-gradient(1.5px 1.5px at 52% 52%, #ff7a00, transparent 60%),
+    radial-gradient(2px 2px at 68% 66%, #ffd447, transparent 60%),
+    radial-gradient(1.5px 1.5px at 40% 74%, #ff9a00, transparent 60%);
+  animation: embersRise 0.85s linear infinite;
+}
+@keyframes uglyFlames {
+  0%   { transform: scaleY(1)    skewX(-5deg); opacity: 0.85; }
+  33%  { transform: scaleY(1.28) skewX(6deg);  opacity: 1; }
+  66%  { transform: scaleY(0.92) skewX(-3deg); opacity: 0.9; }
+  100% { transform: scaleY(1.15) skewX(4deg);  opacity: 1; }
+}
+@keyframes embersRise {
+  from { transform: translateY(0);    opacity: 1; }
+  to   { transform: translateY(-45%); opacity: 0; }
 }
 
 /* ── fallback language badge (languages Devicon doesn't cover) ── */
@@ -499,3 +540,94 @@
 .drop-card .skin-icon .lang-glyph { font-size: 34px; }
 .inv-item .skin-icon .lang-glyph { font-size: 20px; }
 .gold-core .lang-glyph { font-size: 56px; }
+
+/* ── PRISTINE float (< 0.05): roaming shimmer at wandering spots ── */
+.skin-icon .pristine-shimmer { display: none; }
+.skin-icon.float-pristine > i,
+.skin-icon.float-pristine > .lang-glyph {
+  filter: drop-shadow(0 0 8px rgba(180,230,255,0.7)) drop-shadow(0 0 2px rgba(255,255,255,0.9)) saturate(1.15) brightness(1.1);
+}
+.skin-icon.float-pristine .pristine-shimmer {
+  display: block;
+  position: absolute; inset: -8%;
+  z-index: 5; pointer-events: none;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.95) 0, rgba(180,230,255,0.5) 30%, transparent 60%);
+  background-repeat: no-repeat;
+  background-size: 42% 42%;
+  mix-blend-mode: screen;
+  filter: blur(2px);
+  opacity: 0;
+  animation: pristineShimmer 4.2s ease-in-out infinite;
+}
+@keyframes pristineShimmer {
+  0%   { background-position: 8% 12%;  opacity: 0; }
+  7%   { opacity: 1; }
+  16%  { background-position: 82% 22%; opacity: 0; }
+  24%  { opacity: 0; }
+  32%  { background-position: 60% 82%; opacity: 1; }
+  40%  { opacity: 0; }
+  52%  { background-position: 18% 66%; opacity: 1; }
+  60%  { opacity: 0; }
+  72%  { background-position: 88% 56%; opacity: 1; }
+  80%  { opacity: 0; }
+  90%  { background-position: 42% 32%; opacity: 1; }
+  100% { background-position: 42% 32%; opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skin-icon.float-pristine .pristine-shimmer,
+  .skin-icon.float-extreme .flames,
+  .skin-icon.float-extreme .flames::after,
+  .skin-icon.float-extreme::before { animation: none !important; }
+}
+
+/* ── float phrase popup (notable floats) ── */
+.float-phrase {
+  pointer-events: auto;
+  min-width: 260px; max-width: 420px;
+  padding: 14px 22px; border-radius: 16px; text-align: center;
+  border: 1px solid var(--fp-border);
+  background: linear-gradient(135deg, var(--fp-bg1), var(--fp-bg2));
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 30px var(--fp-glow);
+  animation: achIn 0.5s cubic-bezier(0.2,1.4,0.4,1);
+}
+.float-phrase.out { animation: achOut 0.5s ease forwards; }
+.float-phrase.great { --fp-border: rgba(96,165,250,0.6); --fp-bg1: rgba(8,20,40,0.98); --fp-bg2: rgba(10,16,30,0.98); --fp-glow: rgba(96,165,250,0.35); }
+.float-phrase.bad   { --fp-border: rgba(244,63,94,0.6);  --fp-bg1: rgba(30,8,10,0.98);  --fp-bg2: rgba(20,10,10,0.98); --fp-glow: rgba(244,63,94,0.35); }
+.fp-float { font-family: 'JetBrains Mono', monospace; font-size: 26px; font-weight: 700; color: #fff; }
+.float-phrase.great .fp-float { color: #93c5fd; }
+.float-phrase.bad .fp-float { color: #fda4af; }
+.fp-text { font-size: 14px; color: var(--text); margin-top: 4px; }
+
+/* ── inventory grouping / sort (v3.1) ── */
+.inv-sort { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.inv-sort-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); }
+.inv-sort-chip {
+  padding: 5px 12px; border-radius: 16px; border: 1px solid var(--border);
+  color: var(--muted); cursor: pointer; font-size: 12px; font-family: 'JetBrains Mono', monospace;
+  transition: all 0.15s;
+}
+.inv-sort-chip.active { color: #fff; border-color: #7c6af7; background: rgba(124,106,247,0.15); }
+.inv-item.has-more { cursor: pointer; }
+.inv-item.expanded { overflow: visible; }
+.inv-count {
+  position: absolute; top: 8px; right: 8px; z-index: 6;
+  font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
+  padding: 2px 7px; border-radius: 10px;
+  background: color-mix(in srgb, var(--rc) 35%, #0a0a14); color: #fff;
+  border: 1px solid var(--rc);
+}
+.inv-best-tag {
+  font-size: 8px; text-transform: uppercase; letter-spacing: 1px; color: #34d399;
+  border: 1px solid rgba(52,211,153,0.5); border-radius: 4px; padding: 0 4px; margin-left: 4px;
+}
+.inv-sublist {
+  display: none; width: 100%; margin-top: 8px; padding-top: 8px;
+  border-top: 1px dashed var(--border);
+}
+.inv-item.expanded .inv-sublist { display: block; }
+.inv-sub-row {
+  display: flex; justify-content: space-between; gap: 8px;
+  font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted);
+  padding: 2px 2px;
+}
+.inv-sub-float { color: var(--rc); }

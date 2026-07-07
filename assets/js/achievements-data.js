@@ -55,7 +55,14 @@
     { id: 'coll_5',   icon: '📚', title: 'Kleine Sammlung', desc: 'Du besitzt 5 verschiedene Sprachen.',  xp: 60,  gold: 40,  test: s => s.uniqueLangs >= 5 },
     { id: 'coll_12',  icon: '📚', title: 'Sammler',         desc: 'Du besitzt 12 verschiedene Sprachen.', xp: 200, gold: 150, test: s => s.uniqueLangs >= 12 },
     { id: 'wear_fn',  icon: '✨', title: 'Fabrikfrisch',    desc: 'Du hast ein fabrikneues Item.',        xp: 80,  gold: 60,  test: s => s.wear.fn >= 1 },
-    { id: 'wear_bs',  icon: '🩹', title: 'Schrottsammler',  desc: 'Du hast ein Item mit Kampfspuren.',    xp: 40,  gold: 20,  test: s => s.wear.bs >= 1 }
+    { id: 'wear_bs',  icon: '🩹', title: 'Schrottsammler',  desc: 'Du hast ein Item mit Kampfspuren.',    xp: 40,  gold: 20,  test: s => s.wear.bs >= 1 },
+
+    /* ── Float extremes ── */
+    { id: 'float_sub01',   icon: '💎', title: 'Blitzsauber',     desc: 'Ein Item mit Float unter 0.01.',   xp: 120,  gold: 100,  test: s => s.bestFloat <= 0.01 },
+    { id: 'float_sub001',  icon: '💠', title: 'Makellos',        desc: 'Ein Item mit Float unter 0.001.',  xp: 400,  gold: 350,  test: s => s.bestFloat <= 0.001 },
+    { id: 'float_sub0001', icon: '🏆', title: 'Perfektionist',   desc: 'Ein Item mit Float unter 0.0001!', xp: 1500, gold: 1200, test: s => s.bestFloat <= 0.0001 },
+    { id: 'float_99',      icon: '🗑️', title: 'Schrottwert',     desc: 'Ein Item mit Float über 0.99.',    xp: 60,   gold: 30,   test: s => s.worstFloat >= 0.99 },
+    { id: 'float_9999',    icon: '💀', title: 'Totalschaden',    desc: 'Ein Item mit Float über 0.9999!',  xp: 400,  gold: 200,  test: s => s.worstFloat >= 0.9999 }
   ];
 
   global.FCSAchievementsData = A;

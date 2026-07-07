@@ -16,10 +16,15 @@
     const rarity = { grey: 0, blue: 0, epic: 0, red: 0, gold: 0 };
     const wear = { fn: 0, mw: 0, ft: 0, ww: 0, bs: 0 };
     const langs = new Set();
+    let bestFloat = 1, worstFloat = 0;
     (profile.inventory || []).forEach(it => {
       if (rarity[it.rarity] !== undefined) rarity[it.rarity]++;
       if (wear[it.wearTier] !== undefined) wear[it.wearTier]++;
-      langs.add(it.slug);
+      langs.add(it.slug || it.name);
+      if (typeof it.float === 'number') {
+        if (it.float < bestFloat) bestFloat = it.float;
+        if (it.float > worstFloat) worstFloat = it.float;
+      }
     });
     return {
       streak: profile.streak || 0,
@@ -28,7 +33,9 @@
       level: profile.level || (global.FCSGamify ? global.FCSGamify.levelForXp(profile.xp || 0) : 1),
       uniqueLangs: langs.size,
       rarity: rarity,
-      wear: wear
+      wear: wear,
+      bestFloat: bestFloat,
+      worstFloat: worstFloat
     };
   }
 
