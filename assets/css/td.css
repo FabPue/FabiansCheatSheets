@@ -47,6 +47,19 @@
   image-rendering: auto;
 }
 
+/* tower skin layer (DOM icons over the canvas) */
+.td-tower-layer { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
+.td-tower-node { position: absolute; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; }
+.td-tower-node .skin-icon > i { font-size: 34px; }
+.td-tower-node .skin-icon > .lang-glyph { font-size: 17px; }
+.td-tier-badge {
+  position: absolute; top: -8px; right: -8px;
+  background: #34d399; color: #06281c;
+  font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 800;
+  border-radius: 8px; padding: 1px 5px;
+}
+.td-end { z-index: 3; }
+
 .td-palette-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); }
 .td-palette { display: flex; gap: 8px; flex-wrap: wrap; }
 .td-card {

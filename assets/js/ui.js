@@ -1233,6 +1233,25 @@
     setTimeout(() => document.addEventListener('click', tdOutsideCloser), 0);
   }
 
+  // Renders the placed towers as a DOM layer over the canvas: each tower shows
+  // its real language logo with the same float-based skin (shimmer/flames).
+  function renderTowerLayer(towers, dim) {
+    const layer = dialog.querySelector('#tdTowerLayer');
+    if (!layer) return;
+    const C = Cases();
+    layer.innerHTML = towers.map(t => {
+      const s = t.stat;
+      const wearId = s.wearTier || (C ? C.wearTierForFloat(s.float).id : 'ft');
+      const left = ((t.col + 0.5) / dim.cols) * 100;
+      const top = ((t.row + 0.5) / dim.rows) * 100;
+      const badge = t.tier > 0 ? `<span class="td-tier-badge">${t.tier + 1}</span>` : '';
+      return `<div class="td-tower-node" style="left:${left}%;top:${top}%">
+          ${skinIconHTML({ slug: s.slug, glyph: s.glyph, name: s.name }, wearId, s.float)}
+          ${badge}
+        </div>`;
+    }).join('');
+  }
+
   function renderTdLevels() {
     const user = Auth.currentUser();
     const p = Store.getProfile(user);
@@ -1295,6 +1314,7 @@
         </div>
         <div class="td-board-wrap">
           <canvas id="tdCanvas" class="td-canvas"></canvas>
+          <div class="td-tower-layer" id="tdTowerLayer"></div>
           <div class="td-end" id="tdEnd"></div>
         </div>
         <div class="td-palette-label">Türme (Klick zum Auswählen, dann aufs Feld) · platzierten Turm anklicken für ⬆ Upgrade / 💰 Verkauf:</div>
@@ -1318,7 +1338,8 @@
         });
       },
       onEnd: res => onTdEnd(res, levelIdx),
-      onTower: (info, cell, ev) => showTowerMenu(info, ev, game)
+      onTower: (info, cell, ev) => showTowerMenu(info, ev, game),
+      onTowers: (towers, dim) => renderTowerLayer(towers, dim)
     });
     activeGame = game;
 

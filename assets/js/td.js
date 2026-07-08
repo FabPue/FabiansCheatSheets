@@ -52,10 +52,12 @@
       cost: D.RARITY_COST[item.rarity] || 60,
       damage: Math.round(a.damage * rm * fm * 10) / 10,
       fireRate: a.fireRate, projSpeed: a.projSpeed,
-      pierce: a.pierce, splash: a.splash,
+      pierce: a.pierce, splash: a.splash, shape: a.shape,
       slowFactor: a.slowFactor, slowTime: a.slowTime,
       hp: Math.round(a.hp * rm * fm),
-      label: shortLabel(item)
+      label: shortLabel(item),
+      slug: item.slug || null, glyph: item.glyph || null,
+      wearTier: item.wearTier || null
     };
   }
 
@@ -115,7 +117,7 @@
 
     function makeEnemy(spec) {
       const base = spec.boss ? D.BOSSES[spec.type] : D.ENEMIES[spec.type];
-      const bossScale = spec.boss ? (1 + Math.max(0, level.idx - 10) * 0.12) : level.enemyHp;
+      const bossScale = spec.boss ? (1 + Math.max(0, level.idx - 10) * 0.16) : level.enemyHp;
       const hp = Math.round(base.hp * bossScale);
       return {
         type: spec.type, boss: !!spec.boss, name: base.name,
@@ -157,9 +159,21 @@
         dmg: selected.damage, tier: 0, invested: selected.cost
       };
       redrawIfIdle();
+      notifyTowers();
     }
     // Redraw immediately when the game loop isn't running (e.g. placing before Start).
     function redrawIfIdle() { if (!running && !ended) { draw(); pushState(); } }
+
+    // Report the current towers so the UI can render the DOM skin layer.
+    function collectTowers() {
+      const list = [];
+      for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+        const d = grid[r][c];
+        if (d) list.push({ row: r, col: c, stat: d.stat, tier: d.tier });
+      }
+      return list;
+    }
+    function notifyTowers() { if (cfg.onTowers) cfg.onTowers(collectTowers(), { cols: cols, rows: rows }); }
 
     // ── tower upgrade / sell ──
     const MAX_TIER = 2;
@@ -184,6 +198,7 @@
       d.hp += (nm - d.maxHp); d.maxHp = nm;
       floater(d.x, d.y - 10, 'Upgrade!', '#34d399');
       redrawIfIdle();
+      notifyTowers();
       return { ok: true, cost: cost };
     }
     function sellAt(row, col) {
@@ -193,6 +208,7 @@
       bytes += refund; grid[row][col] = null;
       floater(d.x, d.y - 10, '+' + refund + 'B', '#fbbf24');
       redrawIfIdle();
+      notifyTowers();
       return { ok: true, refund: refund };
     }
     canvas.addEventListener('mousemove', onMove);
@@ -230,7 +246,7 @@
               x: d.x + CELL * 0.3, y: d.y, lane: r, vx: s.projSpeed,
               damage: d.dmg, pierce: s.pierce, splash: s.splash,
               slow: s.kind === 'slow', slowFactor: s.slowFactor, slowTime: s.slowTime,
-              color: s.color, hit: new Set()
+              color: s.color, shape: s.shape || 'bullet', spin: 0, hit: new Set()
             });
           }
         }
@@ -240,13 +256,17 @@
       for (let i = projectiles.length - 1; i >= 0; i--) {
         const p = projectiles[i];
         p.x += p.vx * dt;
+        p.spin += dt * 12;
         let remove = p.x > cols * CELL + 20;
         for (const e of enemies) {
           if (e.lane !== p.lane || e.hp <= 0 || p.hit.has(e)) continue;
           if (Math.abs(p.x - e.x) < CELL * 0.42) {
             damageEnemy(e, p.damage);
             if (p.slow) { e.slowUntil = elapsed + (p.slowTime || 2); e.slowFactor = p.slowFactor || 0.5; }
-            if (p.splash) enemies.forEach(o => { if (o !== e && o.lane === p.lane && Math.abs(o.x - e.x) < p.splash) damageEnemy(o, p.damage * 0.5); });
+            if (p.splash) {
+              enemies.forEach(o => { if (o !== e && o.lane === p.lane && Math.abs(o.x - e.x) < p.splash) damageEnemy(o, p.damage * 0.5); });
+              floaters.push({ x: p.x, y: p.y, ring: true, r0: p.splash, color: p.color, t: 0 });
+            }
             p.hit.add(e);
             if (!p.pierce) { remove = true; break; }
           }
@@ -296,14 +316,11 @@
         ctx.fillStyle = ok ? 'rgba(52,211,153,0.18)' : 'rgba(244,50,76,0.18)';
         ctx.fillRect(hoverCell.col * CELL, hoverCell.row * CELL, CELL, CELL);
       }
-      // defenders
+      // defenders: only the hp bar on canvas — the language icon + float skin
+      // is a DOM overlay (see ui.js renderTowerLayer).
       for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
         const d = grid[r][c]; if (!d) continue;
-        roundRect(c * CELL + 6, r * CELL + 6, CELL - 12, CELL - 12, 8, d.stat.color);
-        ctx.fillStyle = '#0a0a14'; ctx.font = 'bold 15px JetBrains Mono, monospace';
-        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText(d.stat.label, c * CELL + CELL / 2, r * CELL + CELL / 2 - 2);
-        bar(c * CELL + 8, r * CELL + CELL - 12, CELL - 16, 3, d.hp / d.maxHp, '#34d399');
+        bar(c * CELL + 8, r * CELL + CELL - 9, CELL - 16, 3, d.hp / d.maxHp, '#34d399');
       }
       // aoe flashes
       floaters.forEach(f => {
@@ -313,11 +330,8 @@
         ctx.fillRect(f.fromX, f.lane * CELL + 4, cols * CELL - f.fromX, CELL - 8);
         ctx.globalAlpha = 1;
       });
-      // projectiles
-      projectiles.forEach(p => {
-        ctx.fillStyle = p.color; ctx.beginPath();
-        ctx.arc(p.x, p.y, p.slow ? 6 : 5, 0, Math.PI * 2); ctx.fill();
-      });
+      // projectiles — a distinct look per archetype
+      projectiles.forEach(drawProjectile);
       // enemies
       enemies.forEach(e => {
         const y = e.lane * CELL + CELL / 2;
@@ -335,13 +349,55 @@
         bar(e.x - rad, y - rad - 6, size, 3, Math.max(0, e.hp / e.maxHp), e.boss ? '#f4324c' : '#ffd447');
         if (elapsed < e.slowUntil) { ctx.strokeStyle = 'rgba(56,189,248,0.8)'; ctx.beginPath(); ctx.arc(e.x, y, rad + 2, 0, Math.PI * 2); ctx.stroke(); }
       });
-      // text floaters
+      // rings (splash impact) + text floaters
       floaters.forEach(f => {
         if (f.aoe) return;
+        if (f.ring) {
+          ctx.globalAlpha = Math.max(0, 0.6 - f.t * 0.8);
+          ctx.strokeStyle = f.color; ctx.lineWidth = 3;
+          ctx.beginPath(); ctx.arc(f.x, f.y, (f.r0 || 30) * (0.4 + f.t * 2.4), 0, Math.PI * 2); ctx.stroke();
+          ctx.globalAlpha = 1; ctx.lineWidth = 1; return;
+        }
         ctx.globalAlpha = Math.max(0, 1 - f.t);
         ctx.fillStyle = f.color; ctx.font = 'bold 12px JetBrains Mono, monospace'; ctx.textAlign = 'center';
         ctx.fillText(f.text, f.x, f.y - f.t * 20); ctx.globalAlpha = 1;
       });
+    }
+
+    // Draws a projectile in a style unique to its archetype shape.
+    function drawProjectile(p) {
+      const x = p.x, y = p.y;
+      ctx.save();
+      ctx.fillStyle = p.color; ctx.strokeStyle = p.color;
+      switch (p.shape) {
+        case 'tracer':
+          ctx.globalAlpha = 0.45; ctx.fillRect(x - 13, y - 1.5, 13, 3); ctx.globalAlpha = 1;
+          ctx.beginPath(); ctx.arc(x, y, 3.5, 0, Math.PI * 2); ctx.fill();
+          break;
+        case 'diamond':
+          ctx.translate(x, y); ctx.rotate(Math.PI / 4); ctx.fillRect(-4.5, -4.5, 9, 9);
+          break;
+        case 'arrow':
+          ctx.globalAlpha = 0.4; ctx.fillRect(x - 16, y - 1, 12, 2); ctx.globalAlpha = 1;
+          ctx.beginPath(); ctx.moveTo(x + 9, y); ctx.lineTo(x - 5, y - 5); ctx.lineTo(x - 2, y); ctx.lineTo(x - 5, y + 5); ctx.closePath(); ctx.fill();
+          break;
+        case 'bomb':
+          ctx.beginPath(); ctx.arc(x, y, 7, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(x + 5, y - 5, 2, 0, Math.PI * 2); ctx.fill();
+          break;
+        case 'cannon':
+          ctx.globalAlpha = 0.3; ctx.beginPath(); ctx.arc(x - 11, y, 6, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1;
+          ctx.beginPath(); ctx.arc(x, y, 9, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = 'rgba(255,255,255,0.55)'; ctx.beginPath(); ctx.arc(x - 3, y - 3, 3, 0, Math.PI * 2); ctx.fill();
+          break;
+        case 'frost':
+          ctx.translate(x, y); ctx.rotate(p.spin); ctx.lineWidth = 2;
+          for (let k = 0; k < 3; k++) { ctx.rotate(Math.PI / 3); ctx.beginPath(); ctx.moveTo(-6, 0); ctx.lineTo(6, 0); ctx.stroke(); }
+          break;
+        default:
+          ctx.beginPath(); ctx.arc(x, y, 5, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.restore();
     }
     function roundRect(x, y, w, h, r, color) {
       ctx.fillStyle = color; ctx.beginPath();
