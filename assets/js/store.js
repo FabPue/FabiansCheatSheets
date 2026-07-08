@@ -108,7 +108,8 @@
       inventory: [],
       casesOpened: 0,
       achievements: [],
-      tdProgress: 0
+      tdProgress: 0,
+      cmProgress: 0
     };
   }
 

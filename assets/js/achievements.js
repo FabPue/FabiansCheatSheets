@@ -35,7 +35,9 @@
       rarity: rarity,
       wear: wear,
       bestFloat: bestFloat,
-      worstFloat: worstFloat
+      worstFloat: worstFloat,
+      tdProgress: profile.tdProgress || 0,
+      cmProgress: profile.cmProgress || 0
     };
   }
 

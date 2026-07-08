@@ -22,15 +22,15 @@
   //         'slow'   fires slowing projectiles (little damage)
   //         'wall'   no attack, just soaks damage (very high hp)
   const ARCHETYPES = {
-    rapid:  { kind: 'shoot', label: 'Schnellfeuer',   damage: 8,  fireRate: 3.4, projSpeed: 340, hp: 90,  pierce: false, splash: 0,  color: '#f7d363' },
-    typed:  { kind: 'shoot', label: 'Typsicher',      damage: 12, fireRate: 2.6, projSpeed: 360, hp: 120, pierce: false, splash: 0,  color: '#3b82f6' },
-    balanced:{kind: 'shoot', label: 'Vielseitig',     damage: 16, fireRate: 1.9, projSpeed: 300, hp: 130, pierce: false, splash: 0,  color: '#63b3f7' },
-    pierce: { kind: 'shoot', label: 'Zeiger-Piercing',damage: 21, fireRate: 1.6, projSpeed: 460, hp: 110, pierce: true,  splash: 0,  color: '#f7a063' },
-    splash: { kind: 'shoot', label: 'Splash',         damage: 18, fireRate: 1.4, projSpeed: 300, hp: 140, pierce: false, splash: 46, color: '#9d63f7' },
-    heavy:  { kind: 'shoot', label: 'Schwer & sicher',damage: 34, fireRate: 1.1, projSpeed: 320, hp: 220, pierce: true,  splash: 0,  color: '#f4324c' },
-    slow:   { kind: 'slow',  label: 'JOIN-Lock',      damage: 5,  fireRate: 1.5, projSpeed: 300, hp: 120, pierce: false, splash: 0,  color: '#f29111', slowFactor: 0.5, slowTime: 2.2 },
-    wall:   { kind: 'wall',  label: 'Struktur (Tank)',damage: 0,  fireRate: 0,   projSpeed: 0,   hp: 460, pierce: false, splash: 0,  color: '#9aa4b2' },
-    aoe:    { kind: 'aoe',   label: 'Funktional-AoE', damage: 13, fireRate: 1.2, projSpeed: 0,   hp: 150, pierce: false, splash: 0,  color: '#ffb700' }
+    rapid:  { kind: 'shoot', label: 'Schnellfeuer',   damage: 8,  fireRate: 3.4, projSpeed: 340, hp: 90,  pierce: false, splash: 0,  color: '#f7d363', shape: 'tracer' },
+    typed:  { kind: 'shoot', label: 'Typsicher',      damage: 12, fireRate: 2.6, projSpeed: 360, hp: 120, pierce: false, splash: 0,  color: '#3b82f6', shape: 'diamond' },
+    balanced:{kind: 'shoot', label: 'Vielseitig',     damage: 16, fireRate: 1.9, projSpeed: 300, hp: 130, pierce: false, splash: 0,  color: '#63b3f7', shape: 'bullet' },
+    pierce: { kind: 'shoot', label: 'Zeiger-Piercing',damage: 21, fireRate: 1.6, projSpeed: 460, hp: 110, pierce: true,  splash: 0,  color: '#f7a063', shape: 'arrow' },
+    splash: { kind: 'shoot', label: 'Splash',         damage: 18, fireRate: 1.4, projSpeed: 300, hp: 140, pierce: false, splash: 46, color: '#9d63f7', shape: 'bomb' },
+    heavy:  { kind: 'shoot', label: 'Schwer & sicher',damage: 34, fireRate: 1.1, projSpeed: 320, hp: 220, pierce: true,  splash: 0,  color: '#f4324c', shape: 'cannon' },
+    slow:   { kind: 'slow',  label: 'JOIN-Lock',      damage: 5,  fireRate: 1.5, projSpeed: 300, hp: 120, pierce: false, splash: 0,  color: '#f29111', slowFactor: 0.5, slowTime: 2.2, shape: 'frost' },
+    wall:   { kind: 'wall',  label: 'Struktur (Tank)',damage: 0,  fireRate: 0,   projSpeed: 0,   hp: 460, pierce: false, splash: 0,  color: '#9aa4b2', shape: 'none' },
+    aoe:    { kind: 'aoe',   label: 'Funktional-AoE', damage: 13, fireRate: 1.2, projSpeed: 0,   hp: 150, pierce: false, splash: 0,  color: '#ffb700', shape: 'wave' }
   };
 
   // Language name → archetype id. Names match cases-data.js item names.
@@ -91,10 +91,10 @@
         boss: isBoss ? 'deadlock' : null,
         startBytes: 250 + Math.floor(idx * 6),
         byteRate: 26 + idx,               // bytes gained per second (passive)
-        enemyHp: 1 + (idx - 1) * 0.16,    // hp scale multiplier for this level
-        enemySpeed: 1 + (idx - 1) * 0.03, // speed scale multiplier
-        count: 8 + idx * 2,               // number of enemies (non-boss)
-        reward: { coins: 40 + idx * 10, xp: 30 + idx * 8 }
+        enemyHp: 1 + (idx - 1) * 0.22,    // hp scale multiplier (steeper in v4.1)
+        enemySpeed: 1 + (idx - 1) * 0.035,// speed scale multiplier
+        count: 10 + Math.round(idx * 2.4),// number of enemies (non-boss)
+        reward: { coins: 45 + idx * 12, xp: 32 + idx * 9 }
       });
     });
     return list;

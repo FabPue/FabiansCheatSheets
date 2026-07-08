@@ -8,40 +8,35 @@
   'use strict';
 
   const CHANGELOG = {
-    version: '4.0',
-    codename: 'Tower Defense',
+    version: '4.1',
+    codename: 'Games & Gems',
     date: 'Juli 2026',
-    intro: 'Das gigantische Update: verteidige mit deinen ergambelten Sprachen gegen Bugs — plus neue Premium-Themes!',
+    intro: 'Ein neuer Spielmodus, dreifaches Case-Öffnen und ein rundum aufgewerteter Tower Defense:',
     features: [
       {
-        icon: '🗼',
-        title: 'Tower Defense',
-        text: 'Ganz neuer Spielmodus im PvZ-Stil: platziere deine Sprachen als Türme und wehre Bug-Wellen über 5 Lanes ab.'
+        icon: '🍬',
+        title: 'Code Match (neu)',
+        text: 'Ganz neuer Match-3-Modus: Sprachen sind die Gems — reihe 3+ gleiche an, löse Ketten aus, meistere 30 Level.'
+      },
+      {
+        icon: '📦',
+        title: '3× öffnen',
+        text: 'Neuer Button: öffne für 100 Coins drei Cases gleichzeitig — mit drei Reel-Reihen und drei Drops auf einmal.'
+      },
+      {
+        icon: '🎨',
+        title: 'Türme mit Sprach-Look',
+        text: 'TD-Türme zeigen jetzt das echte Sprach-Logo mit Float-Effekt: gute Floats schimmern, schlechte brennen.'
       },
       {
         icon: '⚔️',
-        title: 'Sprach-Attacken',
-        text: 'Jede Sprache kämpft nach ihrem Merkmal: C durchschlägt (Zeiger), C++ macht Splash, SQL verlangsamt (JOIN-Lock), Haskell trifft die ganze Lane, HTML ist ein Tank.'
+        title: 'Einzigartige Angriffe',
+        text: 'Jeder Turm-Typ feuert anders: Tracer, Diamant, Pfeil, Splash-Bombe, Kanonenkugel, Frost-Splitter, Lane-Welle.'
       },
       {
-        icon: '💪',
-        title: 'Float & Rarität zählen',
-        text: 'Höhere Seltenheit und besserer Float bedeuten mehr Leben und mehr Schaden für deinen Turm.'
-      },
-      {
-        icon: '💀',
-        title: '20 Level & Bosse',
-        text: 'Kämpfe dich durch 1.1 bis 3.0 — mit fetten Boss-Gegnern (Legacy Monolith, Blue Screen) auf jeder x.0.'
-      },
-      {
-        icon: '⬆️',
-        title: 'Upgrades, Verkauf & Bug-Bestiarium',
-        text: 'Klick auf einen Turm zum Aufwerten oder Verkaufen. Neun handgezeichnete Bug-Gegner (Syntax Error, Null Pointer, Memory Leak, Race Condition, Stack Overflow …) und der Deadlock-Boss – plus Tutorial beim ersten Start.'
-      },
-      {
-        icon: '🌌',
-        title: 'Premium-Themes',
-        text: 'Vier neue animierte Themes: Neon Grid, Molten Core, Matrix und Galaxy — mehr Effekte, höherer Preis.'
+        icon: '🔥',
+        title: 'Schwerer & mehr Erfolge',
+        text: 'Tower Defense ist fordernder (mehr Gegner-HP & -Anzahl), und es gibt neue Achievements für TD und Code Match.'
       }
     ]
   };

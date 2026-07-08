@@ -62,7 +62,17 @@
     { id: 'float_sub001',  icon: '💠', title: 'Makellos',        desc: 'Ein Item mit Float unter 0.001.',  xp: 400,  gold: 350,  test: s => s.bestFloat <= 0.001 },
     { id: 'float_sub0001', icon: '🏆', title: 'Perfektionist',   desc: 'Ein Item mit Float unter 0.0001!', xp: 1500, gold: 1200, test: s => s.bestFloat <= 0.0001 },
     { id: 'float_99',      icon: '🗑️', title: 'Schrottwert',     desc: 'Ein Item mit Float über 0.99.',    xp: 60,   gold: 30,   test: s => s.worstFloat >= 0.99 },
-    { id: 'float_9999',    icon: '💀', title: 'Totalschaden',    desc: 'Ein Item mit Float über 0.9999!',  xp: 400,  gold: 200,  test: s => s.worstFloat >= 0.9999 }
+    { id: 'float_9999',    icon: '💀', title: 'Totalschaden',    desc: 'Ein Item mit Float über 0.9999!',  xp: 400,  gold: 200,  test: s => s.worstFloat >= 0.9999 },
+
+    /* ── Tower Defense ── */
+    { id: 'td_1',    icon: '🗼', title: 'Erste Verteidigung', desc: 'Schließe dein erstes TD-Level ab.',      xp: 60,   gold: 40,   test: s => s.tdProgress >= 1 },
+    { id: 'td_boss', icon: '💀', title: 'Boss-Bezwinger',     desc: 'Schaffe das erste Boss-Level (2.0).',    xp: 250,  gold: 200,  test: s => s.tdProgress >= 10 },
+    { id: 'td_all',  icon: '🏰', title: 'Tower-Meister',      desc: 'Schließe alle 20 TD-Level ab.',          xp: 1500, gold: 1200, test: s => s.tdProgress >= 20 },
+
+    /* ── Code Match ── */
+    { id: 'cm_1',   icon: '🍬', title: 'Erstes Match',     desc: 'Schließe dein erstes Code-Match-Level ab.', xp: 60,   gold: 40,   test: s => s.cmProgress >= 1 },
+    { id: 'cm_10',  icon: '🍭', title: 'Süße Serie',       desc: 'Schaffe Code-Match-Level 10.',              xp: 250,  gold: 200,  test: s => s.cmProgress >= 10 },
+    { id: 'cm_30',  icon: '🏆', title: 'Match-Meister',    desc: 'Schließe alle 30 Code-Match-Level ab.',     xp: 1500, gold: 1200, test: s => s.cmProgress >= 30 }
   ];
 
   global.FCSAchievementsData = A;
