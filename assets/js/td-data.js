@@ -52,20 +52,22 @@
     return ({ grey: 'wall', blue: 'balanced', epic: 'typed', red: 'heavy', gold: 'aoe' })[rarity] || 'balanced';
   }
 
-  // Enemy ("bug") base stats. hp/speed get scaled per level in td.js.
+  // Enemy ("bug") base stats. hp/speed get scaled per level in td.js. Visuals
+  // come from td-sprites.js (keyed by these ids); glyph/color are fallbacks.
   const ENEMIES = {
-    nullptr:  { name: 'Null Pointer',   hp: 48,  speed: 26, dps: 16, reward: 18, color: '#8a94a6', glyph: '∅' },
-    segfault: { name: 'Segfault',       hp: 36,  speed: 40, dps: 13, reward: 16, color: '#f4324c', glyph: '✖' },
-    leak:     { name: 'Memory Leak',    hp: 104, speed: 17, dps: 20, reward: 26, color: '#4b8bf5', glyph: '💧' },
-    race:     { name: 'Race Condition', hp: 28,  speed: 56, dps: 11, reward: 20, color: '#a855f7', glyph: '⚡' },
-    bloat:    { name: 'Bloatware',      hp: 210, speed: 13, dps: 24, reward: 40, color: '#f7a063', glyph: '🐘' },
-    ghost:    { name: 'Heisenbug',      hp: 46,  speed: 62, dps: 14, reward: 28, color: '#22d3ee', glyph: '👻' },
-    armored:  { name: 'Deprecated API', hp: 120, speed: 20, dps: 20, reward: 36, color: '#b45309', glyph: '🛡️', armor: 0.4 }
+    syntax:   { name: 'Syntax Error',   hp: 26,  speed: 30, dps: 12, reward: 12, color: '#f85149', glyph: '❌' },
+    offbyone: { name: 'Off-by-One',     hp: 34,  speed: 32, dps: 12, reward: 14, color: '#f0883e', glyph: '±' },
+    nullptr:  { name: 'Null Pointer',   hp: 50,  speed: 26, dps: 16, reward: 18, color: '#bc8cff', glyph: '∅' },
+    loop:     { name: 'Infinite Loop',  hp: 80,  speed: 26, dps: 18, reward: 24, color: '#58a6ff', glyph: '↻' },
+    leak:     { name: 'Memory Leak',    hp: 104, speed: 17, dps: 20, reward: 26, color: '#3fb950', glyph: '💧' },
+    buffer:   { name: 'Buffer Overflow',hp: 92,  speed: 22, dps: 22, reward: 30, color: '#f0883e', glyph: '💥' },
+    race:     { name: 'Race Condition', hp: 30,  speed: 56, dps: 11, reward: 20, color: '#58a6ff', glyph: '⚡' },
+    stack:    { name: 'Stack Overflow', hp: 130, speed: 20, dps: 24, reward: 34, color: '#bc8cff', glyph: '📚' },
+    segfault: { name: 'Segfault',       hp: 70,  speed: 40, dps: 16, reward: 24, color: '#f85149', glyph: '✖' }
   };
 
   const BOSSES = {
-    monolith:   { name: 'Legacy Monolith', hp: 2600, speed: 11, dps: 60, reward: 300, color: '#5b21b6', glyph: '🏛️' },
-    bluescreen: { name: 'Blue Screen',     hp: 4200, speed: 14, dps: 80, reward: 500, color: '#1d4ed8', glyph: '💀' }
+    deadlock: { name: 'Deadlock', hp: 3000, speed: 12, dps: 70, reward: 400, color: '#f85149', glyph: '💀' }
   };
 
   // 20 levels: 1.1–1.9, 2.0 (BOSS), 2.1–2.9, 3.0 (BOSS).
@@ -86,7 +88,7 @@
         idx: idx,
         label: label,
         isBoss: isBoss,
-        boss: isBoss ? (label === '2.0' ? 'monolith' : 'bluescreen') : null,
+        boss: isBoss ? 'deadlock' : null,
         startBytes: 250 + Math.floor(idx * 6),
         byteRate: 26 + idx,               // bytes gained per second (passive)
         enemyHp: 1 + (idx - 1) * 0.16,    // hp scale multiplier for this level

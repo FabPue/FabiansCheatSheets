@@ -13,6 +13,19 @@
   const D = global.FCSTdData;
   const CELL = 62;
 
+  // Rasterise the SVG bug sprites (td-sprites.js) to <img> once, cached across games.
+  const _spriteCache = {};
+  function spriteFor(id) {
+    if (id in _spriteCache) return _spriteCache[id];
+    const S = global.FCSTdSprites;
+    const svg = S && S[id];
+    if (!svg) { _spriteCache[id] = null; return null; }
+    const img = new Image();
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    _spriteCache[id] = img;
+    return img;
+  }
+
   const SHORT = {
     'JavaScript': 'JS', 'TypeScript': 'TS', 'Node.js': 'Nd', 'Python': 'Py',
     'C#': 'C#', 'C++': 'C++', 'Haskell': 'Hs', 'Elixir': 'Ex', 'Clojure': 'Cj',
@@ -81,9 +94,9 @@
     /* ── spawn queue ── */
     function buildQueue(lv) {
       const q = [];
-      const pool = lv.idx <= 6 ? ['nullptr', 'segfault', 'race', 'leak']
-                 : lv.idx <= 12 ? ['nullptr', 'segfault', 'race', 'leak', 'bloat', 'ghost']
-                 : ['segfault', 'race', 'leak', 'bloat', 'ghost', 'armored', 'nullptr'];
+      const pool = lv.idx <= 6 ? ['syntax', 'offbyone', 'nullptr', 'race']
+                 : lv.idx <= 12 ? ['nullptr', 'race', 'leak', 'loop', 'segfault', 'buffer']
+                 : ['leak', 'segfault', 'buffer', 'stack', 'race', 'loop', 'nullptr'];
       let t = 1.5;
       const gap = Math.max(0.55, 2.2 - lv.idx * 0.05);
       for (let i = 0; i < lv.count; i++) {
@@ -93,8 +106,9 @@
       if (lv.isBoss) {
         q.push({ at: 2.0, type: lv.boss, lane: (rows / 2) | 0, boss: true });
         for (let k = 0; k < 5; k++) q.push({ at: 6 + k * 3.2, type: 'nullptr', lane: (Math.random() * rows) | 0, boss: false });
-        totalToSpawn = q.length;
       }
+      // Note: totalToSpawn is derived from the returned queue length by the
+      // caller — do not assign it here (it is still in its TDZ during this call).
       return q.sort((a, b) => a.at - b.at);
     }
     function pick(arr) { return arr[(Math.random() * arr.length) | 0]; }
@@ -307,13 +321,19 @@
       // enemies
       enemies.forEach(e => {
         const y = e.lane * CELL + CELL / 2;
-        const rad = e.boss ? 26 : 16;
-        ctx.beginPath(); ctx.arc(e.x, y, rad, 0, Math.PI * 2);
-        ctx.fillStyle = e.color; ctx.fill();
-        ctx.font = (e.boss ? '22px' : '15px') + ' serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText(e.glyph, e.x, y);
-        bar(e.x - rad, y - rad - 7, rad * 2, 3, Math.max(0, e.hp / e.maxHp), e.boss ? '#f4324c' : '#ffd447');
-        if (elapsed < e.slowUntil) { ctx.strokeStyle = 'rgba(56,189,248,0.8)'; ctx.beginPath(); ctx.arc(e.x, y, rad + 3, 0, Math.PI * 2); ctx.stroke(); }
+        const size = e.boss ? 64 : 44;
+        const rad = size / 2;
+        const img = spriteFor(e.type);
+        if (img && img.complete && img.naturalWidth) {
+          ctx.drawImage(img, e.x - rad, y - rad, size, size);
+        } else {
+          ctx.beginPath(); ctx.arc(e.x, y, e.boss ? 26 : 16, 0, Math.PI * 2);
+          ctx.fillStyle = e.color; ctx.fill();
+          ctx.font = (e.boss ? '22px' : '15px') + ' serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          ctx.fillText(e.glyph, e.x, y);
+        }
+        bar(e.x - rad, y - rad - 6, size, 3, Math.max(0, e.hp / e.maxHp), e.boss ? '#f4324c' : '#ffd447');
+        if (elapsed < e.slowUntil) { ctx.strokeStyle = 'rgba(56,189,248,0.8)'; ctx.beginPath(); ctx.arc(e.x, y, rad + 2, 0, Math.PI * 2); ctx.stroke(); }
       });
       // text floaters
       floaters.forEach(f => {
