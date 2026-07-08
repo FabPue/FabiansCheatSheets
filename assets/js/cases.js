@@ -112,6 +112,22 @@
     return { ok: true, drop: drop };
   }
 
+  // Opens n cases at once for a fixed total cost. Returns { ok, reason, drops }.
+  function openCaseN(username, profile, n, cost) {
+    if (profile.coins < cost) return { ok: false, reason: 'insufficient' };
+    profile.coins -= cost;
+    profile.inventory = profile.inventory || [];
+    const drops = [];
+    for (let i = 0; i < n; i++) {
+      const d = buildDrop();
+      profile.inventory.push(d);
+      drops.push(d);
+    }
+    profile.casesOpened = (profile.casesOpened || 0) + n;
+    Store.saveProfile(username, profile);
+    return { ok: true, drops: drops };
+  }
+
   // Builds a reel of decoy items ending on the winning drop (for the animation).
   function buildReel(winningDrop, length) {
     const n = length || 60;
@@ -130,7 +146,7 @@
   global.FCSCases = {
     CASE_COST: Data.CASE_COST,
     rarityById, itemsByRarity, wearTierForFloat,
-    rollRarity, canOpen, openCase, buildReel, buildDrop,
+    rollRarity, canOpen, openCase, openCaseN, buildReel, buildDrop,
     sellValue, sellItem, sellAll
   };
 })(window);

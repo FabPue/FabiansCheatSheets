@@ -580,12 +580,25 @@
           <div class="case-counter">📦 Geöffnete Cases: <span id="caseCount">${p.casesOpened || 0}</span></div>
           <div class="case-odds">${oddsChips}</div>
         </div>
-        <div class="reel-viewport" id="reelView">
-          <div class="reel-marker"></div>
-          <div class="reel-track" id="reelTrack"></div>
+        <div class="reel-stack" id="reelStack">
+          <div class="reel-viewport reel-extra" id="reelViewTop" style="display:none">
+            <div class="reel-marker"></div>
+            <div class="reel-track" id="reelTrackTop"></div>
+          </div>
+          <div class="reel-viewport" id="reelView">
+            <div class="reel-marker"></div>
+            <div class="reel-track" id="reelTrack"></div>
+          </div>
+          <div class="reel-viewport reel-extra" id="reelViewBottom" style="display:none">
+            <div class="reel-marker"></div>
+            <div class="reel-track" id="reelTrackBottom"></div>
+          </div>
         </div>
         <div id="dropResult"></div>
-        <button class="fcs-btn" id="openCaseBtn">Öffnen · ${C.CASE_COST} 🪙</button>
+        <div class="case-btns">
+          <button class="fcs-btn" id="openCaseBtn">Öffnen · ${C.CASE_COST} 🪙</button>
+          <button class="fcs-btn case-triple" id="openCase3Btn">3× öffnen · 100 🪙</button>
+        </div>
       </div>`, true);
     dialog.querySelector('.fcs-dialog-close').onclick = closeDialog;
 
@@ -608,6 +621,8 @@
 
     const btn = dialog.querySelector('#openCaseBtn');
     btn.onclick = () => startCaseOpen(btn);
+    const btn3 = dialog.querySelector('#openCase3Btn');
+    if (btn3) btn3.onclick = () => startTripleOpen(btn3);
   }
 
   function reelItemHTML(it) {
@@ -634,6 +649,41 @@
     track.innerHTML = html;
   }
 
+  // Fills a reel viewport with a spin that lands on `drop`; starts the CSS
+  // animation and returns the per-item step (px) used for tick timing.
+  function spinReel(view, track, drop) {
+    const C = Cases();
+    const built = C.buildReel(drop, 60);
+    track.className = 'reel-track';
+    track.style.transform = 'translateX(0)';
+    track.innerHTML = built.reel.map(reelItemHTML).join('');
+    const ITEM = 104, GAP = 10, PAD = 10;
+    const step = ITEM + GAP;
+    const viewCenter = view.offsetWidth / 2;
+    const itemCenter = PAD + built.winIndex * step + ITEM / 2;
+    const jitter = (Math.random() * 40) - 20; // stay under the marker
+    const target = viewCenter - itemCenter + jitter;
+    void track.offsetWidth; // force reflow
+    track.classList.add('spin');
+    track.style.transform = `translateX(${target}px)`;
+    return step;
+  }
+
+  function updateCaseHud(user) {
+    const fresh = Store.getProfile(user);
+    const balEl = dialog.querySelector('#caseBal');
+    if (balEl) balEl.textContent = fresh.coins;
+    const countEl = dialog.querySelector('#caseCount');
+    if (countEl) countEl.textContent = fresh.casesOpened || 0;
+    renderHeader();
+  }
+
+  function setReelExtras(show) {
+    const t = dialog.querySelector('#reelViewTop'), b = dialog.querySelector('#reelViewBottom');
+    if (t) t.style.display = show ? '' : 'none';
+    if (b) b.style.display = show ? '' : 'none';
+  }
+
   function startCaseOpen(btn) {
     const user = Auth.currentUser();
     let p = Store.getProfile(user);
@@ -641,48 +691,55 @@
     if (!C.canOpen(p)) { toast('Nicht genug Gold für eine Case.', 'error'); return; }
     // Unlock audio here — this runs inside the button-click gesture.
     if (Sounds()) Sounds().resume();
-    btn.disabled = true;
+    const btn3 = dialog.querySelector('#openCase3Btn');
+    btn.disabled = true; if (btn3) btn3.disabled = true;
     dialog.querySelector('#dropResult').innerHTML = '';
+    setReelExtras(false);
 
     const res = C.openCase(user, p);
-    if (!res.ok) { btn.disabled = false; toast('Öffnen fehlgeschlagen.', 'error'); return; }
+    if (!res.ok) { btn.disabled = false; if (btn3) btn3.disabled = false; toast('Öffnen fehlgeschlagen.', 'error'); return; }
     const drop = res.drop;
-    const freshProfile = Store.getProfile(user);
-    const balEl = dialog.querySelector('#caseBal');
-    if (balEl) balEl.textContent = freshProfile.coins;
-    const countEl = dialog.querySelector('#caseCount');
-    if (countEl) countEl.textContent = freshProfile.casesOpened || 0;
-    renderHeader();
+    updateCaseHud(user);
 
-    const built = C.buildReel(drop, 60);
-    const track = dialog.querySelector('#reelTrack');
-    const view = dialog.querySelector('#reelView');
-    track.className = 'reel-track';
-    track.style.transform = 'translateX(0)';
-    track.innerHTML = built.reel.map(reelItemHTML).join('');
-
-    // Compute landing offset so the winning item lands under the center marker.
-    const ITEM = 104, GAP = 10, PAD = 10;
-    const step = ITEM + GAP;
-    const viewCenter = view.offsetWidth / 2;
-    const itemCenter = PAD + built.winIndex * step + ITEM / 2;
-    const jitter = (Math.random() * 40) - 20; // stay under the marker
-    const target = viewCenter - itemCenter + jitter;
-
-    // Force reflow, then animate.
-    void track.offsetWidth;
-    track.classList.add('spin');
-    track.style.transform = `translateX(${target}px)`;
-
-    // Drive the "tick" sound off the reel's live position so the ticks follow
-    // the CSS easing: rapid at the start, slowing to single clicks as it lands.
-    playReelTicks(track, step);
+    const step = spinReel(dialog.querySelector('#reelView'), dialog.querySelector('#reelTrack'), drop);
+    playReelTicks(dialog.querySelector('#reelTrack'), step);
 
     setTimeout(() => {
-      revealDrop(drop);
-      btn.disabled = false;
+      revealDrops([drop]);
+      btn.disabled = false; if (btn3) btn3.disabled = false;
       btn.textContent = `Nochmal öffnen · ${C.CASE_COST} 🪙`;
       if (drop.rarity === 'gold') showGoldExplosion(drop);
+      runAchievementCheck();
+    }, 6200);
+  }
+
+  const TRIPLE_COST = 100;
+  function startTripleOpen(btn) {
+    const user = Auth.currentUser();
+    const p = Store.getProfile(user);
+    const C = Cases();
+    if (p.coins < TRIPLE_COST) { toast('Nicht genug Gold (100) für 3× öffnen.', 'error'); return; }
+    if (Sounds()) Sounds().resume();
+    const single = dialog.querySelector('#openCaseBtn');
+    btn.disabled = true; if (single) single.disabled = true;
+    dialog.querySelector('#dropResult').innerHTML = '';
+    setReelExtras(true);
+
+    const res = C.openCaseN(user, p, 3, TRIPLE_COST);
+    if (!res.ok) { btn.disabled = false; if (single) single.disabled = false; toast('Öffnen fehlgeschlagen.', 'error'); return; }
+    const drops = res.drops;
+    updateCaseHud(user);
+
+    const step = spinReel(dialog.querySelector('#reelView'), dialog.querySelector('#reelTrack'), drops[0]);
+    spinReel(dialog.querySelector('#reelViewTop'), dialog.querySelector('#reelTrackTop'), drops[1]);
+    spinReel(dialog.querySelector('#reelViewBottom'), dialog.querySelector('#reelTrackBottom'), drops[2]);
+    playReelTicks(dialog.querySelector('#reelTrack'), step);
+
+    setTimeout(() => {
+      revealDrops(drops);
+      btn.disabled = false; if (single) single.disabled = false;
+      const gold = drops.find(d => d.rarity === 'gold');
+      if (gold) showGoldExplosion(gold);
       runAchievementCheck();
     }, 6200);
   }
@@ -744,17 +801,10 @@
     }, 4200);
   }
 
-  function revealDrop(drop) {
-    const Snd = Sounds();
-    if (Snd) {
-      if (drop.rarity === 'gold') Snd.gold();
-      else Snd.reveal(drop.rarity);
-    }
+  function dropCardHTML(drop) {
     const wear = wearMeta(drop.wearTier);
     const pinPct = Math.min(100, Math.max(0, drop.float * 100));
-    const box = dialog.querySelector('#dropResult');
-    if (!box) return;
-    box.innerHTML = `
+    return `
       <div class="drop-reveal r-${drop.rarity}">
         <div class="drop-card">
           <span class="rarity-label">${esc(rarityMeta(drop.rarity).name)}</span>
@@ -764,9 +814,26 @@
           <div class="wear-bar"><div class="wear-pin" style="left:${pinPct}%"></div></div>
         </div>
       </div>`;
-    toast(`Gedroppt: ${drop.name} (${rarityMeta(drop.rarity).name})`, drop.rarity === 'gold' ? 'coin' : '');
-    showFloatPhrase(floatPhrase(drop.float), drop.float);
   }
+
+  // Reveals one or several drops side by side.
+  function revealDrops(drops) {
+    const Snd = Sounds();
+    const order = { grey: 0, blue: 1, epic: 2, red: 3, gold: 4 };
+    const anyGold = drops.some(d => d.rarity === 'gold');
+    if (Snd) {
+      if (anyGold) Snd.gold();
+      else Snd.reveal(drops.slice().sort((a, b) => order[b.rarity] - order[a.rarity])[0].rarity);
+    }
+    const box = dialog.querySelector('#dropResult');
+    if (!box) return;
+    box.innerHTML = `<div class="drop-reveal-multi">${drops.map(dropCardHTML).join('')}</div>`;
+    toast(`Gedroppt: ${drops.map(d => d.name).join(', ')}`, anyGold ? 'coin' : '');
+    const bestFloat = drops.slice().sort((a, b) => a.float - b.float)[0];
+    showFloatPhrase(floatPhrase(bestFloat.float), bestFloat.float);
+  }
+
+  function revealDrop(drop) { revealDrops([drop]); }
 
   function showGoldExplosion(drop) {
     const ov = el(`
