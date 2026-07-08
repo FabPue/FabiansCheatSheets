@@ -35,8 +35,8 @@
       },
       {
         icon: '⬆️',
-        title: 'Upgrades, Verkauf & mehr Bugs',
-        text: 'Klick auf einen Turm, um ihn aufzuwerten oder zu verkaufen. Neue Gegner (Heisenbug, Deprecated API mit Rüstung) und ein Tutorial beim ersten Start.'
+        title: 'Upgrades, Verkauf & Bug-Bestiarium',
+        text: 'Klick auf einen Turm zum Aufwerten oder Verkaufen. Neun handgezeichnete Bug-Gegner (Syntax Error, Null Pointer, Memory Leak, Race Condition, Stack Overflow …) und der Deadlock-Boss – plus Tutorial beim ersten Start.'
       },
       {
         icon: '🌌',
