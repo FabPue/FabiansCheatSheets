@@ -23,6 +23,7 @@
   function Collections() { return global.FCSCollections; }
   function Td() { return global.FCSTd; }
   function TdData() { return global.FCSTdData; }
+  function Match3() { return global.FCSMatch3; }
 
   function deviconClass(slug) { return `devicon-${slug}-plain colored`; }
   // Renders a language icon: a Devicon glyph when the item has a `slug`, else a
@@ -1404,6 +1405,187 @@
 
   function setText(sel, val) { const e = dialog.querySelector(sel); if (e) e.textContent = val; }
 
+  /* ── match-3 ("Code Match") ── */
+  let m3Game = null, m3Sel = null, m3Busy = false, m3Idx = 1;
+
+  function openMatch3() {
+    const user = Auth.currentUser();
+    if (!user) { openAuth('login'); return; }
+    onLogin();
+    renderM3Levels();
+  }
+
+  function renderM3Levels() {
+    const user = Auth.currentUser();
+    const p = Store.getProfile(user);
+    const progress = p.cmProgress || 0;
+    const cells = Match3().LEVELS.map(lv => {
+      const cleared = lv.idx <= progress;
+      const unlocked = lv.idx <= progress + 1;
+      const cls = cleared ? 'cleared' : (unlocked ? 'open' : 'locked');
+      const mark = cleared ? '✓' : (unlocked ? '▶' : '🔒');
+      return `<button class="td-lvl ${cls}" data-idx="${lv.idx}" ${unlocked ? '' : 'disabled'}>
+          <span class="td-lvl-label">${lv.idx}</span><span class="td-lvl-mark">${mark}</span>
+        </button>`;
+    }).join('');
+    openDialog(`
+      <div class="fcs-dialog-head">
+        <span class="fcs-dialog-title">🍬 Code Match</span>
+        <button class="fcs-dialog-close">✕</button>
+      </div>
+      <div class="fcs-dialog-body">
+        <p class="fcs-note" style="margin-bottom:14px">Reihe 3+ gleiche Sprachen aneinander! Tausche benachbarte Gems — Matches lösen sich auf, es fällt nach, Ketten geben mehr Punkte. 30 Level mit Punkte- oder Sammel-Zielen und begrenzten Zügen.</p>
+        <div class="td-level-grid">${cells}</div>
+      </div>`, true);
+    dialog.querySelector('.fcs-dialog-close').onclick = closeDialog;
+    dialog.querySelectorAll('.td-lvl:not([disabled])').forEach(b => b.onclick = () => renderM3Game(Number(b.dataset.idx)));
+  }
+
+  function m3GoalText(level) {
+    const T = Match3().TYPES;
+    return level.kind === 'score' ? `🎯 ${level.target} Punkte` : `🎯 ${level.target}× ${T[level.typeIdx].label}`;
+  }
+
+  function renderM3Game(levelIdx) {
+    m3Idx = levelIdx; m3Sel = null; m3Busy = false;
+    const level = Match3().LEVELS[levelIdx - 1];
+    m3Game = Match3().newGame(level);
+    openDialog(`
+      <div class="fcs-dialog-head">
+        <span class="fcs-dialog-title">🍬 Level ${levelIdx}</span>
+        <button class="fcs-dialog-close">✕</button>
+      </div>
+      <div class="fcs-dialog-body m3-body">
+        <div class="m3-hud">
+          <span>🔁 <b id="m3Moves">${level.moves}</b> Züge</span>
+          <span>⭐ <b id="m3Score">0</b></span>
+          <span>${m3GoalText(level)} <b id="m3Prog"></b></span>
+          <button class="fcs-btn secondary" id="m3Back" style="width:auto;padding:6px 12px">↩ Level</button>
+        </div>
+        <div class="m3-board-wrap">
+          <div class="m3-grid" id="m3Grid"></div>
+          <div class="td-end" id="m3End"></div>
+        </div>
+      </div>`, true);
+    dialog.querySelector('.fcs-dialog-close').onclick = closeDialog;
+    dialog.querySelector('#m3Back').onclick = () => renderM3Levels();
+    renderM3Board(m3Game.getGrid());
+    updateM3Hud();
+  }
+
+  function renderM3Board(grid) {
+    const host = dialog.querySelector('#m3Grid');
+    if (!host) return;
+    const T = Match3().TYPES;
+    const n = grid.length;
+    host.style.gridTemplateColumns = `repeat(${n}, 1fr)`;
+    let html = '';
+    for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
+      const t = T[grid[r][c]];
+      html += `<button class="m3-cell" data-r="${r}" data-c="${c}" style="--gem:${t.color}">${esc(t.label)}</button>`;
+    }
+    host.innerHTML = html;
+    host.querySelectorAll('.m3-cell').forEach(cell => cell.onclick = () => onM3Click(Number(cell.dataset.r), Number(cell.dataset.c)));
+    if (m3Sel) {
+      const s = host.querySelector(`.m3-cell[data-r="${m3Sel.r}"][data-c="${m3Sel.c}"]`);
+      if (s) s.classList.add('sel');
+    }
+  }
+
+  function markM3Pop(mask) {
+    const host = dialog.querySelector('#m3Grid');
+    if (!host) return;
+    for (let r = 0; r < mask.length; r++) for (let c = 0; c < mask.length; c++) {
+      if (mask[r][c]) {
+        const cell = host.querySelector(`.m3-cell[data-r="${r}"][data-c="${c}"]`);
+        if (cell) cell.classList.add('pop');
+      }
+    }
+  }
+
+  function updateM3Hud() {
+    const st = m3Game.getState();
+    setText('#m3Moves', st.movesLeft);
+    setText('#m3Score', st.score);
+    setText('#m3Prog', st.kind === 'score' ? `(${Math.min(st.score, st.target)}/${st.target})` : `(${st.typeCleared}/${st.target})`);
+  }
+
+  function onM3Click(r, c) {
+    if (m3Busy || !m3Game) return;
+    if (!m3Sel) { m3Sel = { r: r, c: c }; renderM3Board(m3Game.getGrid()); return; }
+    if (m3Sel.r === r && m3Sel.c === c) { m3Sel = null; renderM3Board(m3Game.getGrid()); return; }
+    const a = m3Sel, b = { r: r, c: c };
+    if (Math.abs(a.r - b.r) + Math.abs(a.c - b.c) !== 1) { m3Sel = { r: r, c: c }; renderM3Board(m3Game.getGrid()); return; }
+    const res = m3Game.trySwap(a, b);
+    m3Sel = null;
+    if (!res.ok) {
+      renderM3Board(m3Game.getGrid());
+      if (res.reason === 'no-match') toast('Kein Match — Zug ungültig.', '');
+      return;
+    }
+    playM3Steps(res);
+  }
+
+  function playM3Steps(res) {
+    m3Busy = true;
+    const Snd = Sounds();
+    const steps = res.steps;
+    let i = 0;
+    (function next() {
+      if (i >= steps.length) {
+        renderM3Board(res.finalGrid);
+        updateM3Hud();
+        m3Busy = false;
+        if (res.status !== 'playing') onM3End(res.status);
+        return;
+      }
+      const st = steps[i++];
+      renderM3Board(st.grid);
+      markM3Pop(st.mask);
+      if (Snd) Snd.tick();
+      updateM3Hud();
+      setTimeout(next, 300);
+    })();
+  }
+
+  function onM3End(status) {
+    const user = Auth.currentUser();
+    const box = dialog.querySelector('#m3End');
+    if (!box) return;
+    let rewardMsg = '';
+    if (status === 'won') {
+      const p = Store.getProfile(user);
+      const level = Match3().LEVELS[m3Idx - 1];
+      if ((p.cmProgress || 0) < m3Idx) {
+        p.cmProgress = m3Idx;
+        p.coins += level.reward.coins;
+        p.xp += level.reward.xp;
+        p.level = Gamify.levelForXp(p.xp);
+        Store.saveProfile(user, p);
+        rewardMsg = `+${level.reward.coins} 🪙 · +${level.reward.xp} XP`;
+        renderHeader();
+        runAchievementCheck();
+      } else rewardMsg = 'Bereits gemeistert.';
+    }
+    const nextIdx = m3Idx + 1;
+    const hasNext = status === 'won' && Match3().LEVELS[nextIdx - 1];
+    box.innerHTML = `
+      <div class="td-end-card ${status === 'won' ? 'win' : 'lose'}">
+        <div class="td-end-title">${status === 'won' ? '🎉 Geschafft!' : '💀 Keine Züge mehr'}</div>
+        <div class="td-end-sub">${status === 'won' ? esc(rewardMsg) : 'Ziel nicht erreicht.'}</div>
+        <div class="td-end-actions">
+          <button class="fcs-btn" id="m3Retry" style="width:auto;padding:8px 16px">↻ Nochmal</button>
+          ${hasNext ? `<button class="fcs-btn" id="m3Next" style="width:auto;padding:8px 16px">Level ${nextIdx} →</button>` : ''}
+          <button class="fcs-btn secondary" id="m3ToLevels" style="width:auto;padding:8px 16px">Level-Auswahl</button>
+        </div>
+      </div>`;
+    box.classList.add('show');
+    box.querySelector('#m3Retry').onclick = () => renderM3Game(m3Idx);
+    box.querySelector('#m3ToLevels').onclick = () => renderM3Levels();
+    const nb = box.querySelector('#m3Next');
+    if (nb) nb.onclick = () => renderM3Game(nextIdx);
+  }
+
   /* ── admin gold ── */
   function openAdmin() {
     const user = Auth.currentUser();
@@ -1535,7 +1717,7 @@
   global.FCSApp = {
     init, renderHeader,
     openAuth, openAccount, openChallenges, openShop, openChangelog,
-    openCases, openInventory, openMarket, openCollections, openLeaderboard, openTowerDefense, openAdmin
+    openCases, openInventory, openMarket, openCollections, openLeaderboard, openTowerDefense, openMatch3, openAdmin
   };
 
   if (document.readyState === 'loading') {
