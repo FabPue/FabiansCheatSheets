@@ -40,8 +40,59 @@
 @keyframes cbgFloat { from { transform: translate(0, 0); opacity: 0.3; } to { transform: translate(var(--x, 20px), -40px); opacity: 0.9; } }
 @keyframes cbgConfetti { to { transform: translateY(112vh) rotate(720deg); } }
 
+/* ── Matrix code rain ── */
+.cbg-matrix {
+  position: absolute; top: -40%;
+  font-family: 'JetBrains Mono', monospace; line-height: 1.05;
+  white-space: pre; text-align: center;
+  color: #21d97a; opacity: 0.22;
+  text-shadow: 0 0 6px rgba(33,217,122,0.8);
+  animation-name: cbgMatrix; animation-timing-function: linear; animation-iteration-count: infinite;
+}
+@keyframes cbgMatrix { to { transform: translateY(150vh); } }
+
+/* ── Shooting stars / meteors ── */
+.p-meteor {
+  width: 2px; height: 2px; border-radius: 50%;
+  background: #fff; opacity: 0.9;
+  box-shadow: 0 0 8px 2px rgba(180,210,255,0.9);
+  animation: cbgMeteor linear infinite;
+}
+.p-meteor::before {
+  content: ''; position: absolute; right: 2px; top: 50%;
+  width: 120px; height: 1.5px; transform: translateY(-50%);
+  background: linear-gradient(90deg, rgba(180,210,255,0), rgba(180,210,255,0.9));
+}
+@keyframes cbgMeteor {
+  0%   { transform: translate(0, 0) rotate(28deg); opacity: 0; }
+  8%   { opacity: 1; }
+  100% { transform: translate(70vw, 55vh) rotate(28deg); opacity: 0; }
+}
+
+/* ── Sakura petals ── */
+.p-sakura {
+  top: -30px; opacity: 0.85; will-change: transform;
+  animation: cbgSakura linear infinite;
+}
+@keyframes cbgSakura {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  50%  { transform: translate(var(--sway, 40px), 55vh) rotate(180deg); }
+  100% { transform: translate(0, 112vh) rotate(360deg); }
+}
+
+/* ── Glowing orbs ── */
+.p-orb {
+  top: auto; border-radius: 50%; opacity: 0.28;
+  filter: blur(14px); will-change: transform;
+  animation: cbgOrb ease-in-out infinite alternate;
+}
+@keyframes cbgOrb {
+  from { transform: translate(0, 0) scale(0.9); }
+  to   { transform: translate(var(--x, 40px), var(--y, -40px)) scale(1.2); }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .cbg-icon, .cbg-particle { animation: none !important; }
+  .cbg-icon, .cbg-particle, .cbg-matrix { animation: none !important; }
 }
 
 /* ── BugShop dialog ── */

@@ -78,7 +78,10 @@
     { id: 'slot_1',   icon: '🎰', title: 'Erster Dreh',     desc: 'Dreh die Bug Slots zum ersten Mal.',        xp: 30,  gold: 20,  test: s => s.slotSpins >= 1 },
     { id: 'slot_100', icon: '🎲', title: 'Zock-Veteran',    desc: 'Drehe 100 Mal an den Slots.',               xp: 150, gold: 0,   test: s => s.slotSpins >= 100 },
     { id: 'slot_500', icon: '🏦', title: 'Das Haus gewinnt', desc: '500 Spins — und die Erkenntnis: Gambeln lohnt sich nicht.', xp: 400, gold: 0, test: s => s.slotSpins >= 500 },
-    { id: 'cos_3',    icon: '🎨', title: 'Stil-Bewusst',    desc: 'Besitze 3 Hintergrund-Effekte aus dem BugShop.', xp: 120, gold: 80, test: s => s.cosmeticsOwned >= 3 }
+    { id: 'slot_diag', icon: '↗️', title: 'Quergewinn',      desc: 'Lande einen Gewinn auf einer Diagonale.',   xp: 80,  gold: 40, test: s => s.slotDiagWins >= 1 },
+    { id: 'slot_mega', icon: '💰', title: 'Mega-Win',        desc: 'Gewinne 1000+ BugCoins in einem einzigen Dreh.', xp: 250, gold: 0, test: s => s.slotMaxWin >= 1000 },
+    { id: 'cos_3',    icon: '🎨', title: 'Stil-Bewusst',    desc: 'Besitze 3 Hintergrund-Effekte aus dem BugShop.', xp: 120, gold: 80, test: s => s.cosmeticsOwned >= 3 },
+    { id: 'cos_6',    icon: '🖼️', title: 'Deko-Sammler',    desc: 'Besitze 6 Hintergrund-Effekte aus dem BugShop.', xp: 240, gold: 160, test: s => s.cosmeticsOwned >= 6 }
   ];
 
   global.FCSAchievementsData = A;

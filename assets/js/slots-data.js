@@ -1,37 +1,61 @@
 /*
  * slots-data.js — configuration for the language slot machine.
  *
- * A 3-reel, single-payline slot whose symbols are programming languages.
- * The reel weights + paytable are tuned to a realistic ~92% RTP (return to
- * player): the house always wins over time — the whole point is to show that
- * gambling doesn't pay. Bet in Bug Taler, win BugCoins.
+ * A 5×5 grid slot whose symbols are programming languages. Wins pay on 7
+ * paylines: the 5 horizontal rows plus the two full diagonals. A payline pays
+ * for 3, 4 or 5 matching symbols counted from the left.
+ *
+ * The reel weights + paytable are tuned (Monte-Carlo) to a realistic ~90% RTP
+ * (return to player): the house always wins over time — the whole point is to
+ * show that gambling doesn't pay. Bet in Bug Taler, win BugCoins.
  */
 (function (global) {
   'use strict';
 
-  // Global payout multiplier — tunes overall RTP without rebalancing each line.
-  const PAYOUT_MULT = 1.42;
+  // Grid dimensions.
+  const COLS = 5;
+  const ROWS = 5;
 
-  // Each reel uses these symbols with the given weight. line = 3-of-a-kind
-  // payout (× bet), half = left two match (× bet). scatter triggers free spins.
+  // Global payout multiplier — tunes overall RTP without rebalancing each line.
+  // Monte-Carlo (5M spins): base RTP 0.6505 × 1.38 ≈ 0.898 (~90%, house edge ~10%).
+  const PAYOUT_MULT = 1.38;
+
+  // Each cell is drawn independently from a weighted reel. p3/p4/p5 are the
+  // per-line payout multipliers (× per-line stake) for 3, 4 or 5 of a kind
+  // counted from the left. scatter symbols pay nothing on a line but award
+  // free spins when 3+ appear anywhere on the grid.
   const SYMBOLS = [
-    { id: 'html',    name: 'HTML5',      slug: 'html5',      weight: 22, line: 5,   half: 1 },
-    { id: 'css',     name: 'CSS3',       slug: 'css3',       weight: 18, line: 8,   half: 1 },
-    { id: 'js',      name: 'JavaScript', slug: 'javascript', weight: 12, line: 15,  half: 2 },
-    { id: 'py',      name: 'Python',     slug: 'python',     weight: 8,  line: 30,  half: 3 },
-    { id: 'rust',    name: 'Rust',       slug: 'rust',       weight: 3,  line: 100, half: 8 },
-    { id: 'gem',     name: 'Diamant',    glyph: '💎',        weight: 1,  line: 500, half: 20 },
-    { id: 'scatter', name: 'Bug-Bonus',  glyph: '🐞',        weight: 6,  scatter: true }
+    { id: 'html',    name: 'HTML5',      slug: 'html5',      weight: 22, p3: 2,   p4: 8,   p5: 25 },
+    { id: 'css',     name: 'CSS3',       slug: 'css3',       weight: 18, p3: 3,   p4: 12,  p5: 40 },
+    { id: 'js',      name: 'JavaScript', slug: 'javascript', weight: 12, p3: 5,   p4: 20,  p5: 80 },
+    { id: 'py',      name: 'Python',     slug: 'python',     weight: 8,  p3: 10,  p4: 40,  p5: 150 },
+    { id: 'rust',    name: 'Rust',       slug: 'rust',       weight: 3,  p3: 25,  p4: 120, p5: 500 },
+    { id: 'gem',     name: 'Diamant',    glyph: '💎',        weight: 1,  p3: 100, p4: 500, p5: 2500 },
+    { id: 'scatter', name: 'Bug-Bonus',  glyph: '🐞',        weight: 3,  scatter: true }
   ];
 
-  const BETS = [5, 10, 25, 50, 100];        // Bug Taler per spin
-  const EXCHANGE_RATE = 1;                    // 1 coin -> 1 Bug Taler
-  const FREE_SPINS_ON_SCATTER = 12;           // 3 scatters award this many
-  const BONUS_BUY_COST_MULT = 50;             // bonus buy costs 50× the current bet
+  // Paylines as [col, row] coordinate lists (col 0 = leftmost, row 0 = top).
+  // 5 rows + 2 diagonals = 7 lines.
+  const PAYLINES = [
+    { id: 'row0', name: 'Reihe 1',      cells: [[0,0],[1,0],[2,0],[3,0],[4,0]] },
+    { id: 'row1', name: 'Reihe 2',      cells: [[0,1],[1,1],[2,1],[3,1],[4,1]] },
+    { id: 'row2', name: 'Reihe 3',      cells: [[0,2],[1,2],[2,2],[3,2],[4,2]] },
+    { id: 'row3', name: 'Reihe 4',      cells: [[0,3],[1,3],[2,3],[3,3],[4,3]] },
+    { id: 'row4', name: 'Reihe 5',      cells: [[0,4],[1,4],[2,4],[3,4],[4,4]] },
+    { id: 'diagD', name: 'Diagonale ↘', cells: [[0,0],[1,1],[2,2],[3,3],[4,4]] },
+    { id: 'diagU', name: 'Diagonale ↗', cells: [[0,4],[1,3],[2,2],[3,1],[4,0]] }
+  ];
+
+  const BETS = [5, 10, 25, 50, 100];          // Bug Taler per spin (total stake)
+  const EXCHANGE_RATE = 1;                     // 1 coin -> 1 Bug Taler
+  const SCATTER_MIN = 4;                        // scatters needed to trigger free spins
+  const FREE_SPINS_ON_SCATTER = 12;            // that many scatters award this many spins
+  const BONUS_BUY_COST_MULT = 50;              // bonus buy costs 50× the current bet
   const BONUS_BUY_FREE_SPINS = 12;
+  const DIAG_BONUS = 1.25;                      // diagonal wins pay a small bonus
 
   global.FCSSlotsData = {
-    PAYOUT_MULT, SYMBOLS, BETS, EXCHANGE_RATE,
-    FREE_SPINS_ON_SCATTER, BONUS_BUY_COST_MULT, BONUS_BUY_FREE_SPINS
+    COLS, ROWS, PAYOUT_MULT, SYMBOLS, PAYLINES, BETS, EXCHANGE_RATE, SCATTER_MIN,
+    FREE_SPINS_ON_SCATTER, BONUS_BUY_COST_MULT, BONUS_BUY_FREE_SPINS, DIAG_BONUS
   };
 })(window);

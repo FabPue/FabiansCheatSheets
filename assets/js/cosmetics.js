@@ -12,7 +12,11 @@
     { id: 'stardust',   name: 'Sternenstaub',   price: 80,  icon: '✨', desc: 'Funkelnde Sterne rieseln über den Hintergrund.' },
     { id: 'bubbles',    name: 'Bläschen',        price: 80,  icon: '🫧', desc: 'Sanft aufsteigende Blasen.' },
     { id: 'confetti',   name: 'Konfetti-Regen',  price: 120, icon: '🎉', desc: 'Buntes Konfetti rieselt herab.' },
-    { id: 'fireflies',  name: 'Glühwürmchen',    price: 100, icon: '🟡', desc: 'Glimmende Lichtpunkte tanzen umher.' }
+    { id: 'fireflies',  name: 'Glühwürmchen',    price: 100, icon: '🟡', desc: 'Glimmende Lichtpunkte tanzen umher.' },
+    { id: 'matrix',     name: 'Matrix-Regen',    price: 160, icon: '🟩', desc: 'Grüner Code regnet in Spalten herab — wie in der Matrix.' },
+    { id: 'meteors',    name: 'Sternschnuppen',  price: 140, icon: '☄️', desc: 'Leuchtende Sternschnuppen schießen diagonal über den Bildschirm.' },
+    { id: 'sakura',     name: 'Kirschblüten',    price: 110, icon: '🌸', desc: 'Rosa Blütenblätter segeln sanft herab.' },
+    { id: 'orbs',       name: 'Glüh-Orbs',       price: 130, icon: '🔮', desc: 'Große, weich leuchtende Farb-Orbs schweben umher.' }
   ];
 
   const DEFAULT_SLUGS = ['javascript', 'python', 'typescript', 'rust', 'go', 'html5', 'css3'];
@@ -91,6 +95,72 @@
         layer.appendChild(el);
       }
     });
+
+    // Matrix code rain — falling columns of glyphs.
+    if (active.indexOf('matrix') !== -1) {
+      const glyphs = '01{}<>[]()=+-*/;$#&|!?✕λ⌘のアカサ';
+      const colsN = 22;
+      for (let i = 0; i < colsN; i++) {
+        const col = document.createElement('div');
+        col.className = 'cbg-matrix';
+        col.style.left = (i / colsN * 100 + Math.random() * 2) + '%';
+        col.style.animationDuration = (5 + Math.random() * 7) + 's';
+        col.style.animationDelay = (-Math.random() * 10) + 's';
+        col.style.fontSize = (12 + Math.random() * 8) + 'px';
+        let txt = '';
+        const len = 12 + (Math.random() * 14 | 0);
+        for (let j = 0; j < len; j++) txt += glyphs[(Math.random() * glyphs.length) | 0] + '\n';
+        col.textContent = txt;
+        layer.appendChild(col);
+      }
+    }
+
+    // Shooting stars / meteors — diagonal streaks.
+    if (active.indexOf('meteors') !== -1) {
+      for (let i = 0; i < 16; i++) {
+        const el = document.createElement('span');
+        el.className = 'cbg-particle p-meteor';
+        el.style.left = (Math.random() * 100) + '%';
+        el.style.top = (Math.random() * 60) + '%';
+        el.style.animationDuration = (2.4 + Math.random() * 3.2) + 's';
+        el.style.animationDelay = (-Math.random() * 8) + 's';
+        layer.appendChild(el);
+      }
+    }
+
+    // Sakura petals — falling + swaying emoji.
+    if (active.indexOf('sakura') !== -1) {
+      for (let i = 0; i < 26; i++) {
+        const el = document.createElement('span');
+        el.className = 'cbg-particle p-sakura';
+        el.textContent = Math.random() < 0.5 ? '🌸' : '🌷';
+        el.style.left = (Math.random() * 100) + '%';
+        el.style.fontSize = (14 + Math.random() * 16) + 'px';
+        el.style.animationDuration = (9 + Math.random() * 10) + 's';
+        el.style.animationDelay = (-Math.random() * 16) + 's';
+        el.style.setProperty('--sway', (30 + Math.random() * 60) + 'px');
+        layer.appendChild(el);
+      }
+    }
+
+    // Glowing orbs — large soft floating colour blobs.
+    if (active.indexOf('orbs') !== -1) {
+      const orbColors = ['#7c6af7', '#f472b6', '#34d399', '#63b3f7', '#fbbf24'];
+      for (let i = 0; i < 14; i++) {
+        const el = document.createElement('span');
+        el.className = 'cbg-particle p-orb';
+        const size = 40 + Math.random() * 90;
+        el.style.width = size + 'px'; el.style.height = size + 'px';
+        el.style.left = (Math.random() * 100) + '%';
+        el.style.top = (Math.random() * 100) + '%';
+        el.style.background = orbColors[i % orbColors.length];
+        el.style.animationDuration = (14 + Math.random() * 16) + 's';
+        el.style.animationDelay = (-Math.random() * 20) + 's';
+        el.style.setProperty('--x', (Math.random() * 120 - 60) + 'px');
+        el.style.setProperty('--y', (Math.random() * 120 - 60) + 'px');
+        layer.appendChild(el);
+      }
+    }
   }
 
   global.FCSCosmetics = { COSMETICS, owns, isActive, buy, toggle, render };

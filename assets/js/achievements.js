@@ -39,6 +39,8 @@
       tdProgress: profile.tdProgress || 0,
       cmProgress: profile.cmProgress || 0,
       slotSpins: profile.slotSpins || 0,
+      slotMaxWin: profile.slotMaxWin || 0,
+      slotDiagWins: profile.slotDiagWins || 0,
       cosmeticsOwned: (profile.ownedCosmetics || []).length
     };
   }
