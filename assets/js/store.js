@@ -109,7 +109,13 @@
       casesOpened: 0,
       achievements: [],
       tdProgress: 0,
-      cmProgress: 0
+      cmProgress: 0,
+      bugTaler: 0,        // slot betting currency (bought with coins)
+      bugCoins: 0,        // slot winnings (spent in the BugShop)
+      slotFreeSpins: 0,   // remaining free spins
+      slotSpins: 0,       // lifetime spins (for stats)
+      ownedCosmetics: [],
+      activeCosmetics: []
     };
   }
 
