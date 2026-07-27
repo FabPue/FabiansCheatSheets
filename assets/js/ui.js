@@ -24,6 +24,9 @@
   function Td() { return global.FCSTd; }
   function TdData() { return global.FCSTdData; }
   function Match3() { return global.FCSMatch3; }
+  function Slots() { return global.FCSSlots; }
+  function SlotsData() { return global.FCSSlotsData; }
+  function Cosmetics() { return global.FCSCosmetics; }
 
   function deviconClass(slug) { return `devicon-${slug}-plain colored`; }
   // Renders a language icon: a Devicon glyph when the item has a `slug`, else a
@@ -91,7 +94,9 @@
     if (tdMenu) { tdMenu.remove(); tdMenu = null; document.removeEventListener('click', tdOutsideCloser); }
   }
   function tdOutsideCloser(e) { if (tdMenu && !tdMenu.contains(e.target)) closeTowerMenu(); }
-  function stopActiveGame() { closeTowerMenu(); if (activeGame) { activeGame.destroy(); activeGame = null; } }
+  let slotTimers = [], slotBusy = false, slotBet = 10;
+  function clearSlotTimers() { slotTimers.forEach(t => { clearInterval(t); clearTimeout(t); }); slotTimers = []; slotBusy = false; }
+  function stopActiveGame() { closeTowerMenu(); clearSlotTimers(); if (activeGame) { activeGame.destroy(); activeGame = null; } }
 
   function openDialog(innerHTML, wide) {
     stopActiveGame();
@@ -201,6 +206,7 @@
     Gamify.refreshStreakOnLoad(p);
     Store.saveProfile(user, p);
     Shop.applyTheme(p.activeTheme || 'default');
+    if (Cosmetics()) Cosmetics().render(p);
     renderHeader();
   }
 
@@ -1586,6 +1592,205 @@
     if (nb) nb.onclick = () => renderM3Game(nextIdx);
   }
 
+  /* ── slots ("Bug Slots") ── */
+  function openSlots() {
+    const user = Auth.currentUser();
+    if (!user) { openAuth('login'); return; }
+    onLogin();
+    if (Sounds()) Sounds().resume();
+    renderSlots();
+  }
+
+  function slotSymHTML(sym) {
+    return sym.slug ? `<i class="${deviconClass(sym.slug)}"></i>` : `<span class="slot-glyph">${esc(sym.glyph)}</span>`;
+  }
+
+  function renderSlots() {
+    const user = Auth.currentUser();
+    const p = Store.getProfile(user);
+    const S = Slots(), SD = SlotsData();
+    const betChips = SD.BETS.map(b => `<button class="slot-bet ${b === slotBet ? 'active' : ''}" data-bet="${b}">${b}</button>`).join('');
+    const payRows = S.SYMBOLS.filter(s => !s.scatter).map(s =>
+      `<div class="slot-pay-row"><span class="slot-pay-ico">${slotSymHTML(s)}</span><span>${esc(s.name)}</span><span class="slot-pay-x">3× = ${s.line}× · 2× = ${s.half}×</span></div>`).join('');
+
+    openDialog(`
+      <div class="fcs-dialog-head">
+        <span class="fcs-dialog-title">🎰 Bug Slots</span>
+        <button class="fcs-dialog-close">✕</button>
+      </div>
+      <div class="fcs-dialog-body slots-body">
+        <div class="slot-wallet">
+          <span>🎟️ Bug Taler: <b id="slotTaler">${p.bugTaler || 0}</b></span>
+          <span>🪲 BugCoins: <b id="slotBugCoins">${p.bugCoins || 0}</b></span>
+          <span>🪙 Coins: <b id="slotCoins">${p.coins}</b></span>
+        </div>
+        <div class="slot-exchange">
+          <span>Coins → Bug Taler:</span>
+          <button class="fcs-btn secondary slot-xch" data-amt="100" style="width:auto;padding:6px 10px">+100</button>
+          <button class="fcs-btn secondary slot-xch" data-amt="500" style="width:auto;padding:6px 10px">+500</button>
+          <button class="sound-toggle" id="slotSound" title="Sound an/aus"></button>
+        </div>
+        <div class="slot-machine">
+          <div class="slot-reel" id="slotReel0"></div>
+          <div class="slot-reel" id="slotReel1"></div>
+          <div class="slot-reel" id="slotReel2"></div>
+        </div>
+        <div class="slot-result" id="slotResult"></div>
+        <div class="slot-controls">
+          <div class="slot-bets">Einsatz: ${betChips}</div>
+          <div class="slot-actions">
+            <button class="fcs-btn" id="slotSpin">🎰 Drehen · ${slotBet} 🎟️</button>
+            <button class="fcs-btn secondary" id="slotBonus">🎁 Bonus · ${slotBet * SD.BONUS_BUY_COST_MULT} 🎟️</button>
+          </div>
+          <div class="slot-free" id="slotFree"></div>
+        </div>
+        <details class="slot-paytable"><summary>Auszahlungen & Info</summary>
+          <div class="slot-pays">${payRows}</div>
+          <p class="fcs-note" style="margin-top:8px">🐞 × 3 = ${SD.FREE_SPINS_ON_SCATTER} Freispiele. Gewinne in BugCoins. Hinweis: Die Chance entspricht einem echten Slot (Haus-Vorteil ~9 %) — auf Dauer verlierst du. <b>Gambeln lohnt sich nicht.</b> 🙂</p>
+        </details>
+      </div>`, true);
+    dialog.querySelector('.fcs-dialog-close').onclick = closeDialog;
+    [0, 1, 2].forEach(i => setReelSymbol(i, S.SYMBOLS[i]));
+    dialog.querySelectorAll('.slot-bet').forEach(ch => ch.onclick = () => { if (slotBusy) return; slotBet = Number(ch.dataset.bet); renderSlots(); });
+    dialog.querySelectorAll('.slot-xch').forEach(x => x.onclick = () => {
+      const prof = Store.getProfile(user);
+      const r = S.exchange(user, prof, Number(x.dataset.amt));
+      if (!r.ok) { toast(r.reason === 'insufficient' ? 'Nicht genug Coins.' : 'Ungültig.', 'error'); return; }
+      updateSlotWallet(); renderHeader();
+    });
+    const sb = dialog.querySelector('#slotSound');
+    if (sb) { const Snd = Sounds(); const paint = () => sb.textContent = (Snd && Snd.isMuted()) ? '🔇' : '🔊'; paint(); sb.onclick = () => { if (!Snd) return; Snd.setMuted(!Snd.isMuted()); if (!Snd.isMuted()) Snd.resume(); paint(); }; }
+    dialog.querySelector('#slotSpin').onclick = () => doSlotSpin();
+    dialog.querySelector('#slotBonus').onclick = () => doSlotBonus();
+    updateSlotFree();
+  }
+
+  function setReelSymbol(i, sym) {
+    const el = dialog.querySelector('#slotReel' + i);
+    if (el) el.innerHTML = `<div class="slot-sym">${slotSymHTML(sym)}</div>`;
+  }
+  function updateSlotWallet() {
+    const p = Store.getProfile(Auth.currentUser());
+    setText('#slotTaler', p.bugTaler || 0); setText('#slotBugCoins', p.bugCoins || 0); setText('#slotCoins', p.coins);
+  }
+  function updateSlotFree() {
+    const p = Store.getProfile(Auth.currentUser());
+    const fs = p.slotFreeSpins || 0;
+    const el = dialog.querySelector('#slotFree'); if (el) el.innerHTML = fs > 0 ? `🎁 Freispiele übrig: <b>${fs}</b>` : '';
+    const spinBtn = dialog.querySelector('#slotSpin');
+    if (spinBtn && !slotBusy) spinBtn.innerHTML = fs > 0 ? `🎁 Freispin drehen (${fs})` : `🎰 Drehen · ${slotBet} 🎟️`;
+  }
+
+  function doSlotSpin() {
+    if (slotBusy) return;
+    const user = Auth.currentUser();
+    const p = Store.getProfile(user);
+    const S = Slots();
+    const res = S.play(user, p, slotBet);
+    if (!res.ok) { toast('Nicht genug Bug Taler — tausche erst Coins um.', 'error'); return; }
+    slotBusy = true;
+    dialog.querySelector('#slotResult').innerHTML = '';
+    dialog.querySelectorAll('.slot-reel').forEach(r => r.classList.add('spinning'));
+    const Snd = Sounds(); if (Snd) Snd.slotSpin();
+    const cyclers = [0, 1, 2].map(i => setInterval(() => setReelSymbol(i, S.SYMBOLS[(Math.random() * S.SYMBOLS.length) | 0]), 70));
+    slotTimers.push(...cyclers);
+    [0, 1, 2].forEach(i => {
+      const t = setTimeout(() => {
+        clearInterval(cyclers[i]);
+        setReelSymbol(i, S.symbolById(res.reels[i]));
+        const reelEl = dialog.querySelector('#slotReel' + i);
+        if (reelEl) reelEl.classList.remove('spinning');
+        if (Snd) Snd.slotStop();
+        if (i === 2) finishSlotSpin(res);
+      }, 700 + i * 360);
+      slotTimers.push(t);
+    });
+  }
+
+  function finishSlotSpin(res) {
+    slotBusy = false;
+    updateSlotWallet(); updateSlotFree(); renderHeader();
+    const box = dialog.querySelector('#slotResult'); if (!box) return;
+    const Snd = Sounds();
+    if (res.win > 0) {
+      const cls = res.jackpot ? 'jackpot' : (res.kind === 'line' ? 'big' : 'win');
+      const lead = res.jackpot ? '💎 JACKPOT! ' : '';
+      const fs = res.freeSpinsAwarded ? ` · 🐞 ${res.freeSpinsAwarded} Freispiele` : '';
+      box.innerHTML = `<div class="slot-win ${cls}">${lead}+${res.win} 🪲${fs}</div>`;
+      if (Snd) { if (res.jackpot) Snd.slotJackpot(); else Snd.slotWin(Math.min(1, res.win / (slotBet * 20))); }
+      // winning reels flash
+      dialog.querySelectorAll('.slot-reel').forEach(r => { r.classList.add('flash'); setTimeout(() => r.classList.remove('flash'), 700); });
+    } else if (res.freeSpinsAwarded) {
+      box.innerHTML = `<div class="slot-win win">🐞 BONUS! ${res.freeSpinsAwarded} Freispiele</div>`;
+      if (Snd) Snd.slotBonus();
+    } else {
+      box.innerHTML = `<div class="slot-lose">Kein Gewinn.</div>`;
+    }
+    runAchievementCheck();
+  }
+
+  function doSlotBonus() {
+    if (slotBusy) return;
+    const user = Auth.currentUser();
+    const p = Store.getProfile(user);
+    const S = Slots();
+    const r = S.bonusBuy(user, p, slotBet);
+    if (!r.ok) { toast(`Nicht genug Bug Taler (${r.cost} nötig).`, 'error'); return; }
+    const Snd = Sounds(); if (Snd) Snd.slotBonus();
+    updateSlotWallet(); updateSlotFree();
+    toast(`${SlotsData().BONUS_BUY_FREE_SPINS} Freispiele gekauft!`, 'coin');
+  }
+
+  /* ── BugShop (cosmetics) ── */
+  function openBugShop() {
+    const user = Auth.currentUser();
+    if (!user) { openAuth('login'); return; }
+    onLogin();
+    renderBugShop();
+  }
+
+  function renderBugShop() {
+    const user = Auth.currentUser();
+    const p = Store.getProfile(user);
+    const Cos = Cosmetics();
+    if (!Cos) return;
+    const cards = Cos.COSMETICS.map(c => {
+      const owned = Cos.owns(p, c.id);
+      const active = Cos.isActive(p, c.id);
+      let btn;
+      if (!owned) btn = `<button class="cos-btn" data-buy="${c.id}">Kaufen · ${c.price} 🪲</button>`;
+      else btn = `<button class="cos-btn ${active ? 'on' : ''}" data-toggle="${c.id}">${active ? 'Aktiv ✓ (aus)' : 'Aktivieren'}</button>`;
+      return `<div class="cos-card ${active ? 'active' : ''}">
+          <div class="cos-emoji">${c.icon}</div>
+          <div class="cos-name">${esc(c.name)}</div>
+          <div class="cos-desc">${esc(c.desc)}</div>
+          ${btn}
+        </div>`;
+    }).join('');
+    openDialog(`
+      <div class="fcs-dialog-head">
+        <span class="fcs-dialog-title">🛒 BugShop</span>
+        <button class="fcs-dialog-close">✕</button>
+      </div>
+      <div class="fcs-dialog-body">
+        <div class="bugshop-wallet">🪲 BugCoins: <b id="bugShopBal">${p.bugCoins || 0}</b> — schalte Hintergrund-Effekte frei. Mehrere gleichzeitig aktivierbar.</div>
+        <div class="bugshop-grid">${cards}</div>
+      </div>`, true);
+    dialog.querySelector('.fcs-dialog-close').onclick = closeDialog;
+    dialog.querySelectorAll('[data-buy]').forEach(b => b.onclick = () => {
+      const prof = Store.getProfile(user);
+      const r = Cos.buy(user, prof, b.dataset.buy);
+      if (!r.ok) { toast(r.reason === 'insufficient' ? 'Nicht genug BugCoins.' : 'Schon gekauft.', 'error'); return; }
+      toast('Effekt gekauft!', 'coin');
+      renderBugShop();
+    });
+    dialog.querySelectorAll('[data-toggle]').forEach(b => b.onclick = () => {
+      const prof = Store.getProfile(user);
+      Cos.toggle(user, prof, b.dataset.toggle);
+      renderBugShop();
+    });
+  }
+
   /* ── admin gold ── */
   function openAdmin() {
     const user = Auth.currentUser();
@@ -1717,7 +1922,7 @@
   global.FCSApp = {
     init, renderHeader,
     openAuth, openAccount, openChallenges, openShop, openChangelog,
-    openCases, openInventory, openMarket, openCollections, openLeaderboard, openTowerDefense, openMatch3, openAdmin
+    openCases, openInventory, openMarket, openCollections, openLeaderboard, openTowerDefense, openMatch3, openSlots, openBugShop, openAdmin
   };
 
   if (document.readyState === 'loading') {

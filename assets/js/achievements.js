@@ -37,7 +37,9 @@
       bestFloat: bestFloat,
       worstFloat: worstFloat,
       tdProgress: profile.tdProgress || 0,
-      cmProgress: profile.cmProgress || 0
+      cmProgress: profile.cmProgress || 0,
+      slotSpins: profile.slotSpins || 0,
+      cosmeticsOwned: (profile.ownedCosmetics || []).length
     };
   }
 

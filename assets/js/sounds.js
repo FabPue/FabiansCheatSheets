@@ -111,11 +111,68 @@
     note(1567.98, now + seq.length * 0.11, 1.2, 0.14, 'triangle');
   }
 
+  // ── slot machine sounds ──
+  function slotSpin() {
+    if (muted) return; const c = ensureCtx(); if (!c) return;
+    const now = c.currentTime;
+    const osc = c.createOscillator(), g = c.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(180, now);
+    osc.frequency.exponentialRampToValueAtTime(520, now + 0.3);
+    g.gain.setValueAtTime(0.0001, now);
+    g.gain.exponentialRampToValueAtTime(0.1, now + 0.05);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
+    osc.connect(g); g.connect(master); osc.start(now); osc.stop(now + 0.4);
+  }
+  function slotStop() {
+    if (muted) return; const c = ensureCtx(); if (!c) return;
+    const now = c.currentTime;
+    const osc = c.createOscillator(), g = c.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(320, now);
+    osc.frequency.exponentialRampToValueAtTime(120, now + 0.08);
+    g.gain.setValueAtTime(0.0001, now);
+    g.gain.exponentialRampToValueAtTime(0.3, now + 0.005);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
+    osc.connect(g); g.connect(master); osc.start(now); osc.stop(now + 0.14);
+  }
+  function slotWin(mag) {
+    if (muted) return; const c = ensureCtx(); if (!c) return;
+    const now = c.currentTime + 0.01;
+    const base = [659.25, 783.99, 987.77, 1174.66, 1318.51, 1567.98];
+    const n = Math.min(6, 2 + Math.round((mag || 0.5) * 4));
+    for (let i = 0; i < n; i++) note(base[i % base.length], now + i * 0.07, 0.25, 0.16, 'triangle');
+  }
+  function slotJackpot() {
+    if (muted) return; const c = ensureCtx(); if (!c) return;
+    const now = c.currentTime + 0.02;
+    const seq = [523.25, 659.25, 783.99, 1046.5, 1318.51, 1567.98];
+    seq.forEach((f, i) => { note(f, now + i * 0.09, 0.5, 0.2, 'sawtooth'); note(f * 1.5, now + i * 0.09, 0.4, 0.08, 'triangle'); });
+    note(2093, now + seq.length * 0.09, 1.4, 0.16, 'triangle');
+  }
+  function slotBonus() {
+    if (muted) return; const c = ensureCtx(); if (!c) return;
+    const now = c.currentTime;
+    const osc = c.createOscillator(), g = c.createGain();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(300, now);
+    osc.frequency.exponentialRampToValueAtTime(1200, now + 0.5);
+    g.gain.setValueAtTime(0.0001, now);
+    g.gain.exponentialRampToValueAtTime(0.13, now + 0.05);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + 0.55);
+    osc.connect(g); g.connect(master); osc.start(now); osc.stop(now + 0.6);
+    [1046.5, 1318.51, 1567.98].forEach((f, i) => note(f, now + 0.5 + i * 0.08, 0.3, 0.14, 'triangle'));
+  }
+
   function setMuted(m) {
     muted = !!m;
     try { localStorage.setItem(MUTE_KEY, muted ? '1' : '0'); } catch (e) {}
   }
   function isMuted() { return muted; }
 
-  global.FCSSounds = { resume, tick, reveal, gold, setMuted, isMuted };
+  global.FCSSounds = {
+    resume, tick, reveal, gold,
+    slotSpin, slotStop, slotWin, slotJackpot, slotBonus,
+    setMuted, isMuted
+  };
 })(window);

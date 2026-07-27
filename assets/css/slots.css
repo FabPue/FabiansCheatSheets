@@ -1,0 +1,75 @@
+/*
+ * slots.css — Bug Slots machine, reels, wallet and win banners.
+ */
+.slots-body { display: flex; flex-direction: column; gap: 12px; }
+
+.slot-wallet, .slot-exchange {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text);
+}
+.slot-wallet b { color: #fbbf24; }
+.slot-exchange { font-size: 12px; color: var(--muted); }
+.slot-exchange .sound-toggle { margin-left: auto; }
+
+.slot-machine {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+  background: linear-gradient(180deg, #14142a, #05050c);
+  border: 2px solid #2a2a4a; border-radius: 16px; padding: 14px;
+  box-shadow: inset 0 0 40px rgba(0,0,0,0.6), 0 0 0 4px rgba(124,106,247,0.12);
+}
+.slot-reel {
+  position: relative;
+  height: 96px; border-radius: 12px;
+  background: radial-gradient(ellipse at center, #12122a, #0a0a16);
+  border: 1px solid #2a2a4a; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.slot-reel::before, .slot-reel::after {
+  content: ''; position: absolute; left: 0; right: 0; height: 26px; pointer-events: none; z-index: 2;
+}
+.slot-reel::before { top: 0; background: linear-gradient(180deg, rgba(0,0,0,0.7), transparent); }
+.slot-reel::after { bottom: 0; background: linear-gradient(0deg, rgba(0,0,0,0.7), transparent); }
+.slot-sym { display: flex; align-items: center; justify-content: center; }
+.slot-sym i { font-size: 52px; }
+.slot-glyph { font-size: 46px; }
+.slot-reel.spinning .slot-sym { animation: slotBlur 0.12s linear infinite; }
+@keyframes slotBlur { 0% { transform: translateY(-3px); filter: blur(1px); } 100% { transform: translateY(3px); filter: blur(1px); } }
+.slot-reel.flash { animation: slotFlash 0.35s ease 2; }
+@keyframes slotFlash { 50% { box-shadow: inset 0 0 24px rgba(52,211,153,0.8); border-color: #34d399; } }
+
+.slot-result { min-height: 30px; text-align: center; }
+.slot-win {
+  display: inline-block; font-family: 'JetBrains Mono', monospace; font-weight: 800;
+  padding: 6px 16px; border-radius: 12px; font-size: 16px;
+}
+.slot-win.win  { color: #34d399; border: 1px solid rgba(52,211,153,0.5); background: rgba(52,211,153,0.08); }
+.slot-win.big  { color: #fbbf24; border: 1px solid rgba(251,191,36,0.6); background: rgba(251,191,36,0.1); font-size: 18px; }
+.slot-win.jackpot {
+  color: #fff; font-size: 22px; border: 1px solid #ffd447;
+  background: linear-gradient(90deg, #ff9a00, #ffcf33, #ff9a00); background-size: 200% auto;
+  color: #201500; animation: slotJack 1.2s linear infinite;
+}
+@keyframes slotJack { to { background-position: 200% center; } }
+.slot-lose { color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+
+.slot-controls { display: flex; flex-direction: column; gap: 8px; }
+.slot-bets { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.slot-bet {
+  padding: 4px 12px; border-radius: 16px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--muted); cursor: pointer;
+  font-family: 'JetBrains Mono', monospace; font-size: 12px;
+}
+.slot-bet.active { color: #fff; border-color: #7c6af7; background: rgba(124,106,247,0.18); }
+.slot-actions { display: flex; gap: 10px; }
+.slot-actions .fcs-btn { margin-top: 0; }
+.slot-free { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #f472b6; min-height: 16px; }
+
+.slot-paytable summary { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); cursor: pointer; }
+.slot-pays { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; }
+.slot-pay-row { display: flex; align-items: center; gap: 10px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); }
+.slot-pay-ico i { font-size: 18px; }
+.slot-pay-ico .slot-glyph { font-size: 16px; }
+.slot-pay-x { margin-left: auto; color: var(--text); }
+
+/* landing-page card colour */
+.card-slots { --card-color: #fbbf24; --card-glow: radial-gradient(ellipse at top, rgba(251,191,36,0.12), transparent 70%); --card-shadow: rgba(251,191,36,0.3); }

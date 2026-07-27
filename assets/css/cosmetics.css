@@ -1,0 +1,68 @@
+/*
+ * cosmetics.css — BugShop dialog + the animated background effect layer.
+ */
+
+/* ── background effect layer (behind page content) ── */
+.cosmetics-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+
+.cbg-icon {
+  position: absolute; opacity: 0.16;
+  animation-name: cbgDrift; animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite; will-change: transform;
+}
+@keyframes cbgDrift {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  50%  { transform: translate(48px, -34px) rotate(180deg); }
+  100% { transform: translate(-24px, 22px) rotate(360deg); }
+}
+
+.cbg-particle { position: absolute; top: -24px; }
+.p-stardust {
+  width: 3px; height: 3px; border-radius: 50%;
+  background: #fff; box-shadow: 0 0 6px #fff; opacity: 0.6;
+  animation: cbgFall linear infinite;
+}
+.p-fireflies {
+  width: 4px; height: 4px; border-radius: 50%;
+  background: #ffe08a; box-shadow: 0 0 8px 2px rgba(255,212,71,0.8); opacity: 0.7;
+  top: auto; bottom: 10%;
+  animation: cbgFloat ease-in-out infinite alternate;
+}
+.p-bubbles {
+  top: auto; bottom: -24px;
+  width: 12px; height: 12px; border-radius: 50%;
+  border: 1px solid rgba(120,180,255,0.5); background: rgba(120,180,255,0.08);
+  animation: cbgRise linear infinite;
+}
+.p-confetti { width: 8px; height: 12px; border-radius: 2px; animation: cbgConfetti linear infinite; }
+@keyframes cbgFall { to { transform: translateY(110vh); } }
+@keyframes cbgRise { to { transform: translateY(-115vh) translateX(20px); } }
+@keyframes cbgFloat { from { transform: translate(0, 0); opacity: 0.3; } to { transform: translate(var(--x, 20px), -40px); opacity: 0.9; } }
+@keyframes cbgConfetti { to { transform: translateY(112vh) rotate(720deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .cbg-icon, .cbg-particle { animation: none !important; }
+}
+
+/* ── BugShop dialog ── */
+.bugshop-wallet { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text); margin-bottom: 14px; }
+.bugshop-wallet b { color: #f472b6; }
+.bugshop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+.cos-card {
+  border: 1px solid var(--border); border-radius: 14px; padding: 14px;
+  background: rgba(255,255,255,0.015); text-align: center;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.cos-card.active { border-color: #f472b6; box-shadow: 0 0 18px rgba(244,114,182,0.25); }
+.cos-emoji { font-size: 34px; }
+.cos-name { font-weight: 700; color: #fff; font-size: 15px; }
+.cos-desc { font-size: 11px; color: var(--muted); line-height: 1.4; flex: 1; }
+.cos-btn {
+  border: 1px solid var(--border); border-radius: 8px; padding: 8px;
+  background: var(--surface); color: var(--text); cursor: pointer;
+  font-family: 'JetBrains Mono', monospace; font-size: 12px; transition: all 0.15s;
+}
+.cos-btn:hover { border-color: #f472b6; }
+.cos-btn.on { background: rgba(244,114,182,0.15); color: #f472b6; border-color: #f472b6; }
+
+.card-bugshop { --card-color: #f472b6; --card-glow: radial-gradient(ellipse at top, rgba(244,114,182,0.12), transparent 70%); --card-shadow: rgba(244,114,182,0.28); }
