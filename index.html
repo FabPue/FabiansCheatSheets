@@ -11,6 +11,8 @@
 <link rel="stylesheet" href="assets/css/themes.css">
 <link rel="stylesheet" href="assets/css/td.css">
 <link rel="stylesheet" href="assets/css/match3.css">
+<link rel="stylesheet" href="assets/css/slots.css">
+<link rel="stylesheet" href="assets/css/cosmetics.css">
 <style>
   :root {
     --bg: #080810;
@@ -534,7 +536,7 @@
     <div class="logo-icon">&lt;/&gt;</div>
     <span class="logo-text">Fabian's <span>Cheat</span>Sheets</span>
   </div>
-  <div class="header-badge" id="versionBadge" title="Was ist neu?">7 languages · v4.1</div>
+  <div class="header-badge" id="versionBadge" title="Was ist neu?">7 languages · v4.2</div>
   <div class="user-widget" id="userWidget"></div>
 </header>
 
@@ -678,6 +680,32 @@
           <span class="topic-tag">combo</span>
         </div>
         <div class="open-hint">→ Spielen</div>
+      </div>
+
+      <!-- Bug Slots -->
+      <div class="lang-card card-slots" onclick="FCSApp.openSlots()">
+        <div class="lang-icon"><span class="lang-emoji">🎰</span></div>
+        <div class="lang-name">Bug Slots</div>
+        <div class="lang-version">Bug Taler · Freispiele</div>
+        <div class="lang-topics">
+          <span class="topic-tag">slots</span>
+          <span class="topic-tag">bugcoins</span>
+          <span class="topic-tag">rng</span>
+        </div>
+        <div class="open-hint">→ Drehen</div>
+      </div>
+
+      <!-- BugShop -->
+      <div class="lang-card card-bugshop" onclick="FCSApp.openBugShop()">
+        <div class="lang-icon"><span class="lang-emoji">🛒</span></div>
+        <div class="lang-name">BugShop</div>
+        <div class="lang-version">BugCoins · Effekte</div>
+        <div class="lang-topics">
+          <span class="topic-tag">kosmetik</span>
+          <span class="topic-tag">hintergrund</span>
+          <span class="topic-tag">icons</span>
+        </div>
+        <div class="open-hint">→ Effekte</div>
       </div>
 
     </div>
@@ -919,6 +947,7 @@
 <script src="assets/js/match3.js"></script>
 <script src="assets/js/slots-data.js"></script>
 <script src="assets/js/slots.js"></script>
+<script src="assets/js/cosmetics.js"></script>
 <script src="assets/js/achievements.js"></script>
 <script src="assets/js/auth.js"></script>
 <script src="assets/js/admin.js"></script>

@@ -8,35 +8,35 @@
   'use strict';
 
   const CHANGELOG = {
-    version: '4.1',
-    codename: 'Games & Gems',
+    version: '4.2',
+    codename: 'Slots & BugShop',
     date: 'Juli 2026',
-    intro: 'Ein neuer Spielmodus, dreifaches Case-Öffnen und ein rundum aufgewerteter Tower Defense:',
+    intro: 'Bug Slots, zwei neue Währungen und ein Kosmetik-Shop für Hintergrund-Effekte:',
     features: [
       {
-        icon: '🍬',
-        title: 'Code Match (neu)',
-        text: 'Ganz neuer Match-3-Modus: Sprachen sind die Gems — reihe 3+ gleiche an, löse Ketten aus, meistere 30 Level.'
+        icon: '🎰',
+        title: 'Bug Slots',
+        text: 'Neuer Slot mit Sprach-Symbolen, einstellbarem Einsatz und schönen Animationen. Setze Bug Taler, gewinne BugCoins.'
       },
       {
-        icon: '📦',
-        title: '3× öffnen',
-        text: 'Neuer Button: öffne für 100 Coins drei Cases gleichzeitig — mit drei Reel-Reihen und drei Drops auf einmal.'
+        icon: '🎟️',
+        title: 'Bug Taler & BugCoins',
+        text: 'Tausche Coins in Bug Taler (Einsatz) und gewinne BugCoins — die Währung für den neuen BugShop.'
       },
       {
-        icon: '🎨',
-        title: 'Türme mit Sprach-Look',
-        text: 'TD-Türme zeigen jetzt das echte Sprach-Logo mit Float-Effekt: gute Floats schimmern, schlechte brennen.'
+        icon: '📉',
+        title: 'Ehrliche Wahrscheinlichkeit',
+        text: 'Die Auszahlungen entsprechen einem echten Slot (RTP ~91 %, Haus-Vorteil). Auf Dauer verlierst du — Gambeln lohnt sich nicht.'
       },
       {
-        icon: '⚔️',
-        title: 'Einzigartige Angriffe',
-        text: 'Jeder Turm-Typ feuert anders: Tracer, Diamant, Pfeil, Splash-Bombe, Kanonenkugel, Frost-Splitter, Lane-Welle.'
+        icon: '🎁',
+        title: 'Freispiele & Bonus-Buy',
+        text: 'Drei 🐞 lösen Freispiele aus — oder kaufe den Bonus direkt (viel Einsatz für mehr Chancen).'
       },
       {
-        icon: '🔥',
-        title: 'Schwerer & mehr Erfolge',
-        text: 'Tower Defense ist fordernder (mehr Gegner-HP & -Anzahl), und es gibt neue Achievements für TD und Code Match.'
+        icon: '🛒',
+        title: 'BugShop & Hintergrund-Effekte',
+        text: 'Gib BugCoins für Kosmetik aus: lass deine gezogenen Sprach-Icons durch den Hintergrund fliegen, plus Sternenstaub, Blasen, Konfetti & Glühwürmchen.'
       }
     ]
   };

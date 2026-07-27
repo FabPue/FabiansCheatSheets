@@ -72,7 +72,13 @@
     /* ── Code Match ── */
     { id: 'cm_1',   icon: '🍬', title: 'Erstes Match',     desc: 'Schließe dein erstes Code-Match-Level ab.', xp: 60,   gold: 40,   test: s => s.cmProgress >= 1 },
     { id: 'cm_10',  icon: '🍭', title: 'Süße Serie',       desc: 'Schaffe Code-Match-Level 10.',              xp: 250,  gold: 200,  test: s => s.cmProgress >= 10 },
-    { id: 'cm_30',  icon: '🏆', title: 'Match-Meister',    desc: 'Schließe alle 30 Code-Match-Level ab.',     xp: 1500, gold: 1200, test: s => s.cmProgress >= 30 }
+    { id: 'cm_30',  icon: '🏆', title: 'Match-Meister',    desc: 'Schließe alle 30 Code-Match-Level ab.',     xp: 1500, gold: 1200, test: s => s.cmProgress >= 30 },
+
+    /* ── Slots & Kosmetik ── */
+    { id: 'slot_1',   icon: '🎰', title: 'Erster Dreh',     desc: 'Dreh die Bug Slots zum ersten Mal.',        xp: 30,  gold: 20,  test: s => s.slotSpins >= 1 },
+    { id: 'slot_100', icon: '🎲', title: 'Zock-Veteran',    desc: 'Drehe 100 Mal an den Slots.',               xp: 150, gold: 0,   test: s => s.slotSpins >= 100 },
+    { id: 'slot_500', icon: '🏦', title: 'Das Haus gewinnt', desc: '500 Spins — und die Erkenntnis: Gambeln lohnt sich nicht.', xp: 400, gold: 0, test: s => s.slotSpins >= 500 },
+    { id: 'cos_3',    icon: '🎨', title: 'Stil-Bewusst',    desc: 'Besitze 3 Hintergrund-Effekte aus dem BugShop.', xp: 120, gold: 80, test: s => s.cosmeticsOwned >= 3 }
   ];
 
   global.FCSAchievementsData = A;
