@@ -41,6 +41,55 @@
   background: linear-gradient(135deg, #f59e0b, #f4324c) !important;
 }
 .drop-reveal-multi { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+/* ── drawn-drops popup (fixed on the right, fades in/out, auto-hides) ── */
+.case-drop-pop {
+  position: fixed; right: 22px; top: 50%;
+  z-index: 1150; width: 208px;
+  display: flex; flex-direction: column; gap: 10px;
+  pointer-events: none;
+  opacity: 0; transform: translateY(-50%) translateX(26px);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+.case-drop-pop.show { opacity: 1; transform: translateY(-50%) translateX(0); }
+.cdp-title {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--muted); text-align: center; margin-bottom: 2px;
+}
+.cdp-item {
+  border: 1px solid var(--rc); border-radius: 12px; padding: 12px 10px; text-align: center;
+  background:
+    linear-gradient(180deg, rgba(12,12,22,0.97), rgba(8,8,16,0.97)),
+    radial-gradient(ellipse at bottom, color-mix(in srgb, var(--rc) 20%, transparent), transparent 72%);
+  box-shadow: 0 10px 34px rgba(0,0,0,0.55), 0 0 20px color-mix(in srgb, var(--rc) 30%, transparent);
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  animation: cdpItemIn 0.5s cubic-bezier(0.2,1.4,0.4,1) both;
+}
+.cdp-item:nth-child(2) { animation-delay: 0.05s; }
+.cdp-item:nth-child(3) { animation-delay: 0.13s; }
+.cdp-item:nth-child(4) { animation-delay: 0.21s; }
+@keyframes cdpItemIn {
+  from { transform: translateX(20px) scale(0.9); opacity: 0; }
+  to   { transform: none; opacity: 1; }
+}
+.cdp-item .skin-icon i { font-size: 34px; }
+.cdp-item .skin-icon .lang-glyph { font-size: 20px; }
+.cdp-name { font-size: 13px; font-weight: 700; color: #fff; margin-top: 2px; }
+.cdp-wear { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); }
+.cdp-item.r-gold { animation: cdpItemIn 0.5s cubic-bezier(0.2,1.4,0.4,1) both, goldFloat 2.6s ease-in-out infinite 0.5s; }
+
+@media (max-width: 900px) {
+  .case-drop-pop {
+    right: 50%; top: auto; bottom: 16px;
+    transform: translateX(50%) translateY(26px);
+    flex-direction: row; width: auto; max-width: 92vw; flex-wrap: wrap; justify-content: center;
+  }
+  .case-drop-pop.show { transform: translateX(50%) translateY(0); }
+  .cdp-item { width: 128px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cdp-item { animation: none !important; }
+}
 .sound-toggle {
   background: none;
   border: none;

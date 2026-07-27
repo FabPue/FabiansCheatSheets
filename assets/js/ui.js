@@ -107,6 +107,7 @@
   }
   function closeDialog() {
     stopActiveGame();
+    if (typeof hideDropPopup === 'function') hideDropPopup();
     overlay.classList.remove('active');
     document.body.style.overflow = '';
     setTimeout(() => { dialog.innerHTML = ''; }, 300);
@@ -701,6 +702,7 @@
     const btn3 = dialog.querySelector('#openCase3Btn');
     btn.disabled = true; if (btn3) btn3.disabled = true;
     dialog.querySelector('#dropResult').innerHTML = '';
+    hideDropPopup();
     setReelExtras(false);
 
     const res = C.openCase(user, p);
@@ -730,6 +732,7 @@
     const single = dialog.querySelector('#openCaseBtn');
     btn.disabled = true; if (single) single.disabled = true;
     dialog.querySelector('#dropResult').innerHTML = '';
+    hideDropPopup();
     setReelExtras(true);
 
     const res = C.openCaseN(user, p, 3, TRIPLE_COST);
@@ -823,7 +826,46 @@
       </div>`;
   }
 
-  // Reveals one or several drops side by side.
+  /* ── drawn-drops popup (fades in on the right, auto-hides after 5s) ──
+     Keeps the reveal out of the dialog flow so the open buttons never move. */
+  let caseDropTimer = null;
+  function ensureDropPopup() {
+    let pop = document.getElementById('caseDropPopup');
+    if (!pop) {
+      pop = document.createElement('div');
+      pop.id = 'caseDropPopup';
+      pop.className = 'case-drop-pop';
+      document.body.appendChild(pop);
+    }
+    return pop;
+  }
+  function hideDropPopup() {
+    if (caseDropTimer) { clearTimeout(caseDropTimer); caseDropTimer = null; }
+    const pop = document.getElementById('caseDropPopup');
+    if (pop) pop.classList.remove('show');
+  }
+  function dropPopItemHTML(drop) {
+    const wear = wearMeta(drop.wearTier);
+    return `
+      <div class="cdp-item r-${drop.rarity}">
+        <span class="rarity-label">${esc(rarityMeta(drop.rarity).name)}</span>
+        ${skinIconHTML(drop, drop.wearTier, drop.float)}
+        <div class="cdp-name">${esc(drop.name)}</div>
+        <div class="cdp-wear">${esc(wear.name)} · ${drop.float.toFixed(4)}</div>
+      </div>`;
+  }
+  // Shows the drawn drops; replaces any current popup and restarts the timer.
+  function showDropPopup(drops) {
+    const pop = ensureDropPopup();
+    if (caseDropTimer) { clearTimeout(caseDropTimer); caseDropTimer = null; }
+    const title = drops.length > 1 ? 'Gezogen (' + drops.length + ')' : 'Gezogen';
+    pop.innerHTML = `<div class="cdp-title">${title}</div>${drops.map(dropPopItemHTML).join('')}`;
+    void pop.offsetWidth; // restart the item pop-in animation
+    pop.classList.add('show');
+    caseDropTimer = setTimeout(() => { pop.classList.remove('show'); caseDropTimer = null; }, 5000);
+  }
+
+  // Reveals one or several drops in the fading right-side popup.
   function revealDrops(drops) {
     const Snd = Sounds();
     const order = { grey: 0, blue: 1, epic: 2, red: 3, gold: 4 };
@@ -833,8 +875,8 @@
       else Snd.reveal(drops.slice().sort((a, b) => order[b.rarity] - order[a.rarity])[0].rarity);
     }
     const box = dialog.querySelector('#dropResult');
-    if (!box) return;
-    box.innerHTML = `<div class="drop-reveal-multi">${drops.map(dropCardHTML).join('')}</div>`;
+    if (box) box.innerHTML = '';
+    showDropPopup(drops);
     toast(`Gedroppt: ${drops.map(d => d.name).join(', ')}`, anyGold ? 'coin' : '');
     const bestFloat = drops.slice().sort((a, b) => a.float - b.float)[0];
     showFloatPhrase(floatPhrase(bestFloat.float), bestFloat.float);
