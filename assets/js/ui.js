@@ -100,7 +100,7 @@
 
   function openDialog(innerHTML, wide) {
     stopActiveGame();
-    dialog.className = 'fcs-dialog' + (wide ? ' wide' : '');
+    dialog.className = 'fcs-dialog' + (wide === true ? ' wide' : (wide ? ' ' + wide : ''));
     dialog.innerHTML = innerHTML;
     overlay.classList.add('active');
     document.body.style.overflow = 'hidden';
@@ -606,7 +606,7 @@
           <button class="fcs-btn" id="openCaseBtn">Öffnen · ${C.CASE_COST} 🪙</button>
           <button class="fcs-btn case-triple" id="openCase3Btn">3× öffnen · 100 🪙</button>
         </div>
-      </div>`, true);
+      </div>`, 'xwide');
     dialog.querySelector('.fcs-dialog-close').onclick = closeDialog;
 
     // Fill an idle reel for visual flavour.
@@ -664,7 +664,7 @@
     track.className = 'reel-track';
     track.style.transform = 'translateX(0)';
     track.innerHTML = built.reel.map(reelItemHTML).join('');
-    const ITEM = 104, GAP = 10, PAD = 10;
+    const ITEM = 92, GAP = 10, PAD = 10;
     const step = ITEM + GAP;
     const viewCenter = view.offsetWidth / 2;
     const itemCenter = PAD + built.winIndex * step + ITEM / 2;
@@ -1638,21 +1638,27 @@
           <button class="fcs-btn secondary slot-xch" data-amt="500" style="width:auto;padding:6px 10px">+500</button>
           <button class="sound-toggle" id="slotSound" title="Sound an/aus"></button>
         </div>
-        <div class="slot-machine slot-grid">${cols}</div>
-        <div class="slot-result" id="slotResult"></div>
-        <div class="slot-controls">
-          <div class="slot-bets">Einsatz: ${betChips}</div>
-          <div class="slot-actions">
-            <button class="fcs-btn" id="slotSpin">🎰 Drehen · ${slotBet} 🎟️</button>
-            <button class="fcs-btn secondary" id="slotBonus">🎁 Bonus · ${slotBet * SD.BONUS_BUY_COST_MULT} 🎟️</button>
+        <div class="slots-layout">
+          <div class="slot-left">
+            <div class="slot-machine slot-grid">${cols}</div>
           </div>
-          <div class="slot-free" id="slotFree"></div>
+          <div class="slot-right">
+            <div class="slot-result" id="slotResult"></div>
+            <div class="slot-controls">
+              <div class="slot-bets">Einsatz: ${betChips}</div>
+              <div class="slot-actions">
+                <button class="fcs-btn" id="slotSpin">🎰 Drehen · ${slotBet} 🎟️</button>
+                <button class="fcs-btn secondary" id="slotBonus">🎁 Bonus · ${slotBet * SD.BONUS_BUY_COST_MULT} 🎟️</button>
+              </div>
+              <div class="slot-free" id="slotFree"></div>
+            </div>
+            <details class="slot-paytable"><summary>Auszahlungen & Info</summary>
+              <div class="slot-pays">${payRows}</div>
+              <p class="fcs-note" style="margin-top:8px">5×5-Raster · Gewinne auf <b>5 Reihen + 2 Diagonalen</b> (3, 4 oder 5 gleiche von links). Diagonalen zahlen ${SD.DIAG_BONUS}×. ${SD.SCATTER_MIN}× 🐞 = ${SD.FREE_SPINS_ON_SCATTER} Freispiele. Gewinne in BugCoins. Hinweis: Die Chance entspricht einem echten Slot (RTP ~90 %, Haus-Vorteil ~10 %) — auf Dauer verlierst du. <b>Gambeln lohnt sich nicht.</b> 🙂</p>
+            </details>
+          </div>
         </div>
-        <details class="slot-paytable"><summary>Auszahlungen & Info</summary>
-          <div class="slot-pays">${payRows}</div>
-          <p class="fcs-note" style="margin-top:8px">5×5-Raster · Gewinne auf <b>5 Reihen + 2 Diagonalen</b> (3, 4 oder 5 gleiche von links). Diagonalen zahlen ${SD.DIAG_BONUS}×. ${SD.SCATTER_MIN}× 🐞 = ${SD.FREE_SPINS_ON_SCATTER} Freispiele. Gewinne in BugCoins. Hinweis: Die Chance entspricht einem echten Slot (RTP ~90 %, Haus-Vorteil ~10 %) — auf Dauer verlierst du. <b>Gambeln lohnt sich nicht.</b> 🙂</p>
-        </details>
-      </div>`, true);
+      </div>`, 'xwide');
     dialog.querySelector('.fcs-dialog-close').onclick = closeDialog;
     // Fill grid with a random static display.
     const initGrid = S.spinGrid();
