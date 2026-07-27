@@ -114,6 +114,8 @@
       bugCoins: 0,        // slot winnings (spent in the BugShop)
       slotFreeSpins: 0,   // remaining free spins
       slotSpins: 0,       // lifetime spins (for stats)
+      slotMaxWin: 0,      // biggest single-spin BugCoin win
+      slotDiagWins: 0,    // number of spins with a diagonal-line win
       ownedCosmetics: [],
       activeCosmetics: []
     };

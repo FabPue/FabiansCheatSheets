@@ -1611,7 +1611,15 @@
     const S = Slots(), SD = SlotsData();
     const betChips = SD.BETS.map(b => `<button class="slot-bet ${b === slotBet ? 'active' : ''}" data-bet="${b}">${b}</button>`).join('');
     const payRows = S.SYMBOLS.filter(s => !s.scatter).map(s =>
-      `<div class="slot-pay-row"><span class="slot-pay-ico">${slotSymHTML(s)}</span><span>${esc(s.name)}</span><span class="slot-pay-x">3× = ${s.line}× · 2× = ${s.half}×</span></div>`).join('');
+      `<div class="slot-pay-row"><span class="slot-pay-ico">${slotSymHTML(s)}</span><span>${esc(s.name)}</span><span class="slot-pay-x">3× = ${s.p3} · 4× = ${s.p4} · 5× = ${s.p5}</span></div>`).join('');
+
+    // Build a COLS×ROWS grid of cells, grouped into columns for the reel effect.
+    let cols = '';
+    for (let c = 0; c < S.COLS; c++) {
+      let cells = '';
+      for (let r = 0; r < S.ROWS; r++) cells += `<div class="slot-cell" id="sc-${c}-${r}"></div>`;
+      cols += `<div class="slot-col" data-col="${c}">${cells}</div>`;
+    }
 
     openDialog(`
       <div class="fcs-dialog-head">
@@ -1630,11 +1638,7 @@
           <button class="fcs-btn secondary slot-xch" data-amt="500" style="width:auto;padding:6px 10px">+500</button>
           <button class="sound-toggle" id="slotSound" title="Sound an/aus"></button>
         </div>
-        <div class="slot-machine">
-          <div class="slot-reel" id="slotReel0"></div>
-          <div class="slot-reel" id="slotReel1"></div>
-          <div class="slot-reel" id="slotReel2"></div>
-        </div>
+        <div class="slot-machine slot-grid">${cols}</div>
         <div class="slot-result" id="slotResult"></div>
         <div class="slot-controls">
           <div class="slot-bets">Einsatz: ${betChips}</div>
@@ -1646,11 +1650,13 @@
         </div>
         <details class="slot-paytable"><summary>Auszahlungen & Info</summary>
           <div class="slot-pays">${payRows}</div>
-          <p class="fcs-note" style="margin-top:8px">🐞 × 3 = ${SD.FREE_SPINS_ON_SCATTER} Freispiele. Gewinne in BugCoins. Hinweis: Die Chance entspricht einem echten Slot (Haus-Vorteil ~9 %) — auf Dauer verlierst du. <b>Gambeln lohnt sich nicht.</b> 🙂</p>
+          <p class="fcs-note" style="margin-top:8px">5×5-Raster · Gewinne auf <b>5 Reihen + 2 Diagonalen</b> (3, 4 oder 5 gleiche von links). Diagonalen zahlen ${SD.DIAG_BONUS}×. ${SD.SCATTER_MIN}× 🐞 = ${SD.FREE_SPINS_ON_SCATTER} Freispiele. Gewinne in BugCoins. Hinweis: Die Chance entspricht einem echten Slot (RTP ~90 %, Haus-Vorteil ~10 %) — auf Dauer verlierst du. <b>Gambeln lohnt sich nicht.</b> 🙂</p>
         </details>
       </div>`, true);
     dialog.querySelector('.fcs-dialog-close').onclick = closeDialog;
-    [0, 1, 2].forEach(i => setReelSymbol(i, S.SYMBOLS[i]));
+    // Fill grid with a random static display.
+    const initGrid = S.spinGrid();
+    for (let c = 0; c < S.COLS; c++) for (let r = 0; r < S.ROWS; r++) setCell(c, r, S.symbolById(initGrid[c][r]));
     dialog.querySelectorAll('.slot-bet').forEach(ch => ch.onclick = () => { if (slotBusy) return; slotBet = Number(ch.dataset.bet); renderSlots(); });
     dialog.querySelectorAll('.slot-xch').forEach(x => x.onclick = () => {
       const prof = Store.getProfile(user);
@@ -1665,8 +1671,8 @@
     updateSlotFree();
   }
 
-  function setReelSymbol(i, sym) {
-    const el = dialog.querySelector('#slotReel' + i);
+  function setCell(c, r, sym) {
+    const el = dialog.querySelector('#sc-' + c + '-' + r);
     if (el) el.innerHTML = `<div class="slot-sym">${slotSymHTML(sym)}</div>`;
   }
   function updateSlotWallet() {
@@ -1690,21 +1696,30 @@
     if (!res.ok) { toast('Nicht genug Bug Taler — tausche erst Coins um.', 'error'); return; }
     slotBusy = true;
     dialog.querySelector('#slotResult').innerHTML = '';
-    dialog.querySelectorAll('.slot-reel').forEach(r => r.classList.add('spinning'));
+    dialog.querySelectorAll('.slot-cell').forEach(el => el.classList.remove('win', 'jackpot-cell'));
     const Snd = Sounds(); if (Snd) Snd.slotSpin();
-    const cyclers = [0, 1, 2].map(i => setInterval(() => setReelSymbol(i, S.SYMBOLS[(Math.random() * S.SYMBOLS.length) | 0]), 70));
-    slotTimers.push(...cyclers);
-    [0, 1, 2].forEach(i => {
+    // Each column cycles all its cells, then columns stop left-to-right.
+    const cyclers = [];
+    for (let c = 0; c < S.COLS; c++) {
+      const col = dialog.querySelector('.slot-col[data-col="' + c + '"]');
+      if (col) col.classList.add('spinning');
+      const id = setInterval(() => {
+        for (let r = 0; r < S.ROWS; r++) setCell(c, r, S.SYMBOLS[(Math.random() * S.SYMBOLS.length) | 0]);
+      }, 60);
+      cyclers.push(id);
+      slotTimers.push(id);
+    }
+    for (let c = 0; c < S.COLS; c++) {
       const t = setTimeout(() => {
-        clearInterval(cyclers[i]);
-        setReelSymbol(i, S.symbolById(res.reels[i]));
-        const reelEl = dialog.querySelector('#slotReel' + i);
-        if (reelEl) reelEl.classList.remove('spinning');
+        clearInterval(cyclers[c]);
+        for (let r = 0; r < S.ROWS; r++) setCell(c, r, S.symbolById(res.grid[c][r]));
+        const col = dialog.querySelector('.slot-col[data-col="' + c + '"]');
+        if (col) { col.classList.remove('spinning'); col.classList.add('landed'); setTimeout(() => col.classList.remove('landed'), 320); }
         if (Snd) Snd.slotStop();
-        if (i === 2) finishSlotSpin(res);
-      }, 700 + i * 360);
+        if (c === S.COLS - 1) finishSlotSpin(res);
+      }, 560 + c * 280);
       slotTimers.push(t);
-    });
+    }
   }
 
   function finishSlotSpin(res) {
@@ -1712,14 +1727,19 @@
     updateSlotWallet(); updateSlotFree(); renderHeader();
     const box = dialog.querySelector('#slotResult'); if (!box) return;
     const Snd = Sounds();
+    // Highlight winning cells.
+    (res.winCells || []).forEach(key => {
+      const el = dialog.querySelector('#sc-' + key);
+      if (el) { el.classList.add('win'); if (res.jackpot) el.classList.add('jackpot-cell'); }
+    });
     if (res.win > 0) {
-      const cls = res.jackpot ? 'jackpot' : (res.kind === 'line' ? 'big' : 'win');
+      const bigWin = res.win >= slotBet * 8;
+      const cls = res.jackpot ? 'jackpot' : (bigWin ? 'big' : 'win');
       const lead = res.jackpot ? '💎 JACKPOT! ' : '';
+      const diag = res.diagWin ? ' · ↗↘ Diagonale!' : '';
       const fs = res.freeSpinsAwarded ? ` · 🐞 ${res.freeSpinsAwarded} Freispiele` : '';
-      box.innerHTML = `<div class="slot-win ${cls}">${lead}+${res.win} 🪲${fs}</div>`;
+      box.innerHTML = `<div class="slot-win ${cls}">${lead}+${res.win} 🪲${diag}${fs}</div>`;
       if (Snd) { if (res.jackpot) Snd.slotJackpot(); else Snd.slotWin(Math.min(1, res.win / (slotBet * 20))); }
-      // winning reels flash
-      dialog.querySelectorAll('.slot-reel').forEach(r => { r.classList.add('flash'); setTimeout(() => r.classList.remove('flash'), 700); });
     } else if (res.freeSpinsAwarded) {
       box.innerHTML = `<div class="slot-win win">🐞 BONUS! ${res.freeSpinsAwarded} Freispiele</div>`;
       if (Snd) Snd.slotBonus();
