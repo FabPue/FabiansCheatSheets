@@ -1682,6 +1682,7 @@
         </div>
         <div class="slots-layout">
           <div class="slot-left">
+            <div class="slot-mult" id="slotMult"></div>
             <div class="slot-machine slot-grid">${cols}</div>
           </div>
           <div class="slot-right">
@@ -1717,6 +1718,7 @@
     dialog.querySelector('#slotSpin').onclick = () => doSlotSpin();
     dialog.querySelector('#slotBonus').onclick = () => doSlotBonus();
     updateSlotFree();
+    setMultBadge(p.slotMultiplier || 1, false);
   }
 
   function setCell(c, r, sym) {
@@ -1770,6 +1772,21 @@
     }
   }
 
+  // log2 tier of a multiplier: ×2 → 1, ×4 → 2, ×8 → 3 …
+  function multTier(mult) { return Math.max(0, Math.round(Math.log2(mult || 1))); }
+
+  // Updates the win-streak multiplier badge on the grid.
+  function setMultBadge(mult, animate) {
+    const el = dialog && dialog.querySelector('#slotMult');
+    if (!el) return;
+    mult = mult || 1;
+    if (mult <= 1) { el.className = 'slot-mult'; el.innerHTML = ''; return; }
+    const tier = Math.min(6, multTier(mult));
+    el.className = 'slot-mult show mult-t' + tier;
+    el.innerHTML = `<span class="sm-x">×</span>${mult}`;
+    if (animate) { el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); }
+  }
+
   function finishSlotSpin(res) {
     slotBusy = false;
     updateSlotWallet(); updateSlotFree(); renderHeader();
@@ -1780,19 +1797,31 @@
       const el = dialog.querySelector('#sc-' + key);
       if (el) { el.classList.add('win'); if (res.jackpot) el.classList.add('jackpot-cell'); }
     });
+
+    // Streak multiplier badge (only paid spins change it; free spins freeze it).
+    setMultBadge(res.nextMult, res.multiplierUp);
+    if (res.multiplierUp && res.nextMult > 1 && Snd) Snd.slotMultiplier(multTier(res.nextMult));
+
     if (res.win > 0) {
-      const bigWin = res.win >= slotBet * 8;
-      const cls = res.jackpot ? 'jackpot' : (bigWin ? 'big' : 'win');
-      const lead = res.jackpot ? '💎 JACKPOT! ' : '';
+      const crazyFree = res.wasFree && res.fsMult >= 10;
+      const bigWin = res.jackpot || crazyFree || res.win >= slotBet * 10;
+      const cls = (res.jackpot || crazyFree) ? 'jackpot' : (bigWin ? 'big' : 'win');
+      const lead = res.jackpot ? '💎 JACKPOT! ' : (crazyFree ? '🔥 MEGA-FREISPIEL! ' : '');
       const diag = res.diagWin ? ' · ↗↘ Diagonale!' : '';
       const fs = res.freeSpinsAwarded ? ` · 🐞 ${res.freeSpinsAwarded} Freispiele` : '';
-      box.innerHTML = `<div class="slot-win ${cls}">${lead}+${res.win} 🪲${diag}${fs}</div>`;
-      if (Snd) { if (res.jackpot) Snd.slotJackpot(); else Snd.slotWin(Math.min(1, res.win / (slotBet * 20))); }
+      let mtag = '';
+      if (res.wasFree && res.fsMult > 1) mtag = ` <span class="sw-mult">×${res.fsMult}</span>`;
+      else if (!res.wasFree && res.appliedMult > 1) mtag = ` <span class="sw-mult">×${res.appliedMult}</span>`;
+      box.innerHTML = `<div class="slot-win ${cls}">${lead}+${res.win} 🪲${mtag}${diag}${fs}</div>`;
+      if (res.multiplierActivated) box.innerHTML += `<div class="slot-mult-note">⚡ Multiplikator aktiviert — nächster Gewinn ×2!</div>`;
+      if (Snd) { if (res.jackpot || crazyFree) Snd.slotJackpot(); else Snd.slotWin(Math.min(1, res.win / (slotBet * 20))); }
     } else if (res.freeSpinsAwarded) {
       box.innerHTML = `<div class="slot-win win">🐞 BONUS! ${res.freeSpinsAwarded} Freispiele</div>`;
       if (Snd) Snd.slotBonus();
     } else {
-      box.innerHTML = `<div class="slot-lose">Kein Gewinn.</div>`;
+      let note = '';
+      if (!res.wasFree && res.appliedMult > 1) note = ` <span class="slot-mult-lost">Serie beendet (×${res.appliedMult})</span>`;
+      box.innerHTML = `<div class="slot-lose">Kein Gewinn.${note}</div>`;
     }
     runAchievementCheck();
   }

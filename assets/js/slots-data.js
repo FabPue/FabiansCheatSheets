@@ -17,8 +17,12 @@
   const ROWS = 5;
 
   // Global payout multiplier — tunes overall RTP without rebalancing each line.
-  // Monte-Carlo (5M spins): base RTP 0.6505 × 1.38 ≈ 0.898 (~90%, house edge ~10%).
-  const PAYOUT_MULT = 1.38;
+  // With the win-streak + free-spin multipliers the raw RTP is ~1.417 at
+  // PAYOUT_MULT=1 (Monte-Carlo, 8M spins), so 0.635 lands total RTP ≈ 0.90
+  // (~10% house edge). The multipliers redistribute winnings toward streaks and
+  // free spins — single wins pay less, but the excitement (and the house edge)
+  // stays. Gambling still doesn't pay.
+  const PAYOUT_MULT = 0.635;
 
   // Each cell is drawn independently from a weighted reel. p3/p4/p5 are the
   // per-line payout multipliers (× per-line stake) for 3, 4 or 5 of a kind
@@ -54,8 +58,21 @@
   const BONUS_BUY_FREE_SPINS = 12;
   const DIAG_BONUS = 1.25;                      // diagonal wins pay a small bonus
 
+  // Win-streak multiplier: consecutive wins escalate ×2 → ×4 → ×8 … The first
+  // win of a streak still pays ×1 (the multiplier only "arms" for the NEXT win);
+  // any losing spin resets it. Capped so a display and the economy stay sane.
+  const MULT_MAX = 1024;
+
+  // Free-spin upside: each winning free spin draws an extra multiplier from this
+  // weighted table — usually small, but with a rare fat tail ("sometimes crazy").
+  // [multiplier, weight]; weights sum to 1000.
+  const FS_MULT_TABLE = [
+    [1, 550], [2, 250], [3, 120], [5, 50], [10, 20], [25, 8], [50, 2]
+  ];
+
   global.FCSSlotsData = {
     COLS, ROWS, PAYOUT_MULT, SYMBOLS, PAYLINES, BETS, EXCHANGE_RATE, SCATTER_MIN,
-    FREE_SPINS_ON_SCATTER, BONUS_BUY_COST_MULT, BONUS_BUY_FREE_SPINS, DIAG_BONUS
+    FREE_SPINS_ON_SCATTER, BONUS_BUY_COST_MULT, BONUS_BUY_FREE_SPINS, DIAG_BONUS,
+    MULT_MAX, FS_MULT_TABLE
   };
 })(window);

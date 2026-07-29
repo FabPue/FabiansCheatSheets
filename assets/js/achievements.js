@@ -41,6 +41,7 @@
       slotSpins: profile.slotSpins || 0,
       slotMaxWin: profile.slotMaxWin || 0,
       slotDiagWins: profile.slotDiagWins || 0,
+      slotMultBest: profile.slotMultBest || 1,
       cosmeticsOwned: (profile.ownedCosmetics || []).length
     };
   }
