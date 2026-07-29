@@ -164,6 +164,19 @@
     [1046.5, 1318.51, 1567.98].forEach((f, i) => note(f, now + 0.5 + i * 0.08, 0.3, 0.14, 'triangle'));
   }
 
+  // Escalating chime for the win-streak multiplier. `level` = log2(mult):
+  // 1 = ×2, 2 = ×4, 3 = ×8 … The pitch and richness rise with the level.
+  function slotMultiplier(level) {
+    if (muted) return; const c = ensureCtx(); if (!c) return;
+    const now = c.currentTime + 0.01;
+    const lv = Math.max(1, Math.min(10, level | 0));
+    const root = 300 * Math.pow(1.09, lv);      // higher tier -> higher pitch
+    const arp = [1, 1.25, 1.5, 2];
+    const n = Math.min(arp.length, 2 + Math.floor(lv / 2));
+    for (let i = 0; i < n; i++) note(root * arp[i], now + i * 0.05, 0.2, 0.16, lv >= 5 ? 'sawtooth' : 'triangle');
+    if (lv >= 4) note(root * 3, now + n * 0.05, 0.5, 0.1, 'triangle'); // shimmer cap
+  }
+
   function setMuted(m) {
     muted = !!m;
     try { localStorage.setItem(MUTE_KEY, muted ? '1' : '0'); } catch (e) {}
@@ -172,7 +185,7 @@
 
   global.FCSSounds = {
     resume, tick, reveal, gold,
-    slotSpin, slotStop, slotWin, slotJackpot, slotBonus,
+    slotSpin, slotStop, slotWin, slotJackpot, slotBonus, slotMultiplier,
     setMuted, isMuted
   };
 })(window);

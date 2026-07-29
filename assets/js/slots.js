@@ -93,7 +93,17 @@
     return { ok: true, taler: profile.bugTaler };
   }
 
+  // Weighted draw from the free-spin upside table.
+  const FS_POOL = (function () {
+    const arr = [];
+    D.FS_MULT_TABLE.forEach(([m, w]) => { for (let i = 0; i < w; i++) arr.push(m); });
+    return arr;
+  })();
+  function drawFsMult() { return FS_POOL[(Math.random() * FS_POOL.length) | 0]; }
+
   // One spin. Uses a free spin if available, else charges `bet` Bug Taler.
+  // Applies the win-streak multiplier (paid spins) or the free-spin upside
+  // multiplier (free spins).
   function play(username, profile, bet) {
     const free = (profile.slotFreeSpins || 0) > 0;
     if (!free) {
@@ -104,16 +114,40 @@
     }
     const grid = spinGrid();
     const res = evaluate(grid, bet);
-    profile.bugCoins = (profile.bugCoins || 0) + res.win;
+    const baseWin = res.win;
+
+    let win = baseWin, appliedMult = 1, fsMult = 1;
+    let multiplierActivated = false, multiplierUp = false;
+    const multBefore = profile.slotMultiplier || 1;
+
+    if (free) {
+      // Free spins ignore the streak multiplier; each win gets a random upside.
+      if (baseWin > 0) { fsMult = drawFsMult(); win = Math.round(baseWin * fsMult); }
+    } else {
+      appliedMult = multBefore;                       // 1 on the first win of a streak
+      if (baseWin > 0) {
+        win = Math.round(baseWin * appliedMult);
+        profile.slotMultiplier = Math.min(multBefore * 2, D.MULT_MAX); // arm the next win
+        multiplierActivated = (multBefore === 1);
+        multiplierUp = true;
+      } else {
+        profile.slotMultiplier = 1;                    // any loss resets the streak
+      }
+      if ((profile.slotMultiplier || 1) > (profile.slotMultBest || 1)) profile.slotMultBest = profile.slotMultiplier;
+    }
+
+    profile.bugCoins = (profile.bugCoins || 0) + win;
     if (res.freeSpinsAwarded) profile.slotFreeSpins = (profile.slotFreeSpins || 0) + res.freeSpinsAwarded;
     profile.slotSpins = (profile.slotSpins || 0) + 1;
-    if (res.win > (profile.slotMaxWin || 0)) profile.slotMaxWin = res.win;
+    if (win > (profile.slotMaxWin || 0)) profile.slotMaxWin = win;
     if (res.diagWin) profile.slotDiagWins = (profile.slotDiagWins || 0) + 1;
     Store.saveProfile(username, profile);
     return {
-      ok: true, grid: grid, win: res.win, lines: res.lines, best: res.best,
+      ok: true, grid: grid, win: win, baseWin: baseWin, lines: res.lines, best: res.best,
       diagWin: res.diagWin, scatters: res.scatters, freeSpinsAwarded: res.freeSpinsAwarded,
       jackpot: res.jackpot, winCells: res.winCells, wasFree: free,
+      appliedMult: appliedMult, fsMult: fsMult, nextMult: profile.slotMultiplier || 1,
+      multiplierActivated: multiplierActivated, multiplierUp: multiplierUp,
       bugTaler: profile.bugTaler, bugCoins: profile.bugCoins, freeSpins: profile.slotFreeSpins
     };
   }

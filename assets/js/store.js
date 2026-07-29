@@ -116,6 +116,8 @@
       slotSpins: 0,       // lifetime spins (for stats)
       slotMaxWin: 0,      // biggest single-spin BugCoin win
       slotDiagWins: 0,    // number of spins with a diagonal-line win
+      slotMultiplier: 1,  // current win-streak multiplier (armed for next win)
+      slotMultBest: 1,    // highest streak multiplier ever reached
       ownedCosmetics: [],
       activeCosmetics: []
     };

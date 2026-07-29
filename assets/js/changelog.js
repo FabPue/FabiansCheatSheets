@@ -8,35 +8,30 @@
   'use strict';
 
   const CHANGELOG = {
-    version: '4.3',
-    codename: 'Mega Slots',
+    version: '4.4',
+    codename: 'Multiplier',
     date: 'Juli 2026',
-    intro: 'Die Bug Slots werden groß: 5×5-Raster mit Diagonal-Gewinnen und neue Hintergrund-Effekte.',
+    intro: 'Gewinnserien mit steigendem Multiplikator und eine Mega-Chance in den Freispielen.',
     features: [
       {
-        icon: '🎰',
-        title: '5×5 Mega-Grid',
-        text: 'Aus 1×3 wird ein 5×5-Raster mit 25 Symbolen. Die Walzen stoppen jetzt spaltenweise mit Bounce-Effekt.'
+        icon: '⚡',
+        title: 'Gewinn-Multiplikator',
+        text: 'Ein Badge am Grid zeigt deinen Multiplikator. Der erste Gewinn zählt normal, dann steigt es bei jedem Folgegewinn: ×2 → ×4 → ×8 → ×16 … Eine Niederlage setzt die Serie zurück.'
       },
       {
-        icon: '↗️',
-        title: 'Diagonal-Gewinne',
-        text: 'Gewinne auf 5 Reihen UND beiden Diagonalen (3, 4 oder 5 gleiche von links). Diagonalen zahlen sogar 1,25× extra.'
+        icon: '🎨',
+        title: 'Eskalierende Optik & Sounds',
+        text: 'Je höher der Multiplikator, desto krasser: Farbe, Glühen und Sound des Badges steigern sich mit jeder Stufe.'
+      },
+      {
+        icon: '🔥',
+        title: 'Mega-Freispiele',
+        text: 'In den Freispielen kann jeder Gewinn einen Zufalls-Bonus bekommen — meistens klein, aber manchmal richtig krass (bis ×50).'
       },
       {
         icon: '📉',
-        title: 'Weiterhin ehrlich',
-        text: 'Per Monte-Carlo neu auf RTP ~90 % getunt — der Haus-Vorteil bleibt. Auf Dauer verlierst du. Gambeln lohnt sich nicht.'
-      },
-      {
-        icon: '✨',
-        title: 'Bessere Slot-Animationen',
-        text: 'Motion-Blur beim Drehen, aufleuchtende Gewinnzellen, Jackpot-Glühen und Win-Pop-Effekte.'
-      },
-      {
-        icon: '🌌',
-        title: 'Neue Hintergrund-Effekte',
-        text: 'Vier neue BugShop-Effekte: Matrix-Code-Regen, Sternschnuppen, Kirschblüten und leuchtende Glüh-Orbs.'
+        title: 'Immer noch ehrlich',
+        text: 'Trotz Multiplikatoren per Monte-Carlo (8 Mio. Spins) wieder auf RTP ~90 % getunt. Einzelgewinne zahlen weniger, die Serien machen den Reiz — auf Dauer verlierst du trotzdem.'
       }
     ]
   };
