@@ -43,6 +43,9 @@
 }
 .slot-mult-note { margin-top: 6px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #34d399; }
 .slot-mult-lost { color: #fb7185; font-size: 11px; font-family: 'JetBrains Mono', monospace; }
+.slot-hot { display: inline-block; animation: hotFlicker 0.6s ease-in-out infinite alternate; }
+@keyframes hotFlicker { from { filter: brightness(1); transform: scale(1); } to { filter: brightness(1.4) drop-shadow(0 0 6px rgba(251,146,60,0.9)); transform: scale(1.15); } }
+.slot-hot-note { margin-top: 4px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #fb923c; }
 .slot-right { flex: 1 1 auto; min-width: 240px; display: flex; flex-direction: column; gap: 14px; }
 .slot-right .slot-result { text-align: left; }
 @media (max-width: 760px) {

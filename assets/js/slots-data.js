@@ -17,12 +17,13 @@
   const ROWS = 5;
 
   // Global payout multiplier — tunes overall RTP without rebalancing each line.
-  // With the win-streak + free-spin multipliers the raw RTP is ~1.417 at
-  // PAYOUT_MULT=1 (Monte-Carlo, 8M spins), so 0.635 lands total RTP ≈ 0.90
+  // With the streak multiplier, the (capped, non-resetting) free-spin
+  // multiplier and the post-win "hot" reroll, the raw RTP is ~2.87 at
+  // PAYOUT_MULT=1 (Monte-Carlo, 16M spins), so 0.314 lands total RTP ≈ 0.90
   // (~10% house edge). The multipliers redistribute winnings toward streaks and
   // free spins — single wins pay less, but the excitement (and the house edge)
   // stays. Gambling still doesn't pay.
-  const PAYOUT_MULT = 0.635;
+  const PAYOUT_MULT = 0.314;
 
   // Each cell is drawn independently from a weighted reel. p3/p4/p5 are the
   // per-line payout multipliers (× per-line stake) for 3, 4 or 5 of a kind
@@ -58,21 +59,24 @@
   const BONUS_BUY_FREE_SPINS = 12;
   const DIAG_BONUS = 1.25;                      // diagonal wins pay a small bonus
 
-  // Win-streak multiplier: consecutive wins escalate ×2 → ×4 → ×8 … The first
-  // win of a streak still pays ×1 (the multiplier only "arms" for the NEXT win);
-  // any losing spin resets it. Capped so a display and the economy stay sane.
+  // Win-streak multiplier (base game): consecutive wins escalate ×2 → ×4 → ×8 …
+  // The first win of a streak still pays ×1 (the multiplier only "arms" for the
+  // NEXT win); any losing spin resets it. Capped so display + economy stay sane.
   const MULT_MAX = 1024;
 
-  // Free-spin upside: each winning free spin draws an extra multiplier from this
-  // weighted table — usually small, but with a rare fat tail ("sometimes crazy").
-  // [multiplier, weight]; weights sum to 1000.
-  const FS_MULT_TABLE = [
-    [1, 550], [2, 250], [3, 120], [5, 50], [10, 20], [25, 8], [50, 2]
-  ];
+  // Free-spin multiplier: during a free-spin session the multiplier escalates the
+  // same way but does NOT reset on a losing free spin — it holds and keeps
+  // climbing for the whole session. Capped lower so long, retriggering sessions
+  // can't explode the RTP.
+  const FS_MULT_CAP = 8;
+
+  // After any win, the next spin gets a single "second chance" reroll if it
+  // would otherwise lose — a small, on-a-roll boost to the win probability.
+  const HOT_REROLL_CHANCE = 0.35;
 
   global.FCSSlotsData = {
     COLS, ROWS, PAYOUT_MULT, SYMBOLS, PAYLINES, BETS, EXCHANGE_RATE, SCATTER_MIN,
     FREE_SPINS_ON_SCATTER, BONUS_BUY_COST_MULT, BONUS_BUY_FREE_SPINS, DIAG_BONUS,
-    MULT_MAX, FS_MULT_TABLE
+    MULT_MAX, FS_MULT_CAP, HOT_REROLL_CHANCE
   };
 })(window);

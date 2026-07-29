@@ -8,30 +8,30 @@
   'use strict';
 
   const CHANGELOG = {
-    version: '4.4',
-    codename: 'Multiplier',
+    version: '4.5',
+    codename: 'Hot Streak',
     date: 'Juli 2026',
-    intro: 'Gewinnserien mit steigendem Multiplikator und eine Mega-Chance in den Freispielen.',
+    intro: 'Der Multiplikator hält jetzt in den Freispielen — plus eine „heiße" Gewinnchance nach jedem Gewinn.',
     features: [
       {
-        icon: '⚡',
-        title: 'Gewinn-Multiplikator',
-        text: 'Ein Badge am Grid zeigt deinen Multiplikator. Der erste Gewinn zählt normal, dann steigt es bei jedem Folgegewinn: ×2 → ×4 → ×8 → ×16 … Eine Niederlage setzt die Serie zurück.'
-      },
-      {
-        icon: '🎨',
-        title: 'Eskalierende Optik & Sounds',
-        text: 'Je höher der Multiplikator, desto krasser: Farbe, Glühen und Sound des Badges steigern sich mit jeder Stufe.'
-      },
-      {
         icon: '🔥',
-        title: 'Mega-Freispiele',
-        text: 'In den Freispielen kann jeder Gewinn einen Zufalls-Bonus bekommen — meistens klein, aber manchmal richtig krass (bis ×50).'
+        title: 'Multiplikator in Freispielen',
+        text: 'In den Freispielen fällt der Multiplikator NICHT mehr weg: Er steigt ×2 → ×4 → ×8 und hält die ganze Session, auch nach einem Fehlgriff.'
+      },
+      {
+        icon: '🍀',
+        title: 'Heiße Serie',
+        text: 'Nach einem Gewinn ist der nächste Dreh „heiß" — die Chance auf einen weiteren Gewinn ist spürbar erhöht.'
+      },
+      {
+        icon: '⚡',
+        title: 'Basis-Multiplikator wie gehabt',
+        text: 'Im normalen Spiel steigert sich der Multiplikator weiter bei Folgegewinnen und wird nur durch eine Niederlage zurückgesetzt.'
       },
       {
         icon: '📉',
         title: 'Immer noch ehrlich',
-        text: 'Trotz Multiplikatoren per Monte-Carlo (8 Mio. Spins) wieder auf RTP ~90 % getunt. Einzelgewinne zahlen weniger, die Serien machen den Reiz — auf Dauer verlierst du trotzdem.'
+        text: 'Alles neu per Monte-Carlo (16 Mio. Spins) auf RTP ~90 % getunt. Mehr Nervenkitzel, gleicher Haus-Vorteil — auf Dauer verlierst du trotzdem.'
       }
     ]
   };

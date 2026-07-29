@@ -1697,7 +1697,7 @@
             </div>
             <details class="slot-paytable"><summary>Auszahlungen & Info</summary>
               <div class="slot-pays">${payRows}</div>
-              <p class="fcs-note" style="margin-top:8px">5×5-Raster · Gewinne auf <b>5 Reihen + 2 Diagonalen</b> (3, 4 oder 5 gleiche von links). Diagonalen zahlen ${SD.DIAG_BONUS}×. ${SD.SCATTER_MIN}× 🐞 = ${SD.FREE_SPINS_ON_SCATTER} Freispiele. Gewinne in BugCoins. Hinweis: Die Chance entspricht einem echten Slot (RTP ~90 %, Haus-Vorteil ~10 %) — auf Dauer verlierst du. <b>Gambeln lohnt sich nicht.</b> 🙂</p>
+              <p class="fcs-note" style="margin-top:8px">5×5-Raster · Gewinne auf <b>5 Reihen + 2 Diagonalen</b> (3, 4 oder 5 gleiche von links). Diagonalen zahlen ${SD.DIAG_BONUS}×. <b>Multiplikator:</b> Folgegewinne steigern ×2 → ×4 → ×8 … (Niederlage setzt zurück). In den <b>Freispielen</b> (${SD.SCATTER_MIN}× 🐞 = ${SD.FREE_SPINS_ON_SCATTER}) fällt der Multiplikator <b>nicht</b> weg und hält bis ×${SD.FS_MULT_CAP}. Nach einem Gewinn ist der nächste Dreh 🔥 <b>heiß</b> (höhere Chance). Gewinne in BugCoins. Hinweis: RTP ~90 % (Haus-Vorteil ~10 %) — auf Dauer verlierst du. <b>Gambeln lohnt sich nicht.</b> 🙂</p>
             </details>
           </div>
         </div>
@@ -1803,17 +1803,17 @@
     if (res.multiplierUp && res.nextMult > 1 && Snd) Snd.slotMultiplier(multTier(res.nextMult));
 
     if (res.win > 0) {
-      const crazyFree = res.wasFree && res.fsMult >= 10;
+      const crazyFree = res.wasFree && (res.appliedMult >= 8 || res.win >= slotBet * 40);
       const bigWin = res.jackpot || crazyFree || res.win >= slotBet * 10;
       const cls = (res.jackpot || crazyFree) ? 'jackpot' : (bigWin ? 'big' : 'win');
       const lead = res.jackpot ? '💎 JACKPOT! ' : (crazyFree ? '🔥 MEGA-FREISPIEL! ' : '');
       const diag = res.diagWin ? ' · ↗↘ Diagonale!' : '';
       const fs = res.freeSpinsAwarded ? ` · 🐞 ${res.freeSpinsAwarded} Freispiele` : '';
-      let mtag = '';
-      if (res.wasFree && res.fsMult > 1) mtag = ` <span class="sw-mult">×${res.fsMult}</span>`;
-      else if (!res.wasFree && res.appliedMult > 1) mtag = ` <span class="sw-mult">×${res.appliedMult}</span>`;
-      box.innerHTML = `<div class="slot-win ${cls}">${lead}+${res.win} 🪲${mtag}${diag}${fs}</div>`;
+      const mtag = res.appliedMult > 1 ? ` <span class="sw-mult">×${res.appliedMult}</span>` : '';
+      const hot = ' <span class="slot-hot">🔥</span>';
+      box.innerHTML = `<div class="slot-win ${cls}">${lead}+${res.win} 🪲${mtag}${diag}${fs}${hot}</div>`;
       if (res.multiplierActivated) box.innerHTML += `<div class="slot-mult-note">⚡ Multiplikator aktiviert — nächster Gewinn ×2!</div>`;
+      box.innerHTML += `<div class="slot-hot-note">🔥 Lauf! Nächster Dreh mit erhöhter Gewinnchance.</div>`;
       if (Snd) { if (res.jackpot || crazyFree) Snd.slotJackpot(); else Snd.slotWin(Math.min(1, res.win / (slotBet * 20))); }
     } else if (res.freeSpinsAwarded) {
       box.innerHTML = `<div class="slot-win win">🐞 BONUS! ${res.freeSpinsAwarded} Freispiele</div>`;

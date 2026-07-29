@@ -93,17 +93,11 @@
     return { ok: true, taler: profile.bugTaler };
   }
 
-  // Weighted draw from the free-spin upside table.
-  const FS_POOL = (function () {
-    const arr = [];
-    D.FS_MULT_TABLE.forEach(([m, w]) => { for (let i = 0; i < w; i++) arr.push(m); });
-    return arr;
-  })();
-  function drawFsMult() { return FS_POOL[(Math.random() * FS_POOL.length) | 0]; }
-
   // One spin. Uses a free spin if available, else charges `bet` Bug Taler.
-  // Applies the win-streak multiplier (paid spins) or the free-spin upside
-  // multiplier (free spins).
+  //  • Base game: win-streak multiplier (resets on a losing spin).
+  //  • Free spins: a separate session multiplier that escalates but does NOT
+  //    reset on a losing free spin — it holds and keeps climbing (capped).
+  //  • After any win, the next losing spin gets one "hot" reroll (win-chance boost).
   function play(username, profile, bet) {
     const free = (profile.slotFreeSpins || 0) > 0;
     if (!free) {
@@ -112,23 +106,37 @@
     } else {
       profile.slotFreeSpins -= 1;
     }
-    const grid = spinGrid();
-    const res = evaluate(grid, bet);
+
+    // On a roll: after a win, a losing spin gets one second chance.
+    const wasHot = !!profile.slotHot;
+    let grid = spinGrid();
+    let res = evaluate(grid, bet);
+    let rerolled = false;
+    if (res.win === 0 && wasHot && Math.random() < D.HOT_REROLL_CHANCE) {
+      grid = spinGrid(); res = evaluate(grid, bet); rerolled = true;
+    }
     const baseWin = res.win;
 
-    let win = baseWin, appliedMult = 1, fsMult = 1;
+    let win = baseWin, appliedMult = 1;
     let multiplierActivated = false, multiplierUp = false;
-    const multBefore = profile.slotMultiplier || 1;
 
     if (free) {
-      // Free spins ignore the streak multiplier; each win gets a random upside.
-      if (baseWin > 0) { fsMult = drawFsMult(); win = Math.round(baseWin * fsMult); }
-    } else {
-      appliedMult = multBefore;                       // 1 on the first win of a streak
+      const b = profile.slotFsMult || 1;
+      appliedMult = b;                                 // 1 on the first win of the session
       if (baseWin > 0) {
-        win = Math.round(baseWin * appliedMult);
-        profile.slotMultiplier = Math.min(multBefore * 2, D.MULT_MAX); // arm the next win
-        multiplierActivated = (multBefore === 1);
+        win = Math.round(baseWin * b);
+        profile.slotFsMult = Math.min(b * 2, D.FS_MULT_CAP);
+        multiplierActivated = (b === 1);
+        multiplierUp = profile.slotFsMult > b;
+      }
+      // no reset on a losing free spin — the multiplier holds
+    } else {
+      const b = profile.slotMultiplier || 1;
+      appliedMult = b;                                 // 1 on the first win of a streak
+      if (baseWin > 0) {
+        win = Math.round(baseWin * b);
+        profile.slotMultiplier = Math.min(b * 2, D.MULT_MAX);
+        multiplierActivated = (b === 1);
         multiplierUp = true;
       } else {
         profile.slotMultiplier = 1;                    // any loss resets the streak
@@ -136,18 +144,29 @@
       if ((profile.slotMultiplier || 1) > (profile.slotMultBest || 1)) profile.slotMultBest = profile.slotMultiplier;
     }
 
+    // Award free spins; a brand-new session starts the session multiplier at ×1.
+    if (res.freeSpinsAwarded) {
+      if (!free) profile.slotFsMult = 1;
+      profile.slotFreeSpins = (profile.slotFreeSpins || 0) + res.freeSpinsAwarded;
+    }
+    // Session just ran out -> clear the session multiplier for next time.
+    if (free && (profile.slotFreeSpins || 0) === 0) profile.slotFsMult = 1;
+
     profile.bugCoins = (profile.bugCoins || 0) + win;
-    if (res.freeSpinsAwarded) profile.slotFreeSpins = (profile.slotFreeSpins || 0) + res.freeSpinsAwarded;
     profile.slotSpins = (profile.slotSpins || 0) + 1;
     if (win > (profile.slotMaxWin || 0)) profile.slotMaxWin = win;
     if (res.diagWin) profile.slotDiagWins = (profile.slotDiagWins || 0) + 1;
+    profile.slotHot = (baseWin > 0);                   // next spin is "hot" after a win
     Store.saveProfile(username, profile);
+
+    const nextMult = free ? (profile.slotFsMult || 1) : (profile.slotMultiplier || 1);
     return {
       ok: true, grid: grid, win: win, baseWin: baseWin, lines: res.lines, best: res.best,
       diagWin: res.diagWin, scatters: res.scatters, freeSpinsAwarded: res.freeSpinsAwarded,
       jackpot: res.jackpot, winCells: res.winCells, wasFree: free,
-      appliedMult: appliedMult, fsMult: fsMult, nextMult: profile.slotMultiplier || 1,
+      appliedMult: appliedMult, nextMult: nextMult,
       multiplierActivated: multiplierActivated, multiplierUp: multiplierUp,
+      hot: !!profile.slotHot, hotBoost: wasHot, rerolled: rerolled,
       bugTaler: profile.bugTaler, bugCoins: profile.bugCoins, freeSpins: profile.slotFreeSpins
     };
   }
