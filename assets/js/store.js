@@ -118,6 +118,8 @@
       slotDiagWins: 0,    // number of spins with a diagonal-line win
       slotMultiplier: 1,  // current win-streak multiplier (armed for next win)
       slotMultBest: 1,    // highest streak multiplier ever reached
+      slotFsMult: 1,      // free-spin session multiplier (holds, no reset)
+      slotHot: false,     // previous spin won -> next spin gets a win-chance boost
       ownedCosmetics: [],
       activeCosmetics: []
     };
