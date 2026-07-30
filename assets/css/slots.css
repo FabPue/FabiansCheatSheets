@@ -94,6 +94,15 @@
   0%   { transform: translateY(-5px); filter: blur(1.5px); }
   100% { transform: translateY(5px);  filter: blur(1.5px); }
 }
+/* v5.0 regression fix: the plastic per-cell box-shadow (added in the redesign)
+   is expensive to repaint while the reel swaps every cell's symbol every 60ms,
+   which made the spin look janky/"distorted" and hid the clean column-by-column
+   stop. Render spinning cells lightweight (as before v5.0) so the animation
+   stays smooth; the plastic shadow returns the instant a column lands. */
+.slot-col.spinning .slot-cell {
+  box-shadow: none;
+  transition: none;
+}
 /* column landing bounce */
 .slot-col.landed { animation: slotLand 0.32s cubic-bezier(.2,1.5,.4,1); }
 @keyframes slotLand {
